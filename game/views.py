@@ -1,9 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
+import csv
+
 from .models import Challenge, ParticipantAttempt
 from .utils import calculate_prompt_similarity
-from .gemini_service import generate_mascot_live_tip
+from .gemini_service import generate_mascot_live_tip, generate_challenge_data_with_gemini
 
 def get_feedback_badge(similarity: float) -> dict:
     """Retorna etiqueta visual e mensagem empática com base na pontuação obtida."""
@@ -233,5 +238,198 @@ def leaderboard(request):
         'ranking': ranking,
         'total_participantes': len(ranking)
     })
+
+def api_rodada_ativa(request):
+    """
+    API JSON consumida pela tela da participante para detectar em tempo real
+    quando a equipe do estande ativa uma nova rodada com outra imagem de IA.
+    """
+    challenge = Challenge.objects.filter(ativo=True).first()
+    if not challenge:
+        return JsonResponse({'ativo': False, 'id': None})
+    return JsonResponse({
+        'ativo': True,
+        'id': challenge.id,
+        'numero_rodada': challenge.numero_rodada,
+        'titulo': challenge.titulo,
+        'imagem_url': challenge.get_image_url,
+    })
+
+def operator_login(request):
+    """Tela de login bonita e intuitiva para a Equipe Mermãs."""
+    if request.user.is_authenticated:
+        return redirect('game:operator_desafios')
+
+    if request.method == 'POST':
+        usuario = request.POST.get('username', '').strip()
+        senha = request.POST.get('password', '')
+
+        user = authenticate(request, username=usuario, password=senha)
+        if user is not None:
+            login(request, user)
+            messages.success(request, f"Bem-vinda à área da equipe, {user.username}!")
+            return redirect('game:operator_desafios')
+        else:
+            messages.error(request, "Usuário ou senha incorretos. (Dica padrão: operador / mermas2026ifma)")
+
+    return render(request, 'game/operator_login.html')
+
+def operator_logout(request):
+    """Desconecta a equipe e retorna à página principal."""
+    logout(request)
+    messages.info(request, "Sessão da equipe encerrada.")
+    return redirect('game:index')
+
+@login_required(login_url='game:operator_login')
+def operator_desafios(request):
+    """
+    TELA 1 DO ADMIN / EQUIPE:
+    Registro de Prompts de IA, upload de imagens e seleção com 1 clique da Rodada Ativa.
+    """
+    sugestao_gemini = None
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        # 1. Sugestão automática com Google Gemini
+        if action == 'gemini_suggest':
+            tema = request.POST.get('tema_sugestao', '').strip()
+            sugestao_gemini = generate_challenge_data_with_gemini(tema)
+            if sugestao_gemini:
+                messages.success(request, "✨ Ideia de desafio e prompt gerados com sucesso pelo Gemini! Revise os campos e salve.")
+            else:
+                messages.warning(request, "Não foi possível conectar ao Gemini. Preencha manualmente.")
+
+        # 2. Cadastro de Novo Desafio / Rodada
+        elif action == 'create_challenge':
+            titulo = request.POST.get('titulo', '').strip()
+            numero_rodada = request.POST.get('numero_rodada', '').strip()
+            estilo_tag = request.POST.get('estilo_tag', 'Estilo Mágico & Futurista').strip()
+            prompt_original = request.POST.get('prompt_original', '').strip()
+            palavras_chave = request.POST.get('palavras_chave', '').strip()
+            dica_mascote = request.POST.get('dica_mascote', '').strip()
+            imagem_url = request.POST.get('imagem_url', '').strip()
+            ativar_imediatamente = (request.POST.get('ativar_imediatamente') == 'on')
+
+            if not titulo or not prompt_original or not palavras_chave:
+                messages.error(request, "Preencha todos os campos obrigatórios (Título, Prompt Original e Palavras-chave).")
+            else:
+                novo_desafio = Challenge.objects.create(
+                    titulo=titulo,
+                    numero_rodada=numero_rodada,
+                    estilo_tag=estilo_tag,
+                    prompt_original=prompt_original,
+                    palavras_chave=palavras_chave,
+                    dica_mascote=dica_mascote if dica_mascote else "Oi, {nome}! Observe as cores e formas com atenção!",
+                    imagem_url=imagem_url,
+                    ativo=False
+                )
+
+                # Upload de imagem por arquivo se enviado
+                if 'imagem' in request.FILES:
+                    novo_desafio.imagem = request.FILES['imagem']
+                    novo_desafio.save()
+
+                if ativar_imediatamente or Challenge.objects.filter(ativo=True).count() == 0:
+                    novo_desafio.ativar()
+                    messages.success(request, f"🎉 Desafio '{titulo}' cadastrado e ATIVADO como a rodada atual do estande!")
+                else:
+                    messages.success(request, f"Desafio '{titulo}' salvo com sucesso! Você pode ativá-lo quando quiser.")
+
+                return redirect('game:operator_desafios')
+
+        # 3. Ativar Rodada Selecionada
+        elif action == 'activate_challenge':
+            desafio_id = request.POST.get('challenge_id')
+            desafio = get_object_or_404(Challenge, id=desafio_id)
+            desafio.ativar()
+            messages.success(request, f"🚀 Rodada {desafio.numero_rodada} ('{desafio.titulo}') ATIVADA! A tela das alunas foi atualizada.")
+            return redirect('game:operator_desafios')
+
+    desafios = Challenge.objects.all().order_by('-ativo', '-id')
+    desafio_ativo = Challenge.objects.filter(ativo=True).first()
+
+    return render(request, 'game/operator_desafios.html', {
+        'desafios': desafios,
+        'desafio_ativo': desafio_ativo,
+        'sugestao_gemini': sugestao_gemini,
+    })
+
+@login_required(login_url='game:operator_login')
+def operator_julgamento(request):
+    """
+    TELA 2 DO ADMIN / EQUIPE:
+    Painel de Comparação e Julgamento.
+    A equipe compara o prompt digitado pela aluna contra o prompt de referência salvo,
+    avalia os cálculos de similaridade e define a vencedora/destaques da rodada.
+    """
+    todos_desafios = Challenge.objects.all().order_by('-ativo', '-id')
+    desafio_ativo = Challenge.objects.filter(ativo=True).first()
+
+    # Seleção da rodada por parâmetro na URL (?rodada_id=...) ou a ativa por padrão
+    rodada_id = request.GET.get('rodada_id')
+    if rodada_id:
+        desafio_selecionado = get_object_or_404(Challenge, id=rodada_id)
+    else:
+        desafio_selecionado = desafio_ativo or todos_desafios.first()
+
+    # Processamento da decisão da equipe
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'decidir_vencedor':
+            attempt_id = request.POST.get('attempt_id')
+            decisao = request.POST.get('decisao', 'pendente')
+            observacao = request.POST.get('observacao', '').strip()
+
+            tentativa = get_object_or_404(ParticipantAttempt, id=attempt_id)
+            tentativa.decisao_equipe = decisao
+            tentativa.observacao_equipe = observacao
+            tentativa.save()
+
+            messages.success(request, f"Avaliação da aluna {tentativa.nome_participante} atualizada para: {tentativa.get_decisao_equipe_display()}!")
+            return redirect(f"{request.path}?rodada_id={tentativa.challenge_id}")
+
+        elif action == 'exportar_csv':
+            # Exporta CSV da rodada selecionada
+            if not desafio_selecionado:
+                return redirect('game:operator_julgamento')
+
+            response = HttpResponse(content_type='text/csv; charset=utf-8')
+            response['Content-Disposition'] = f'attachment; filename="julgamento_rodada_{desafio_selecionado.numero_rodada}.csv"'
+            response.write(u'\ufeff'.encode('utf8'))
+
+            writer = csv.writer(response, delimiter=';')
+            writer.writerow(['Posição', 'Participante', 'Tentativa', 'Similaridade (%)', 'Decisão da Equipe', 'Prompt Digitado', 'Palavras Acertadas', 'Observação'])
+
+            tentativas_csv = ParticipantAttempt.objects.filter(challenge=desafio_selecionado).order_by('-similaridade')
+            for idx, att in enumerate(tentativas_csv, 1):
+                writer.writerow([
+                    idx,
+                    att.nome_participante,
+                    att.numero_tentativa,
+                    f"{att.similaridade:.1f}",
+                    att.get_decisao_equipe_display(),
+                    att.prompt_enviado.replace('\n', ' '),
+                    att.palavras_acertadas,
+                    att.observacao_equipe
+                ])
+            return response
+
+    # Busca tentativas para a rodada selecionada ordenadas por similaridade (o mais próximo no topo)
+    tentativas = []
+    total_participantes_unicos = 0
+    if desafio_selecionado:
+        tentativas = ParticipantAttempt.objects.filter(challenge=desafio_selecionado).order_by('-similaridade', 'data_envio')
+        total_participantes_unicos = tentativas.values('nome_participante').distinct().count()
+
+    return render(request, 'game/operator_julgamento.html', {
+        'todos_desafios': todos_desafios,
+        'desafio_selecionado': desafio_selecionado,
+        'tentativas': tentativas,
+        'total_tentativas': len(tentativas),
+        'total_participantes_unicos': total_participantes_unicos,
+    })
+
 
 

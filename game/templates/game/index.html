@@ -109,15 +109,16 @@
                     <span>Placar de Líderes</span>
                 </a>
 
-                <!-- Operador -->
-                <div
-                    class="bg-pink-50 text-pink-800 border border-pink-200 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-2">
+                <!-- Operador / Painel da Equipe -->
+                <a href="{% url 'game:operator_desafios' %}"
+                    class="bg-pink-50 hover:bg-pink-100 text-pink-800 border border-pink-200 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-2 transition shadow-2xs"
+                    title="Acessar o Painel de Controle da Equipe">
                     <svg class="w-3.5 h-3.5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     <span>Operador: Equipe Mermãs</span>
-                </div>
+                </a>
             </div>
         </header>
 
@@ -615,6 +616,9 @@
     <!-- Biblioteca Canvas Confetti para celebração visual -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
+    <!-- Metadados da rodada ativa para sincronização em tempo real com o painel da equipe -->
+    <div id="active-challenge-info" data-current-id="{{ challenge.id }}" class="hidden"></div>
+
     <!-- Gatilho de metadados para celebração sem tags Django dentro do script JS -->
     <div id="game-confetti-trigger" 
          data-celebrate="{% if ultima_tentativa and ultima_tentativa.similaridade >= 80.0 %}true{% else %}false{% endif %}"
@@ -667,9 +671,34 @@
             window.speechSynthesis.speak(utterance);
         }
 
+        // Sincronização automática quando a equipe do estande ativar uma nova rodada
+        function iniciarSincronizacaoRodada() {
+            const infoElement = document.getElementById('active-challenge-info');
+            if (!infoElement) return;
+
+            const currentId = parseInt(infoElement.dataset.currentId);
+            if (!currentId) return;
+
+            setInterval(() => {
+                fetch('/api/rodada-ativa/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.ativo && data.id && data.id !== currentId) {
+                            // Se a aluna não estiver digitando um prompt no momento, recarrega com a nova rodada
+                            const textarea = document.getElementById('prompt_text');
+                            if (!textarea || textarea.value.trim() === '') {
+                                window.location.reload();
+                            }
+                        }
+                    })
+                    .catch(() => {});
+            }, 5000);
+        }
+
         // Inicialização de animações, contadores e celebração
         document.addEventListener('DOMContentLoaded', () => {
             atualizarContadores();
+            iniciarSincronizacaoRodada();
 
             // Animação suave da barra de progresso
             const bar = document.getElementById('barra-progresso');

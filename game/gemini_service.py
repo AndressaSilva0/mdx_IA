@@ -64,3 +64,48 @@ Escreva uma dica de apoio curta (no máximo 2 frases), amigável, acolhedora e m
 
     return fallback_dica
 
+def generate_challenge_data_with_gemini(tema: str = "") -> dict:
+    """
+    Gera automaticamente uma nova rodada de desafio educativo com base no tema informado
+    utilizando a inteligência artificial do Google Gemini.
+    """
+    client = get_gemini_client()
+    if not client:
+        return {}
+
+    prompt_instrucao = f"""
+Você é um especialista em educação STEM e inteligência artificial para o evento "Mermãs Digitais | MDX 2026 - IFMA".
+Crie um novo desafio educativo onde as estudantes devem decodificar e adivinhar o prompt que gerou uma imagem por IA.
+Tema sugerido pelo operador: "{tema if tema else 'Mulheres e meninas na robótica, computação e ciência no Maranhão'}"
+
+Retorne estritamente um JSON no formato:
+{{
+  "titulo": "Título curto e instigante do desafio",
+  "numero_rodada": "02",
+  "estilo_tag": "Estilo da imagem (ex: Arte Digital Cyberpunk, Afrofuturismo, 3D Render)",
+  "prompt_original": "Descrição detalhada e rica em elementos visuais da cena, iluminação e cores",
+  "palavras_chave": "4 a 6 termos cruciais separados por vírgula",
+  "dica_mascote": "Dica pedagógica incentivando a aluna {{nome}} a focar nos detalhes mais marcantes"
+}}
+Apenas o JSON, sem markdown ou explicações.
+"""
+
+    try:
+        response = client.models.generate_content(
+            model=DEFAULT_MODEL,
+            contents=prompt_instrucao
+        )
+        if response and response.text:
+            text = response.text.strip()
+            # Limpa possíveis blocos ```json ... ```
+            if text.startswith("```"):
+                text = text.split("\n", 1)[1]
+                if text.endswith("```"):
+                    text = text.rsplit("\n", 1)[0]
+            import json
+            return json.loads(text.strip())
+    except Exception as e:
+        logger.warning(f"Erro ao gerar desafio com Gemini: {e}")
+
+    return {}
+

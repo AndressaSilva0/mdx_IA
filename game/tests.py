@@ -95,3 +95,58 @@ class MDXGameTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertNotIn('current_participant', self.client.session)
 
+    def test_api_rodada_ativa(self):
+        url = reverse('game:api_rodada_ativa')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['ativo'])
+        self.assertEqual(data['id'], self.challenge.id)
+
+    def test_operator_flow(self):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        user = User.objects.create_user(username='testoperador', password='password123')
+        self.client.login(username='testoperador', password='password123')
+
+        # Cria nova rodada 02
+        url_desafios = reverse('game:operator_desafios')
+        res_create = self.client.post(url_desafios, {
+            'action': 'create_challenge',
+            'titulo': 'Rodada Nova 02',
+            'numero_rodada': '02',
+            'estilo_tag': 'Cyberpunk',
+            'prompt_original': 'Robô espacial em Marte',
+            'palavras_chave': 'robô, marte, espacial',
+            'dica_mascote': 'Dica teste',
+            'ativar_imediatamente': 'on'
+        })
+        self.assertEqual(res_create.status_code, 302)
+        
+        # A Rodada 02 agora é a ativa
+        c2 = Challenge.objects.get(numero_rodada='02')
+        self.assertTrue(c2.ativo)
+        self.challenge.refresh_from_db()
+        self.assertFalse(self.challenge.ativo)
+
+        # Julgamento
+        att = ParticipantAttempt.objects.create(
+            challenge=c2,
+            nome_participante='Juliana Teste',
+            numero_tentativa=1,
+            prompt_enviado='robô espacial',
+            similaridade=90.0,
+            palavras_acertadas='robô, espacial'
+        )
+        url_julg = reverse('game:operator_julgamento')
+        res_decisao = self.client.post(url_julg, {
+            'action': 'decidir_vencedor',
+            'attempt_id': att.id,
+            'decisao': 'vencedora',
+            'observacao': 'Excelente prompt!'
+        })
+        self.assertEqual(res_decisao.status_code, 302)
+        att.refresh_from_db()
+        self.assertEqual(att.decisao_equipe, 'vencedora')
+        self.assertEqual(att.observacao_equipe, 'Excelente prompt!')
+

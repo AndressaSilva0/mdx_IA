@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso da Equipe | Mermãs Digitais • MDX 2026</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FAF8FE;
+            background-image: 
+                linear-gradient(to right, rgba(109, 40, 217, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(109, 40, 217, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-3xl p-8 border border-purple-100 shadow-xl shadow-purple-500/5 space-y-6">
+        
+        <!-- Logo e Cabeçalho -->
+        <div class="text-center space-y-2">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#6D28D9] via-[#C026D3] to-[#FEBE01] text-white flex items-center justify-center font-bold text-2xl mx-auto shadow-md shadow-purple-500/20">
+                👩‍💻
+            </div>
+            <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">Painel da Equipe Mermãs</h1>
+            <p class="text-xs text-slate-500 font-medium">MDX 2026 • IFMA — Gestão de Prompts e Julgamento</p>
+        </div>
+
+        <!-- Mensagens de Alerta -->
+        {% if messages %}
+            <div class="space-y-2">
+                {% for message in messages %}
+                    <div class="p-3 rounded-2xl text-xs font-bold {% if message.tags == 'error' %}bg-rose-50 text-rose-700 border border-rose-200{% else %}bg-purple-50 text-purple-700 border border-purple-200{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Formulário de Login -->
+        <form method="POST" action="{% url 'game:operator_login' %}" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label for="username" class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1.5">
+                    Usuário Operador
+                </label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    required 
+                    placeholder="operador"
+                    class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-slate-50/50"
+                >
+            </div>
+
+            <div>
+                <label for="password" class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1.5">
+                    Senha de Acesso
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-slate-50/50"
+                >
+            </div>
+
+            <button 
+                type="submit" 
+                class="w-full bg-gradient-to-r from-[#6D28D9] via-[#C026D3] to-[#EC4899] text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-purple-500/25 hover:brightness-110 active:scale-98 transition flex items-center justify-center gap-2 text-sm cursor-pointer"
+            >
+                <span>Entrar no Painel do Estande</span>
+                <span>→</span>
+            </button>
+        </form>
+
+        <div class="text-center pt-2 border-t border-slate-100">
+            <a href="{% url 'game:index' %}" class="text-xs text-purple-600 hover:text-purple-800 font-semibold transition">
+                ← Voltar para a Tela do Jogo das Alunas
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,355 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julgamento e Decisão de Vencedoras | Equipe MDX 2026</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandViolet: '#6D28D9',
+                        brandMagenta: '#C026D3',
+                        brandYellow: '#FEBE01',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FAF8FE;
+            background-image: 
+                linear-gradient(to right, rgba(109, 40, 217, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(109, 40, 217, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-6 px-4 sm:px-6 lg:px-8 text-slate-800">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+
+        <!-- ========================================== -->
+        <!-- CABEÇALHO DO PAINEL DA EQUIPE              -->
+        <!-- ========================================== -->
+        <header class="bg-white rounded-3xl border border-purple-100 shadow-sm p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#6D28D9] via-[#C026D3] to-[#FEBE01] text-white flex items-center justify-center font-bold text-2xl shadow-md">
+                    ⚖️
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg font-extrabold text-[#581C87] tracking-tight">Painel de Julgamento & Ranking</h1>
+                        <span class="bg-purple-100 text-purple-800 font-extrabold text-[11px] px-2.5 py-0.5 rounded-full">
+                            MDX 2026 • IFMA
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-medium">Comparação dos Prompts das Alunas vs Imagem de Referência e Decisão Oficial da Equipe</p>
+                </div>
+            </div>
+
+            <!-- Navegação -->
+            <div class="flex items-center flex-wrap gap-2">
+                <a href="{% url 'game:operator_desafios' %}" class="bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-4 py-2 rounded-2xl border border-purple-200 transition flex items-center gap-1.5">
+                    <span>🖼️</span>
+                    <span>1. Prompts & Imagens</span>
+                </a>
+
+                <span class="bg-[#7C3AED] text-white text-xs font-bold px-4 py-2 rounded-2xl shadow-sm flex items-center gap-1.5">
+                    <span>⚖️</span>
+                    <span>2. Julgamento & Vencedoras</span>
+                </span>
+
+                <a href="{% url 'game:index' %}" target="_blank" class="bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold px-3.5 py-2 rounded-2xl border border-amber-300 transition flex items-center gap-1.5 shadow-2xs">
+                    <span>📱</span>
+                    <span>Tela das Alunas ↗</span>
+                </a>
+
+                <a href="{% url 'game:operator_logout' %}" class="text-xs text-slate-400 hover:text-rose-600 font-semibold px-2 py-1 transition">
+                    Sair
+                </a>
+            </div>
+        </header>
+
+        <!-- Mensagens do Django -->
+        {% if messages %}
+            <div class="space-y-2">
+                {% for message in messages %}
+                    <div class="p-4 rounded-2xl text-sm font-semibold flex items-center justify-between shadow-xs {% if message.tags == 'error' %}bg-rose-50 text-rose-800 border border-rose-200{% else %}bg-purple-50 text-purple-800 border border-purple-200{% endif %}">
+                        <span>{{ message }}</span>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-xs opacity-60 hover:opacity-100">✕</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- ========================================== -->
+        <!-- SELEÇÃO DA RODADA EM JULGAMENTO            -->
+        <!-- ========================================== -->
+        <section class="bg-white rounded-3xl p-5 border border-purple-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                <span class="text-[11px] uppercase tracking-wider font-bold text-slate-400 block mb-1">
+                    Selecione a Rodada para Avaliar:
+                </span>
+                <div class="flex items-center flex-wrap gap-2">
+                    {% for des in todos_desafios %}
+                        <a 
+                            href="?rodada_id={{ des.id }}" 
+                            class="px-4 py-2 rounded-2xl text-xs font-extrabold transition flex items-center gap-2 border {% if des.id == desafio_selecionado.id %}bg-[#7C3AED] text-white border-purple-600 shadow-sm{% else %}bg-purple-50 hover:bg-purple-100 text-purple-800 border-purple-200{% endif %}"
+                        >
+                            <span>Rodada {{ des.numero_rodada }}</span>
+                            {% if des.ativo %}
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-xs" title="Ativo no estande agora"></span>
+                            {% endif %}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Botão de Exportar CSV -->
+            <form method="POST" action="{% url 'game:operator_julgamento' %}?rodada_id={{ desafio_selecionado.id }}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="exportar_csv">
+                <button 
+                    type="submit" 
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-2xl shadow-sm transition flex items-center gap-2 cursor-pointer"
+                >
+                    <svg class="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>Exportar Relatório Excel/CSV</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- CARD DE REFERÊNCIA DA RODADA               -->
+        <!-- ========================================== -->
+        {% if desafio_selecionado %}
+            <section class="bg-gradient-to-r from-purple-900 to-indigo-950 rounded-3xl p-6 text-white shadow-md border border-purple-800">
+                <div class="flex flex-col md:flex-row items-start gap-6">
+                    <!-- Imagem da IA -->
+                    <div class="w-full md:w-44 h-44 rounded-2xl overflow-hidden bg-slate-950 border-2 border-amber-400 flex-shrink-0 shadow-lg relative group">
+                        <img src="{{ desafio_selecionado.get_image_url }}" alt="{{ desafio_selecionado.titulo }}" class="w-full h-full object-cover">
+                        <div class="absolute bottom-2 left-2 bg-black/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                            Obra Visual #{{ desafio_selecionado.numero_rodada }}
+                        </div>
+                    </div>
+
+                    <!-- Dados Oficiais da Imagem -->
+                    <div class="flex-1 space-y-3">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="bg-amber-400 text-slate-950 font-extrabold text-xs px-3 py-1 rounded-full">
+                                Rodada {{ desafio_selecionado.numero_rodada }}: {{ desafio_selecionado.titulo }}
+                            </span>
+                            <span class="bg-purple-800/80 text-purple-200 border border-purple-600 text-xs font-semibold px-3 py-1 rounded-full">
+                                {{ desafio_selecionado.estilo_tag }}
+                            </span>
+                            {% if desafio_selecionado.ativo %}
+                                <span class="bg-emerald-500 text-white font-extrabold text-xs px-3 py-1 rounded-full flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                                    Ativo no Estande Agora
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Prompt Original Salvo -->
+                        <div class="bg-purple-950/70 p-3.5 rounded-2xl border border-purple-700/80">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300 block mb-1">
+                                Prompt Original de Referência (Gabarito da Imagem):
+                            </span>
+                            <p class="text-xs sm:text-sm text-purple-100 font-medium italic leading-relaxed">
+                                "{{ desafio_selecionado.prompt_original }}"
+                            </p>
+                        </div>
+
+                        <!-- Palavras-Chave Esperadas -->
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-purple-300 block mb-1.5">
+                                Palavras-Chave Conceituais Cadastradas:
+                            </span>
+                            <div class="flex flex-wrap gap-1.5">
+                                {% for kw in desafio_selecionado.get_palavras_chave_list %}
+                                    <span class="bg-purple-800/90 text-white border border-purple-500 font-bold text-xs px-2.5 py-0.5 rounded-md">
+                                        ✓ {{ kw }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        <!-- ========================================== -->
+        <!-- TABELA DE JULGAMENTO E COMPARAÇÃO          -->
+        <!-- ========================================== -->
+        <main class="bg-white rounded-3xl border border-purple-100 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
+                        <span>📊</span>
+                        <span>Tentativas e Decisão da Equipe ({% if desafio_selecionado %}Rodada {{ desafio_selecionado.numero_rodada }}{% endif %})</span>
+                    </h2>
+                    <p class="text-xs text-slate-400">
+                        Ordenadas da maior para a menor proximidade. A equipe decide e homologa as vencedoras com base nos cálculos e criatividade!
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="bg-purple-100 text-purple-800 font-bold text-xs px-3 py-1 rounded-full">
+                        {{ total_tentativas }} envios
+                    </span>
+                    <span class="bg-amber-100 text-amber-900 font-bold text-xs px-3 py-1 rounded-full">
+                        {{ total_participantes_unicos }} alunas
+                    </span>
+                </div>
+            </div>
+
+            {% if tentativas %}
+                <div class="divide-y divide-slate-100">
+                    {% for att in tentativas %}
+                        <div class="p-5 hover:bg-purple-50/20 transition {% if att.decisao_equipe == 'vencedora' %}bg-amber-50/40 border-l-4 border-amber-400{% elif att.decisao_equipe == 'destaque' %}bg-purple-50/40 border-l-4 border-purple-400{% endif %}">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+                                
+                                <!-- Posição e Aluna -->
+                                <div class="lg:col-span-3 space-y-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-7 h-7 rounded-lg bg-purple-100 text-purple-800 font-extrabold text-xs flex items-center justify-center">
+                                            #{{ forloop.counter }}
+                                        </span>
+                                        <h3 class="text-sm font-extrabold text-slate-900">
+                                            {{ att.nome_participante }}
+                                        </h3>
+                                    </div>
+                                    <div class="text-[11px] text-slate-400 font-medium pl-9">
+                                        Tentativa {{ att.numero_tentativa }} de 3 • {{ att.data_envio|date:"H:i" }}
+                                    </div>
+                                    
+                                    <!-- Badge de Decisão da Equipe -->
+                                    <div class="pl-9 pt-1">
+                                        {% if att.decisao_equipe == 'vencedora' %}
+                                            <span class="bg-amber-400 text-slate-950 font-extrabold text-[11px] px-2.5 py-0.5 rounded-full flex items-center gap-1 w-fit shadow-xs">
+                                                🏆 Vencedora da Rodada
+                                            </span>
+                                        {% elif att.decisao_equipe == 'destaque' %}
+                                            <span class="bg-purple-600 text-white font-extrabold text-[11px] px-2.5 py-0.5 rounded-full flex items-center gap-1 w-fit">
+                                                ✨ Destaque Criativo
+                                            </span>
+                                        {% elif att.decisao_equipe == 'homologada' %}
+                                            <span class="bg-emerald-100 text-emerald-800 font-bold text-[11px] px-2.5 py-0.5 rounded-full flex items-center gap-1 w-fit">
+                                                ✓ Classificada
+                                            </span>
+                                        {% else %}
+                                            <span class="bg-slate-100 text-slate-500 font-medium text-[11px] px-2.5 py-0.5 rounded-full w-fit">
+                                                ⏳ Em Avaliação
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Comparação: Prompt Digitado vs Palavras Acertadas -->
+                                <div class="lg:col-span-6 space-y-2">
+                                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">Prompt Digitado pela Aluna:</span>
+                                        <p class="text-xs text-slate-800 font-medium leading-relaxed italic">
+                                            "{{ att.prompt_enviado }}"
+                                        </p>
+                                    </div>
+
+                                    <!-- Palavras Acertadas -->
+                                    <div class="flex flex-wrap items-center gap-1.5">
+                                        <span class="text-[10px] font-bold text-slate-400">Acertou:</span>
+                                        {% for kw in att.get_palavras_acertadas_list %}
+                                            <span class="bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                                ✓ {{ kw }}
+                                            </span>
+                                        {% empty %}
+                                            <span class="text-[10px] text-slate-400 italic">Nenhuma palavra-chave identificada</span>
+                                        {% endfor %}
+                                    </div>
+
+                                    {% if att.observacao_equipe %}
+                                        <div class="text-xs text-slate-600 bg-amber-50/70 p-2 rounded-xl border border-amber-200">
+                                            <strong>Parecer da Equipe:</strong> {{ att.observacao_equipe }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Score de Similaridade e Ação da Equipe -->
+                                <div class="lg:col-span-3 space-y-3 lg:border-l lg:border-slate-100 lg:pl-4">
+                                    <!-- Score -->
+                                    <div>
+                                        <span class="text-[10px] uppercase font-bold text-slate-400 block">Proximidade Calculada</span>
+                                        <div class="flex items-baseline gap-1">
+                                            <span class="text-2xl font-extrabold text-[#7C3AED]">
+                                                {{ att.similaridade|stringformat:".1f" }}%
+                                            </span>
+                                            <span class="text-[11px] font-bold text-purple-600">similar</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Formulário da Decisão da Equipe -->
+                                    <form method="POST" action="{% url 'game:operator_julgamento' %}" class="space-y-2">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="decidir_vencedor">
+                                        <input type="hidden" name="attempt_id" value="{{ att.id }}">
+
+                                        <div>
+                                            <label class="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+                                                Julgamento da Equipe:
+                                            </label>
+                                            <select 
+                                                name="decisao" 
+                                                class="w-full text-xs font-bold py-1.5 px-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            >
+                                                <option value="pendente" {% if att.decisao_equipe == 'pendente' %}selected{% endif %}>⏳ Em Avaliação</option>
+                                                <option value="vencedora" {% if att.decisao_equipe == 'vencedora' %}selected{% endif %}>🏆 Vencedora da Rodada</option>
+                                                <option value="destaque" {% if att.decisao_equipe == 'destaque' %}selected{% endif %}>✨ Destaque Criativo</option>
+                                                <option value="homologada" {% if att.decisao_equipe == 'homologada' %}selected{% endif %}>🎖️ Classificada</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <input 
+                                                type="text" 
+                                                name="observacao" 
+                                                value="{{ att.observacao_equipe }}" 
+                                                placeholder="Parecer da equipe (opcional)..."
+                                                class="w-full text-xs py-1 px-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            >
+                                        </div>
+
+                                        <button 
+                                            type="submit" 
+                                            class="w-full bg-[#7C3AED] hover:bg-purple-700 text-white font-extrabold text-xs py-1.5 px-3 rounded-xl transition shadow-2xs"
+                                        >
+                                            Salvar Decisão
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="p-10 text-center text-slate-400">
+                    Nenhuma tentativa enviada para esta rodada ainda. Quando as alunas jogarem, seus prompts e notas aparecerão aqui em tempo real!
+                </div>
+            {% endif %}
+        </main>
+
+    </div>
+
+</body>
+</html>

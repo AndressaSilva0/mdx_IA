@@ -77,6 +77,12 @@ class Challenge(models.Model):
             return []
         return [p.strip() for p in self.palavras_chave.split(',') if p.strip()]
 
+    def ativar(self):
+        """Ativa este desafio como o atual do estande e desativa todos os outros."""
+        Challenge.objects.exclude(id=self.id).update(ativo=False)
+        self.ativo = True
+        self.save(update_fields=['ativo'])
+
 
 class ParticipantAttempt(models.Model):
     """
@@ -113,6 +119,24 @@ class ParticipantAttempt(models.Model):
     data_envio = models.DateTimeField(
         default=timezone.now,
         verbose_name="Data e Hora do Envio"
+    )
+
+    STATUS_DECISAO = [
+        ('pendente', 'Em Avaliação'),
+        ('vencedora', 'Vencedora da Rodada 🏆'),
+        ('destaque', 'Destaque Criativo ✨'),
+        ('homologada', 'Classificada'),
+    ]
+    decisao_equipe = models.CharField(
+        max_length=50,
+        choices=STATUS_DECISAO,
+        default='pendente',
+        verbose_name="Decisão da Equipe"
+    )
+    observacao_equipe = models.TextField(
+        blank=True,
+        default="",
+        verbose_name="Observação / Parecer da Equipe"
     )
 
     class Meta:
