@@ -46,43 +46,67 @@ class MDXGameTests(TestCase):
     def test_participant_3_attempts_flow(self):
         url = reverse('game:index')
         nome = "Ana Beatriz"
+        email = "ana.beatriz@ifma.edu.br"
 
         # 1ª Tentativa
         response1 = self.client.post(url, {
             'action': 'submit_prompt',
             'nome_participante': nome,
+            'email_participante': email,
             'prompt_enviado': 'Tentativa um flor no vidro'
         })
         self.assertEqual(response1.status_code, 302)
-        self.assertEqual(ParticipantAttempt.objects.filter(nome_participante=nome).count(), 1)
+        self.assertEqual(ParticipantAttempt.objects.filter(email_participante=email).count(), 1)
 
         # 2ª Tentativa
         response2 = self.client.post(url, {
             'action': 'submit_prompt',
             'nome_participante': nome,
+            'email_participante': email,
             'prompt_enviado': 'Tentativa dois flor mecânica na esfera'
         })
         self.assertEqual(response2.status_code, 302)
-        self.assertEqual(ParticipantAttempt.objects.filter(nome_participante=nome).count(), 2)
+        self.assertEqual(ParticipantAttempt.objects.filter(email_participante=email).count(), 2)
 
         # 3ª Tentativa
         response3 = self.client.post(url, {
             'action': 'submit_prompt',
             'nome_participante': nome,
+            'email_participante': email,
             'prompt_enviado': 'Tentativa tres flor mecânica esfera de cristal e espaço sideral'
         })
         self.assertEqual(response3.status_code, 302)
-        self.assertEqual(ParticipantAttempt.objects.filter(nome_participante=nome).count(), 3)
+        self.assertEqual(ParticipantAttempt.objects.filter(email_participante=email).count(), 3)
 
         # 4ª Tentativa (deve ser bloqueada pois atingiu o limite de 3)
         response4 = self.client.post(url, {
             'action': 'submit_prompt',
             'nome_participante': nome,
+            'email_participante': email,
             'prompt_enviado': 'Tentativa quatro que deve ser ignorada'
         })
         self.assertEqual(response4.status_code, 302)
         # O número total de tentativas continua sendo exatamente 3
-        self.assertEqual(ParticipantAttempt.objects.filter(nome_participante=nome).count(), 3)
+        self.assertEqual(ParticipantAttempt.objects.filter(email_participante=email).count(), 3)
+
+    def test_pin_6_digitos_modalidade_switch(self):
+        url_pin = reverse('game:trocar_modalidade_equipe')
+        
+        # Teste 1: PIN Errado
+        res_errado = self.client.post(url_pin, {'pin': '000000'}, follow=True)
+        self.assertEqual(res_errado.status_code, 200)
+        self.assertFalse(self.client.session.get('is_equipe'))
+
+        # Teste 2: PIN Correto de 6 dígitos (262026)
+        res_correto = self.client.post(url_pin, {'pin': '262026'}, follow=True)
+        self.assertEqual(res_correto.status_code, 200)
+        self.assertTrue(self.client.session.get('is_equipe'))
+
+        # Teste 3: Sair da modalidade equipe
+        url_sair = reverse('game:sair_modalidade_equipe')
+        res_sair = self.client.get(url_sair, follow=True)
+        self.assertEqual(res_sair.status_code, 200)
+        self.assertFalse(self.client.session.get('is_equipe'))
 
     def test_reset_session(self):
         # Seta aluna na sessão

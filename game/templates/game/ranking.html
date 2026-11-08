@@ -41,11 +41,51 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
+                <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ challenge.id }}" class="inline-flex items-center gap-1.5 bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-bold px-3.5 py-2 rounded-2xl border border-pink-200 transition">
+                    <span>⚖️ Painel de Julgamento</span>
+                </a>
                 <a href="{% url 'game:index' %}" class="inline-flex items-center gap-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-4 py-2 rounded-2xl border border-purple-200 transition">
                     <span>← Voltar ao Jogo</span>
                 </a>
             </div>
         </header>
+
+        {% if vencedora_oficial %}
+            <!-- Banner Comemorativo de Vencedora Homologada pela Equipe -->
+            <section class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 rounded-3xl p-6 text-slate-950 shadow-lg border-2 border-amber-500 flex flex-col sm:flex-row items-center justify-between gap-4 animate-bounce-subtle">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-white text-slate-900 flex items-center justify-center text-3xl shadow-md flex-shrink-0">
+                        👑
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-slate-950 text-amber-300 text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-full">
+                                Vencedora Oficial Homologada
+                            </span>
+                            <span class="text-xs font-bold text-slate-800">Decisão da Equipe Mermãs</span>
+                        </div>
+                        <h2 class="text-xl font-extrabold text-slate-950 mt-1">
+                            {{ vencedora_oficial.nome_participante }}
+                        </h2>
+                        <p class="text-xs font-semibold text-slate-800 italic max-w-xl">
+                            "{{ vencedora_oficial.prompt_enviado }}"
+                        </p>
+                        {% if vencedora_oficial.observacao_equipe %}
+                            <p class="text-[11px] font-bold text-slate-900 mt-1 bg-white/60 px-2.5 py-0.5 rounded-lg w-fit">
+                                💬 Parecer: {{ vencedora_oficial.observacao_equipe }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="text-right sm:border-l sm:border-amber-600/30 sm:pl-6 flex-shrink-0">
+                    <span class="text-3xl font-black text-slate-950 block">
+                        {{ vencedora_oficial.similaridade|stringformat:".1f" }}%
+                    </span>
+                    <span class="text-[10px] uppercase font-extrabold text-slate-800">Score de Proximidade</span>
+                </div>
+            </section>
+        {% endif %}
 
         <!-- Tabela do Ranking -->
         <main class="bg-white rounded-3xl border border-purple-100 shadow-sm overflow-hidden">
@@ -71,6 +111,11 @@
                                     <h3 class="text-sm sm:text-base font-extrabold text-slate-800">
                                         {{ item.nome }}
                                     </h3>
+                                    {% if item.email %}
+                                        <p class="text-[11px] text-purple-700 font-semibold truncate">
+                                            ✉ {{ item.email }}
+                                        </p>
+                                    {% endif %}
                                     <p class="text-[11px] text-slate-400 font-medium">
                                         {{ item.total_tentativas }} tentativa{{ item.total_tentativas|pluralize }} realizada{{ item.total_tentativas|pluralize }} • {{ item.data|date:"H:i" }}
                                     </p>

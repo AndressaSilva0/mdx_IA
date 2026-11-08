@@ -10,6 +10,10 @@ urlpatterns = [
     path('ranking/', views.leaderboard, name='ranking'),
     path('api/rodada-ativa/', views.api_rodada_ativa, name='api_rodada_ativa'),
 
+    # Alternância de Modalidade (Equipe / Participante via Senha de 6 Dígitos)
+    path('equipe/entrar-pin/', views.trocar_modalidade_equipe, name='trocar_modalidade_equipe'),
+    path('equipe/sair/', views.sair_modalidade_equipe, name='sair_modalidade_equipe'),
+
     # Telas da Equipe / Admin
     path('operador/login/', views.operator_login, name='operator_login'),
     path('operador/logout/', views.operator_logout, name='operator_logout'),

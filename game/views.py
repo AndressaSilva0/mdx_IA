@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 import csv
@@ -9,6 +9,10 @@ import csv
 from .models import Challenge, ParticipantAttempt
 from .utils import calculate_prompt_similarity
 from .gemini_service import generate_mascot_live_tip, generate_challenge_data_with_gemini
+
+def check_equipe_permission(request):
+    """Verifica se o operador está autenticado via PIN de 6 dígitos ou login."""
+    return bool(request.session.get('is_equipe') or request.user.is_authenticated)
 
 def get_feedback_badge(similarity: float) -> dict:
     """Retorna etiqueta visual e mensagem empática com base na pontuação obtida."""
@@ -53,8 +57,9 @@ def game_index(request):
     if not challenge:
         return render(request, 'game/no_challenge.html')
 
-    # 2. Recupera o nome da participante atual da sessão ou requisição
+    # 2. Recupera a participante atual da sessão ou requisição
     nome_participante = request.session.get('current_participant', '').strip()
+    email_participante = request.session.get('current_email', '').strip().lower()
 
     # Se for envio do formulário via POST
     if request.method == 'POST':
@@ -63,24 +68,28 @@ def game_index(request):
         # Ação de trocar / nova participante
         if action == 'new_participant':
             request.session.pop('current_participant', None)
+            request.session.pop('current_email', None)
             return redirect('game:index')
 
         # Envio de tentativa
         nome_enviado = request.POST.get('nome_participante', '').strip()
+        email_enviado = request.POST.get('email_participante', '').strip().lower()
         prompt_enviado = request.POST.get('prompt_enviado', '').strip()
 
-        if not nome_enviado:
-            messages.error(request, "Por favor, digite seu Nome Completo para começar.")
+        if not nome_enviado or not email_enviado:
+            messages.error(request, "Por favor, preencha seu Nome Completo e E-mail para participar.")
             return redirect('game:index')
 
         # Atualiza a participante na sessão
         request.session['current_participant'] = nome_enviado
+        request.session['current_email'] = email_enviado
         nome_participante = nome_enviado
+        email_participante = email_enviado
 
-        # Verifica quantidade de tentativas já realizadas por este nome nesta rodada
+        # Verifica quantidade de tentativas já realizadas por este e-mail nesta rodada
         tentativas_existentes = ParticipantAttempt.objects.filter(
             challenge=challenge,
-            nome_participante__iexact=nome_participante
+            email_participante=email_participante
         ).order_by('numero_tentativa')
 
         qtd_feitas = tentativas_existentes.count()
@@ -101,11 +110,12 @@ def game_index(request):
             keywords_list=keywords_list
         )
 
-        # 4. Salva o registro da tentativa
+        # 4. Salva o registro da tentativa vinculando nome e e-mail
         numero_nova_tentativa = qtd_feitas + 1
         ParticipantAttempt.objects.create(
             challenge=challenge,
             nome_participante=nome_participante,
+            email_participante=email_participante,
             numero_tentativa=numero_nova_tentativa,
             prompt_enviado=prompt_enviado,
             similaridade=similaridade_pct,
@@ -113,13 +123,18 @@ def game_index(request):
             data_envio=timezone.now()
         )
 
-        # Post-Redirect-Get para evitar reenvio acidental por F5 na máquina do estande
         return redirect('game:index')
 
-    # 3. Busca tentativas da participante atual nesta rodada
+    # 3. Busca tentativas da participante atual nesta rodada (por e-mail ou nome)
     tentativas = []
     qtd_feitas = 0
-    if nome_participante:
+    if email_participante:
+        tentativas = list(ParticipantAttempt.objects.filter(
+            challenge=challenge,
+            email_participante=email_participante
+        ).order_by('numero_tentativa'))
+        qtd_feitas = len(tentativas)
+    elif nome_participante:
         tentativas = list(ParticipantAttempt.objects.filter(
             challenge=challenge,
             nome_participante__iexact=nome_participante
@@ -166,6 +181,7 @@ def game_index(request):
     context = {
         'challenge': challenge,
         'nome_participante': nome_participante,
+        'email_participante': email_participante,
         'primeiro_nome': primeiro_nome,
         'tentativas': tentativas,
         'qtd_feitas': qtd_feitas,
@@ -176,6 +192,7 @@ def game_index(request):
         'feedback_info': feedback_info,
         'slots_historico': slots_historico,
         'dica_mascote': dica_formatada,
+        'is_equipe': check_equipe_permission(request),
     }
 
     return render(request, 'game/index.html', context)
@@ -183,6 +200,8 @@ def game_index(request):
 def reset_session(request):
     """Limpa a aluna atual da sessão para que uma nova participante jogue no estande."""
     request.session.pop('current_participant', None)
+    request.session.pop('current_email', None)
+    return redirect('game:index')
     return redirect('game:index')
 
 def leaderboard(request):
@@ -194,22 +213,23 @@ def leaderboard(request):
     if not challenge:
         return render(request, 'game/no_challenge.html')
 
-    # Agrupa tentativas por participante e seleciona a melhor
-    attempts = ParticipantAttempt.objects.filter(challenge=challenge).order_by('nome_participante', '-similaridade')
+    # Agrupa tentativas por participante (utilizando o e-mail como chave única)
+    attempts = ParticipantAttempt.objects.filter(challenge=challenge).order_by('email_participante', 'nome_participante', '-similaridade')
 
     ranking_dict = {}
     for att in attempts:
-        nome = att.nome_participante
-        if nome not in ranking_dict:
-            ranking_dict[nome] = {
-                'nome': nome,
+        chave_unica = (att.email_participante or att.nome_participante).lower()
+        if chave_unica not in ranking_dict:
+            ranking_dict[chave_unica] = {
+                'nome': att.nome_participante,
+                'email': att.email_participante,
                 'melhor_score': att.similaridade,
                 'melhor_tentativa': att,
                 'total_tentativas': 1,
                 'data': att.data_envio
             }
         else:
-            ranking_dict[nome]['total_tentativas'] += 1
+            ranking_dict[chave_unica]['total_tentativas'] += 1
 
     # Ordena por melhor pontuação (decrescente) e desempate por menos tentativas
     ranking = sorted(
@@ -233,10 +253,17 @@ def leaderboard(request):
             item['medalha'] = f'{idx}º'
             item['badge_class'] = 'bg-purple-50 text-purple-700 border-purple-200'
 
+    # Identifica se a equipe já homologou uma vencedora oficial para esta rodada
+    vencedora_oficial = ParticipantAttempt.objects.filter(
+        challenge=challenge,
+        decisao_equipe='vencedora'
+    ).first()
+
     return render(request, 'game/ranking.html', {
         'challenge': challenge,
         'ranking': ranking,
-        'total_participantes': len(ranking)
+        'total_participantes': len(ranking),
+        'vencedora_oficial': vencedora_oficial
     })
 
 def api_rodada_ativa(request):
@@ -255,9 +282,34 @@ def api_rodada_ativa(request):
         'imagem_url': challenge.get_image_url,
     })
 
+def trocar_modalidade_equipe(request):
+    """
+    Alterna para a modalidade 'Equipe' mediante conferência da Senha de 6 Dígitos.
+    Isso substitui logins complexos na máquina do estande por um PIN rápido e seguro.
+    """
+    if request.method == 'POST':
+        pin_enviado = request.POST.get('pin', '').strip()
+        pin_correto = str(getattr(settings, 'EQUIPE_PIN', '262026')).strip()
+
+        if pin_enviado == pin_correto:
+            request.session['is_equipe'] = True
+            messages.success(request, "🔓 Modo Equipe ativado com sucesso! Bem-vinda à área técnica.")
+            return redirect('game:operator_desafios')
+        else:
+            messages.error(request, "Senha de 6 dígitos incorreta! Digite o PIN da equipe do estande.")
+            return redirect('game:index')
+
+    return redirect('game:index')
+
+def sair_modalidade_equipe(request):
+    """Alterna de volta para a modalidade 'Participante'."""
+    request.session['is_equipe'] = False
+    messages.info(request, "Modo Participante ativado.")
+    return redirect('game:index')
+
 def operator_login(request):
-    """Tela de login bonita e intuitiva para a Equipe Mermãs."""
-    if request.user.is_authenticated:
+    """Tela de login alternativa para a Equipe Mermãs."""
+    if check_equipe_permission(request):
         return redirect('game:operator_desafios')
 
     if request.method == 'POST':
@@ -267,25 +319,30 @@ def operator_login(request):
         user = authenticate(request, username=usuario, password=senha)
         if user is not None:
             login(request, user)
+            request.session['is_equipe'] = True
             messages.success(request, f"Bem-vinda à área da equipe, {user.username}!")
             return redirect('game:operator_desafios')
         else:
-            messages.error(request, "Usuário ou senha incorretos. (Dica padrão: operador / mermas2026ifma)")
+            messages.error(request, "Usuário ou senha incorretos.")
 
     return render(request, 'game/operator_login.html')
 
 def operator_logout(request):
     """Desconecta a equipe e retorna à página principal."""
     logout(request)
+    request.session['is_equipe'] = False
     messages.info(request, "Sessão da equipe encerrada.")
     return redirect('game:index')
 
-@login_required(login_url='game:operator_login')
 def operator_desafios(request):
     """
     TELA 1 DO ADMIN / EQUIPE:
     Registro de Prompts de IA, upload de imagens e seleção com 1 clique da Rodada Ativa.
     """
+    if not check_equipe_permission(request):
+        messages.warning(request, "Acesso restrito. Informe a senha de 6 dígitos para entrar no Modo Equipe.")
+        return redirect('game:index')
+
     sugestao_gemini = None
 
     if request.method == 'POST':
@@ -355,7 +412,6 @@ def operator_desafios(request):
         'sugestao_gemini': sugestao_gemini,
     })
 
-@login_required(login_url='game:operator_login')
 def operator_julgamento(request):
     """
     TELA 2 DO ADMIN / EQUIPE:
@@ -363,6 +419,10 @@ def operator_julgamento(request):
     A equipe compara o prompt digitado pela aluna contra o prompt de referência salvo,
     avalia os cálculos de similaridade e define a vencedora/destaques da rodada.
     """
+    if not check_equipe_permission(request):
+        messages.warning(request, "Acesso restrito. Informe a senha de 6 dígitos para entrar no Modo Equipe.")
+        return redirect('game:index')
+
     todos_desafios = Challenge.objects.all().order_by('-ativo', '-id')
     desafio_ativo = Challenge.objects.filter(ativo=True).first()
 
@@ -400,13 +460,14 @@ def operator_julgamento(request):
             response.write(u'\ufeff'.encode('utf8'))
 
             writer = csv.writer(response, delimiter=';')
-            writer.writerow(['Posição', 'Participante', 'Tentativa', 'Similaridade (%)', 'Decisão da Equipe', 'Prompt Digitado', 'Palavras Acertadas', 'Observação'])
+            writer.writerow(['Posição', 'Participante', 'E-mail', 'Tentativa', 'Similaridade (%)', 'Decisão da Equipe', 'Prompt Digitado', 'Palavras Acertadas', 'Observação'])
 
             tentativas_csv = ParticipantAttempt.objects.filter(challenge=desafio_selecionado).order_by('-similaridade')
             for idx, att in enumerate(tentativas_csv, 1):
                 writer.writerow([
                     idx,
                     att.nome_participante,
+                    att.email_participante,
                     att.numero_tentativa,
                     f"{att.similaridade:.1f}",
                     att.get_decisao_equipe_display(),

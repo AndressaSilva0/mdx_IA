@@ -22,6 +22,9 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
+# Senha de 6 dígitos para alternar da modalidade Participante para Equipe no estande
+EQUIPE_PIN = os.getenv('EQUIPE_PIN', '262026')
+
 # Origens confiáveis para requisições HTTPS em produção (Render, PythonAnywhere, etc.)
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',

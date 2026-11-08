@@ -72,15 +72,10 @@
                     <span>2. Julgamento & Vencedoras</span>
                 </a>
 
-                <!-- Ver Tela das Alunas -->
-                <a href="{% url 'game:index' %}" target="_blank" class="bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold px-3.5 py-2 rounded-2xl border border-amber-300 transition flex items-center gap-1.5 shadow-2xs">
-                    <span>📱</span>
-                    <span>Tela das Alunas ↗</span>
-                </a>
-
-                <!-- Logout -->
-                <a href="{% url 'game:operator_logout' %}" class="text-xs text-slate-400 hover:text-rose-600 font-semibold px-2 py-1 transition">
-                    Sair
+                <!-- Alternar para Modo Participante (Aluna) -->
+                <a href="{% url 'game:sair_modalidade_equipe' %}" class="bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-extrabold px-4 py-2 rounded-2xl border border-amber-300 transition flex items-center gap-1.5 shadow-2xs" title="Alternar de volta para o modo participante">
+                    <span>👩‍🎓</span>
+                    <span>Mudar para Modo Participante</span>
                 </a>
             </div>
         </header>
@@ -420,3 +415,4 @@
 
 </body>
 </html>
+

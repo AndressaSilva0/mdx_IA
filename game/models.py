@@ -99,6 +99,13 @@ class ParticipantAttempt(models.Model):
         verbose_name="Nome Completo da Participante",
         db_index=True
     )
+    email_participante = models.EmailField(
+        max_length=254,
+        verbose_name="E-mail da Participante",
+        db_index=True,
+        blank=True,
+        default=""
+    )
     numero_tentativa = models.IntegerField(
         verbose_name="Número da Tentativa (1 a 3)",
         choices=[(1, '1ª Tentativa'), (2, '2ª Tentativa'), (3, '3ª Tentativa')]
