@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Sombra base -->
+  <ellipse cx="60" cy="112" rx="35" ry="6" fill="#1E0B36" opacity="0.2"/>
+  <!-- Corpo do Robozinho -->
+  <rect x="35" y="62" width="50" height="38" rx="14" fill="#FFFFFF" stroke="#1E0B36" stroke-width="4"/>
+  <!-- Detalhe peito magenta/estrela -->
+  <rect x="44" y="72" width="32" height="18" rx="8" fill="#FDF4FF" stroke="#C026D3" stroke-width="2.5"/>
+  <polygon points="60,75 62,79 66,80 63,83 64,87 60,85 56,87 57,83 54,80 58,79" fill="#FEBE01" stroke="#1E0B36" stroke-width="1.5"/>
+  <!-- Braços -->
+  <path d="M28 72 C22 75 20 85 28 88" stroke="#1E0B36" stroke-width="4" stroke-linecap="round" fill="#F472B6"/>
+  <path d="M92 72 C98 75 100 85 92 88" stroke="#1E0B36" stroke-width="4" stroke-linecap="round" fill="#F472B6"/>
+  <!-- Pés -->
+  <rect x="42" y="97" width="14" height="12" rx="6" fill="#D946EF" stroke="#1E0B36" stroke-width="3"/>
+  <rect x="64" y="97" width="14" height="12" rx="6" fill="#D946EF" stroke="#1E0B36" stroke-width="3"/>
+  <!-- Cabeça -->
+  <rect x="22" y="18" width="76" height="52" rx="22" fill="#FFFFFF" stroke="#1E0B36" stroke-width="4.5"/>
+  <!-- Visor / Tela do Rosto -->
+  <rect x="30" y="26" width="60" height="36" rx="16" fill="#1E0B36"/>
+  <!-- Olhos alegres (estilo anime/cute >.< ou brilhantes) -->
+  <path d="M40 44 Q46 38 50 44" stroke="#38BDF8" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <path d="M70 44 Q74 38 80 44" stroke="#38BDF8" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <!-- Bochechas coradas -->
+  <ellipse cx="37" cy="48" rx="4" ry="2" fill="#F43F5E"/>
+  <ellipse cx="83" cy="48" rx="4" ry="2" fill="#F43F5E"/>
+  <!-- Antena -->
+  <line x1="60" y1="18" x2="60" y2="6" stroke="#1E0B36" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="60" cy="6" r="6" fill="#FEBE01" stroke="#1E0B36" stroke-width="3"/>
+  <!-- Fones de Ouvido Laterais -->
+  <rect x="16" y="32" width="8" height="24" rx="4" fill="#C026D3" stroke="#1E0B36" stroke-width="3"/>
+  <rect x="96" y="32" width="8" height="24" rx="4" fill="#C026D3" stroke="#1E0B36" stroke-width="3"/>
+</svg>

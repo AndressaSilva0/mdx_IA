@@ -5,12 +5,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mermãs Digitais | MDX 2026 • Desafio de IA</title>
+    <title>Mermãs Digitais | MDX STEAM 2026 • Desafio de IA</title>
 
-    <!-- Google Fonts: Plus Jakarta Sans (Design System MDX 2026) -->
+    <!-- Google Fonts: Plus Jakarta Sans (Design System Oficial MDX 2026) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
 
     <!-- Tailwind CSS via CDN -->
@@ -23,15 +23,17 @@
                         brandViolet: '#6D28D9',
                         brandMagenta: '#C026D3',
                         brandYellow: '#FEBE01',
+                        brandDark: '#1E0B36',
                         mermasPink: '#EC4899',
                     },
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                     },
                     boxShadow: {
-                        'soft-card': '0 2px 10px rgba(109, 40, 217, 0.04)',
-                        'hover-lift': '0 8px 24px rgba(109, 40, 217, 0.08)',
-                        'vibrant-glow': '0 10px 25px -5px rgba(192, 38, 211, 0.35)',
+                        'neo-pop': '4px 4px 0px #1E0B36',
+                        'neo-pop-sm': '2px 2px 0px #1E0B36',
+                        'neo-pop-lg': '6px 6px 0px #1E0B36',
+                        'vibrant-glow': '0 10px 25px -5px rgba(192, 38, 211, 0.45)',
                     }
                 }
             }
@@ -39,88 +41,168 @@
     </script>
 
     <style>
+        /* Fundo Oficial MDX STEAM: Grade de Engenharia / Caderno Quadriculado STEM */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #FAF8FE;
-            /* Suave grade de engenharia/caderno STEM inspirada na identidade visual do MDX 2026 */
+            background-color: #FAF7FE;
             background-image:
-                linear-gradient(to right, rgba(109, 40, 217, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(109, 40, 217, 0.03) 1px, transparent 1px);
-            background-size: 32px 32px;
+                linear-gradient(to right, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px),
+                linear-gradient(to bottom, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px);
+            background-size: 30px 30px;
+        }
+
+        /* Animação Contínua da Faixa Marquee do Evento */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 28s linear infinite;
+        }
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* Balão de Fala de Quadrinhos da Mascote */
+        .speech-bubble {
+            position: relative;
+        }
+        @media (min-width: 640px) {
+            .speech-bubble::before {
+                content: '';
+                position: absolute;
+                left: -13px;
+                top: 26px;
+                width: 0;
+                height: 0;
+                border-top: 10px solid transparent;
+                border-bottom: 10px solid transparent;
+                border-right: 14px solid #1E0B36;
+            }
+            .speech-bubble::after {
+                content: '';
+                position: absolute;
+                left: -10px;
+                top: 28px;
+                width: 0;
+                height: 0;
+                border-top: 8px solid transparent;
+                border-bottom: 8px solid transparent;
+                border-right: 11px solid #FFFFFF;
+            }
         }
     </style>
 </head>
 
-<body class="min-h-screen text-slate-800 antialiased py-5 px-3 sm:px-6 lg:px-8">
+<body class="min-h-screen text-slate-800 antialiased selection:bg-[#FEBE01] selection:text-[#1E0B36]">
 
-    <div class="max-w-7xl mx-auto space-y-5">
+    <!-- ========================================================= -->
+    <!-- FAIXA SUPERIOR: MARQUEE TICKER TAPE DO EVENTO MDX STEAM   -->
+    <!-- ========================================================= -->
+    <div class="bg-[#1E0B36] border-b-2 border-[#FEBE01] text-white py-2 overflow-hidden shadow-md select-none">
+        <div class="marquee-track flex items-center gap-8 whitespace-nowrap font-black uppercase text-xs md:text-sm tracking-wider">
+            <span class="flex items-center gap-2 text-[#FEBE01]">★ MDX STEAM 2026</span>
+            <span class="text-white/60">•</span>
+            <span class="text-white">MERMÃS DIGITAIS • IFMA</span>
+            <span class="text-white/60">•</span>
+            <span class="flex items-center gap-1.5 text-pink-400">🚀 DESAFIO DE IA EDUCACIONAL</span>
+            <span class="text-white/60">•</span>
+            <span class="text-amber-300">★ PROMPT BATTLE ESTANDE</span>
+            <span class="text-white/60">•</span>
+            <span class="text-fuchsia-300">MENINAS NA CIÊNCIA E TECNOLOGIA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-emerald-400">✨ DECODIFICAÇÃO CRIATIVA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-amber-300">★ MDX STEAM 2026</span>
+            <span class="text-white/60">•</span>
+            <span class="text-white">MERMÃS DIGITAIS • IFMA</span>
+            <span class="text-white/60">•</span>
+            <span class="flex items-center gap-1.5 text-pink-400">🚀 DESAFIO DE IA EDUCACIONAL</span>
+            <span class="text-white/60">•</span>
+            <span class="text-amber-300">★ PROMPT BATTLE ESTANDE</span>
+            <span class="text-white/60">•</span>
+            <span class="text-fuchsia-300">MENINAS NA CIÊNCIA E TECNOLOGIA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-emerald-400">✨ DECODIFICAÇÃO CRIATIVA</span>
+        </div>
+    </div>
 
-        <!-- ========================================== -->
-        <!-- TOPO: CABEÇALHO DO EVENTO                  -->
-        <!-- ========================================== -->
-        <header
-            class="bg-white rounded-3xl border border-purple-100 shadow-soft-card px-5 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
-            <!-- Esquerda: Marca e Badges -->
-            <div class="flex items-center gap-3 w-full md:w-auto">
-                <!-- Ícone Estilizado da Logo -->
-                <div
-                    class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#6D28D9] via-[#C026D3] to-[#EC4899] text-white flex items-center justify-center font-bold text-xl shadow-md shadow-purple-500/20 flex-shrink-0">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2L14.4 8.6L21 11L14.4 13.4L12 20L9.6 13.4L3 11L9.6 8.6L12 2Z" />
-                    </svg>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- ========================================================= -->
+        <!-- HEADER DO EVENTO: LOGO, STICKERS INCLINADOS E CONTROLES   -->
+        <!-- ========================================================= -->
+        <header class="bg-white rounded-3xl border-2 border-[#1E0B36] shadow-neo-pop p-4 sm:p-5 flex flex-col lg:flex-row items-center justify-between gap-5 relative overflow-hidden">
+            <!-- Detalhe decorativo no canto superior do card -->
+            <div class="absolute -top-6 -right-6 w-20 h-20 bg-amber-200/50 rounded-full pointer-events-none blur-sm"></div>
+
+            <!-- Lado Esquerdo: Marca Oficial .Mermãs Digitais com Stickers -->
+            <div class="flex items-center gap-4 w-full lg:w-auto">
+                <!-- Ícone Mascote Oficial -->
+                <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#1E0B36] border-2 border-[#FEBE01] shadow-neo-pop-sm flex items-center justify-center p-1.5 flex-shrink-0">
+                    <img src="{% static 'game/img/robo_mascote.svg' %}" alt="Robô Mascote Mermãs" class="w-full h-full object-contain">
                 </div>
-                <div>
-                    <div class="flex items-center flex-wrap gap-2">
-                        <span class="text-lg font-extrabold text-[#581C87] tracking-tight">Mermãs Digitais</span>
-                        <span class="text-amber-400 text-xs font-bold">✦✦✦</span>
-                        <span class="text-slate-500 text-xs font-bold uppercase tracking-wide">MDX 2026 • IFMA</span>
 
-                        <!-- Badges Pill -->
-                        <span
-                            class="inline-flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[11px] px-2.5 py-0.5 rounded-full shadow-xs">
+                <div>
+                    <div class="flex items-center flex-wrap gap-2.5">
+                        <!-- Logo .Mermãs Digitais -->
+                        <span class="text-2xl sm:text-3xl font-black text-[#1E0B36] tracking-tight">
+                            <span class="text-[#D946EF]">.</span>Mermãs <span class="text-[#6D28D9] uppercase text-xl font-black tracking-normal">Digitais</span>
+                        </span>
+
+                        <!-- Sticker Amarelo Inclinado (Design do Site) -->
+                        <span class="inline-block bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-[11px] px-3 py-1 rounded-md border-2 border-[#1E0B36] shadow-neo-pop-sm transform -rotate-2">
+                            MDX STEAM 2026
+                        </span>
+
+                        <!-- Sticker Magenta Inclinado -->
+                        <span class="inline-block bg-[#D946EF] text-white font-black uppercase text-[11px] px-3 py-1 rounded-md border-2 border-[#1E0B36] shadow-neo-pop-sm transform rotate-1">
+                            PROMPT BATTLE ✨
+                        </span>
+
+                        <!-- Badge Pill STEM -->
+                        <span class="inline-flex items-center gap-1 bg-[#FDF4FF] text-[#C026D3] border-2 border-[#C026D3] font-black text-[11px] px-2.5 py-0.5 rounded-full">
                             STEM! 🚀
                         </span>
-                        <span
-                            class="inline-flex items-center gap-1.5 bg-pink-50 text-pink-700 border border-pink-200 font-semibold text-[11px] px-3 py-0.5 rounded-full">
-                            <span class="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse"></span>
-                            Desafio de IA Educacional
-                        </span>
                     </div>
-                    <p class="text-xs text-slate-500 font-medium">Inclusão, Criatividade e Tecnologia Feminina</p>
+                    <p class="text-xs text-slate-500 font-bold mt-1 flex items-center gap-2">
+                        <span>IFMA • Incentivando Meninas na Tecnologia</span>
+                        <span class="text-amber-500">✦</span>
+                        <span class="text-[#7C3AED]">Desafio Interativo de Estande</span>
+                    </p>
                 </div>
             </div>
 
-            <!-- Direita: Indicadores da Rodada e Operador -->
-            <div class="flex items-center flex-wrap gap-2.5 self-end md:self-center">
-                <!-- Rodada -->
-                <div
-                    class="bg-purple-50 text-purple-800 border border-purple-200 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-2">
-                    <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10" stroke-width="2" />
-                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" />
-                    </svg>
+            <!-- Lado Direito: Rodada Ativa, Placar e Troca de Modalidade (PIN) -->
+            <div class="flex items-center flex-wrap justify-end gap-3 w-full lg:w-auto">
+                <!-- Indicador da Rodada com Sticker Neo-Pop -->
+                <div class="bg-[#FAF5FF] text-[#6D28D9] border-2 border-[#1E0B36] text-xs font-black px-4 py-2 rounded-2xl shadow-neo-pop-sm flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#D946EF] animate-pulse"></span>
                     <span>Rodada {{ challenge.numero_rodada }}: Decodificação Criativa</span>
                 </div>
 
-                <!-- Placar / Ranking -->
+                <!-- Botão Placar das Mermãs (TV/Projetor) -->
                 <a href="{% url 'game:ranking' %}"
-                    class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition shadow-2xs">
+                    class="bg-[#FEBE01] hover:bg-amber-300 text-[#1E0B36] border-2 border-[#1E0B36] text-xs font-black px-4 py-2 rounded-2xl shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition-all flex items-center gap-1.5"
+                    title="Ver o Placar de Líderes do Evento">
                     <span>🏆</span>
                     <span>Placar das Mermãs</span>
                 </a>
 
-                <!-- Botão de Alternância de Modalidade (Participante vs Equipe com PIN de 6 Dígitos) -->
+                <!-- Alternância de Modalidade: Participante vs Equipe (Senha 6 Dígitos) -->
                 {% if is_equipe %}
-                    <div class="flex items-center gap-1.5">
+                    <div class="flex items-center gap-2">
                         <a href="{% url 'game:operator_desafios' %}"
-                            class="bg-[#7C3AED] hover:bg-purple-700 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition shadow-sm"
+                            class="bg-[#7C3AED] hover:bg-purple-700 text-white border-2 border-[#1E0B36] text-xs font-black px-4 py-2 rounded-2xl shadow-neo-pop-sm hover:translate-y-0.5 transition-all flex items-center gap-1.5"
                             title="Ir para o Painel de Gestão da Equipe">
                             <span>🛠️</span>
                             <span>Painel Equipe</span>
                         </a>
                         <a href="{% url 'game:sair_modalidade_equipe' %}"
-                            class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full transition flex items-center gap-1"
-                            title="Voltar para a visualização pura de participante">
+                            class="bg-slate-100 hover:bg-slate-200 text-slate-800 border-2 border-[#1E0B36] text-xs font-black px-3.5 py-2 rounded-2xl shadow-neo-pop-sm transition-all flex items-center gap-1"
+                            title="Voltar para a visualização pura de aluna">
                             <span>👩‍🎓</span>
                             <span>Modo Aluna</span>
                         </a>
@@ -128,10 +210,10 @@
                 {% else %}
                     <button type="button" 
                         onclick="abrirModalPin()"
-                        class="bg-pink-50 hover:bg-pink-100 text-pink-800 border border-pink-200 text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition shadow-2xs cursor-pointer"
+                        class="bg-pink-100 hover:bg-pink-200 text-[#1E0B36] border-2 border-[#1E0B36] text-xs font-black px-4 py-2 rounded-2xl shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition-all flex items-center gap-1.5 cursor-pointer"
                         title="Alternar para o Modo Equipe (Requer Senha de 6 Dígitos)">
-                        <svg class="w-3.5 h-3.5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        <svg class="w-4 h-4 text-[#C026D3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
                         <span>Mudar para Modo Equipe</span>
                     </button>
@@ -143,156 +225,156 @@
         {% if messages %}
         <div class="space-y-2">
             {% for message in messages %}
-            <div
-                class="p-3.5 rounded-2xl text-sm font-semibold flex items-center justify-between shadow-sm {% if message.tags == 'error' %}bg-rose-50 text-rose-800 border border-rose-200{% elif message.tags == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200{% else %}bg-purple-50 text-purple-800 border border-purple-200{% endif %}">
-                <span>{{ message }}</span>
-                <button type="button" onclick="this.parentElement.remove()"
-                    class="text-xs opacity-60 hover:opacity-100">✕</button>
+            <div class="p-4 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-between border-2 border-[#1E0B36] shadow-neo-pop-sm {% if message.tags == 'error' %}bg-rose-100 text-rose-950{% elif message.tags == 'warning' %}bg-amber-100 text-amber-950{% else %}bg-purple-100 text-purple-950{% endif %}">
+                <span class="flex items-center gap-2">
+                    <span>✨</span>
+                    <span>{{ message }}</span>
+                </span>
+                <button type="button" onclick="this.parentElement.remove()" class="text-xs font-black opacity-70 hover:opacity-100 px-2 py-1">✕</button>
             </div>
             {% endfor %}
         </div>
         {% endif %}
 
-        <!-- ========================================== -->
-        <!-- GRID PRINCIPAL DE DUAS COLUNAS             -->
-        <!-- ========================================== -->
+        <!-- ========================================================= -->
+        <!-- GRID PRINCIPAL DE DUAS COLUNAS: LAYOUT DO DESAFIO         -->
+        <!-- ========================================================= -->
         <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-            <!-- ========================================== -->
-            <!-- COLUNA ESQUERDA (Cards de IA e Feedback)   -->
-            <!-- ========================================== -->
-            <div class="lg:col-span-6 space-y-5">
+            <!-- ===================================================== -->
+            <!-- COLUNA ESQUERDA: IMAGEM IA, DICA MASCOTE & RESULTADO  -->
+            <!-- ===================================================== -->
+            <div class="lg:col-span-6 space-y-6">
 
-                <!-- 1. Card com a Imagem Gerada por IA -->
-                <section class="bg-white rounded-3xl p-5 border border-purple-100 shadow-soft-card relative">
-                    <div class="flex items-start justify-between gap-2 mb-3">
+                <!-- 1. Card da Imagem Gerada por IA -->
+                <section class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#1E0B36] shadow-neo-pop relative">
+                    <!-- Topo do Card com Stickers Neo-Pop -->
+                    <div class="flex items-start justify-between gap-3 mb-4">
                         <div>
-                            <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
-                                <span
-                                    class="w-7 h-7 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center text-sm">
-                                    🔮
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-xs px-3 py-1 rounded-md border-2 border-[#1E0B36] shadow-neo-pop-sm transform -rotate-2">
+                                    ✦ OBRA VISUAL
                                 </span>
-                                Imagem Gerada por IA <span class="text-amber-400">✨</span>
+                                <span class="bg-[#D946EF] text-white font-black uppercase text-xs px-3 py-1 rounded-md border-2 border-[#1E0B36] shadow-neo-pop-sm transform rotate-1">
+                                    #{{ challenge.numero_rodada }}: {{ challenge.titulo|truncatechars:24 }}
+                                </span>
+                            </div>
+                            <h2 class="text-base sm:text-lg font-black text-[#1E0B36] mt-2 flex items-center gap-2">
+                                <span>Imagem Gerada por IA</span>
+                                <span class="text-amber-400">✨</span>
                             </h2>
-                            <p class="text-xs text-slate-500 font-medium mt-1">
-                                Observe os detalhes, cores e elementos para descobrir o prompt original!
+                            <p class="text-xs text-slate-600 font-bold mt-0.5">
+                                Observe com atenção os detalhes, cores e elementos para descobrir o prompt original!
                             </p>
                         </div>
-                        <!-- Tag Obra Visual -->
-                        <div
-                            class="bg-amber-50 text-amber-800 border border-amber-200 rounded-2xl px-3 py-1 flex items-center gap-1.5 shadow-2xs flex-shrink-0">
-                            <span class="text-amber-600 text-xs">📍</span>
-                            <span class="text-xs font-extrabold">Obra Visual #{{ challenge.numero_rodada }}</span>
+
+                        <!-- Badge Pill de Referência -->
+                        <div class="hidden sm:flex bg-[#FAF5FF] text-[#6D28D9] border-2 border-[#1E0B36] rounded-xl px-3 py-1 items-center gap-1.5 shadow-neo-pop-sm flex-shrink-0">
+                            <span class="text-xs font-black">Rodada 0{{ challenge.numero_rodada }}</span>
                         </div>
                     </div>
 
-                    <!-- Imagem com tags flutuantes na base -->
-                    <div
-                        class="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-200 shadow-inner group aspect-square flex items-center justify-center">
+                    <!-- Moldura da Imagem IA com Cantos Arredondados e Badges Inferiores -->
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-950 border-2 border-[#1E0B36] shadow-inner group aspect-square flex items-center justify-center">
                         <img src="{{ challenge.get_image_url }}" alt="{{ challenge.titulo }}"
                             class="w-full h-full object-cover transition duration-300 group-hover:scale-102">
-                        <!-- Overlay Badges -->
-                        <div
-                            class="absolute bottom-3 left-3 bg-black/65 backdrop-blur-md text-white text-[11px] font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/20 shadow-lg">
-                            <span class="text-pink-400">✨</span>
-                            <span>{{ challenge.estilo_tag }}</span>
+
+                        <!-- Badges Sobrepostos na Base da Imagem -->
+                        <div class="absolute bottom-3 left-3 bg-[#1E0B36]/85 backdrop-blur-md text-white text-[11px] font-black px-3.5 py-1.5 rounded-full flex items-center gap-1.5 border-2 border-[#FEBE01] shadow-md">
+                            <span class="text-[#FEBE01]">✨</span>
+                            <span>{{ challenge.estilo_tag|default:"Estilo Mágico & Futurista" }}</span>
                         </div>
-                        <div
-                            class="absolute bottom-3 right-3 bg-black/65 backdrop-blur-md text-white text-[11px] font-semibold px-3 py-1.5 rounded-full border border-white/20 shadow-lg">
-                            Alta Definição
+                        <div class="absolute bottom-3 right-3 bg-[#1E0B36]/85 backdrop-blur-md text-white text-[11px] font-black px-3.5 py-1.5 rounded-full border-2 border-purple-400 shadow-md">
+                            Alta Definição 4K
                         </div>
                     </div>
                 </section>
 
-                <!-- 2. Card Mascote Mermãs - Dica de Apoio -->
-                <section
-                    class="bg-[#FFFDF7] border border-amber-200/90 rounded-3xl p-4 shadow-soft-card flex items-start gap-4">
-                    <!-- Avatar Mascote -->
-                    <div
-                        class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-100/70 border border-amber-300 p-1 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-xs">
-                        <img src="{% static 'game/img/mascote.png' %}" alt="Mascote Mermãs"
-                            class="w-full h-full object-contain"
-                            data-fallback="{% static 'game/img/mascote_hires.png' %}"
-                            onerror="this.src=this.dataset.fallback; this.onerror=null;">
+                <!-- 2. Card Mascote Mermãs: Balão de Quadrinhos com Dica e Áudio -->
+                <section class="bg-[#FFFDF5] border-2 border-[#1E0B36] rounded-3xl p-4 sm:p-5 shadow-neo-pop flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                    <!-- Avatar Mascote Mermã em Moldura Cósmica Roxa -->
+                    <div class="flex flex-col items-center gap-2 flex-shrink-0">
+                        <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-[#1E0B36] border-2 border-[#FEBE01] shadow-neo-pop-sm p-1.5 flex items-center justify-center relative overflow-hidden group">
+                            <!-- Estrelinhas de fundo no avatar -->
+                            <span class="absolute top-1 left-2 text-[#FEBE01] text-[10px]">✦</span>
+                            <span class="absolute bottom-1 right-2 text-pink-400 text-[10px]">✧</span>
+                            <img src="{% static 'game/img/mascote_girl.svg' %}" alt="Mascote Mermãs"
+                                class="w-full h-full object-contain relative z-10 transition group-hover:scale-105"
+                                data-fallback="{% static 'game/img/mascote_foguete.png' %}"
+                                onerror="this.src=this.dataset.fallback; this.onerror=null;">
+                        </div>
+
+                        <!-- Botão Ouvir Dica Narrada -->
+                        <button type="button" onclick="falarDicaMascote()" id="btn-ouvir-audio"
+                            class="inline-flex items-center gap-1.5 text-[11px] font-black text-[#1E0B36] bg-[#FEBE01] hover:bg-amber-300 border-2 border-[#1E0B36] px-3 py-1 rounded-full shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition-all cursor-pointer"
+                            title="Ouvir a dica narrada pela mascote em voz alta">
+                            <svg class="w-3.5 h-3.5 text-[#1E0B36]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                            </svg>
+                            <span>Ouvir Áudio</span>
+                        </button>
                     </div>
-                    <!-- Conteúdo da Dica -->
-                    <div class="flex-1">
-                        <div class="flex items-center justify-between gap-1.5 flex-wrap">
+
+                    <!-- Balão de Quadrinhos da Dica -->
+                    <div class="speech-bubble bg-white border-2 border-[#1E0B36] rounded-2xl p-4 shadow-neo-pop-sm flex-1 w-full">
+                        <div class="flex items-center justify-between gap-2 flex-wrap pb-2 border-b-2 border-slate-100">
                             <div class="flex items-center flex-wrap gap-1.5">
-                                <span
-                                    class="bg-purple-100 text-purple-800 font-extrabold text-[10px] px-2 py-0.5 rounded-md">
+                                <span class="bg-[#FEBE01] text-[#1E0B36] font-black text-[10px] px-2.5 py-0.5 rounded-md border border-[#1E0B36]">
                                     Mascote Mermãs
                                 </span>
-                                <span
-                                    class="bg-pink-100 text-pink-700 font-bold text-[10px] px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <span class="bg-[#FDF4FF] text-[#C026D3] font-black text-[10px] px-2.5 py-0.5 rounded-md border border-[#C026D3]">
                                     💡 Dica de Apoio
                                 </span>
-                                <span class="bg-amber-100 text-amber-800 font-bold text-[10px] px-2 py-0.5 rounded-md">
+                                <span class="bg-purple-100 text-[#6D28D9] font-black text-[10px] px-2 py-0.5 rounded-md">
                                     Decodificação Criativa
                                 </span>
-                                <span
-                                    class="bg-purple-100/70 text-purple-700 font-bold text-[10px] px-2 py-0.5 rounded-md flex items-center gap-1 border border-purple-200">
-                                    <span class="text-amber-500">✦</span> Gemini IA
-                                </span>
                             </div>
-
-                            <!-- Botão Ouvir Áudio (Design System MDX 2026) -->
-                            <button type="button" onclick="falarDicaMascote()" id="btn-ouvir-audio"
-                                class="inline-flex items-center gap-1 text-[11px] font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2.5 py-1 rounded-full transition shadow-2xs"
-                                title="Ouvir a dica narrada pela mascote">
-                                <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                                <span>Ouvir Áudio</span>
-                            </button>
+                            <span class="text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-md">
+                                ✦ Gemini IA
+                            </span>
                         </div>
-                        <p id="texto-dica-mascote"
-                            class="text-xs sm:text-[13px] text-slate-700 mt-2 leading-relaxed font-medium">
+                        <p id="texto-dica-mascote" class="text-xs sm:text-[13px] text-slate-800 mt-2.5 leading-relaxed font-bold">
                             {{ dica_mascote }}
                         </p>
                     </div>
                 </section>
 
                 <!-- 3. Card Resultado da Última Tentativa -->
-                <section class="bg-white rounded-3xl p-5 border border-purple-100 shadow-soft-card">
-                    <div class="flex items-center justify-between mb-4">
+                <section class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#1E0B36] shadow-neo-pop space-y-4">
+                    <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span
-                                class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
+                            <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 border-2 border-[#1E0B36] flex items-center justify-center text-sm font-black shadow-neo-pop-sm">
                                 ✓
                             </span>
-                            <h2 class="text-base font-extrabold text-slate-800">Resultado da Última Tentativa</h2>
+                            <h2 class="text-base font-black text-[#1E0B36]">Resultado da Última Tentativa</h2>
                         </div>
-                        <span
-                            class="bg-purple-50 text-purple-700 border border-purple-200 text-xs px-3 py-1 rounded-full font-bold">
+                        <span class="bg-[#FAF5FF] text-[#6D28D9] border-2 border-[#1E0B36] text-xs px-3 py-1 rounded-full font-black shadow-neo-pop-sm">
                             {% if ultima_tentativa %}
                             Tentativa {{ ultima_tentativa.numero_tentativa }} enviada
                             {% else %}
-                            Nenhuma enviada
+                            Aguardando envio
                             {% endif %}
                         </span>
                     </div>
 
                     {% if ultima_tentativa %}
-                    <div class="space-y-4">
-                        <!-- Bloco de Porcentagem e Badge Empática -->
+                    <div class="space-y-4 pt-1">
+                        <!-- Score Principal com Destaque Gigante -->
                         <div>
-                            <span class="text-[11px] uppercase tracking-wider text-slate-400 font-bold block mb-1">
-                                PROXIMIDADE COM A IMAGEM
+                            <span class="text-[11px] uppercase tracking-wider text-slate-500 font-black block mb-1">
+                                PROXIMIDADE COM O PROMPT ORIGINAL
                             </span>
-                            <div class="flex flex-wrap items-baseline justify-between gap-2">
+                            <div class="flex flex-wrap items-baseline justify-between gap-3">
                                 <div class="flex items-baseline">
-                                    <span class="text-4xl sm:text-5xl font-extrabold text-[#7C3AED] tracking-tight">
+                                    <span class="text-5xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#6D28D9] via-[#C026D3] to-[#EC4899] tracking-tight">
                                         {{ ultima_tentativa.similaridade|stringformat:".1f" }}%
                                     </span>
-                                    <span class="text-sm font-bold text-purple-600 ml-2">de similaridade</span>
+                                    <span class="text-sm font-black text-[#6D28D9] ml-2">de similaridade</span>
                                 </div>
 
                                 {% if feedback_info %}
-                                <div
-                                    class="px-3.5 py-1.5 rounded-full text-xs font-bold {{ feedback_info.bg_class }} flex items-center gap-1.5 shadow-xs">
+                                <div class="px-4 py-1.5 rounded-full text-xs font-black border-2 border-[#1E0B36] shadow-neo-pop-sm {{ feedback_info.bg_class }} flex items-center gap-2">
                                     <span>{{ feedback_info.icon }}</span>
                                     <span>{{ feedback_info.text }}</span>
                                 </div>
@@ -300,39 +382,37 @@
                             </div>
                         </div>
 
-                        <!-- Barra de Progresso com Gradiente -->
+                        <!-- Barra de Progresso Neo-Pop -->
                         <div>
-                            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner">
+                            <div class="w-full bg-slate-100 rounded-full h-5 border-2 border-[#1E0B36] p-0.5 overflow-hidden shadow-inner relative">
                                 <div id="barra-progresso"
-                                    class="h-3 rounded-full bg-gradient-to-r from-[#7C3AED] via-[#C026D3] to-[#FEBE01] transition-all duration-700 ease-out"
+                                    class="h-full rounded-full bg-gradient-to-r from-[#FEBE01] via-[#D946EF] to-[#10B981] transition-all duration-700 ease-out"
                                     data-progress="{{ ultima_tentativa.similaridade|stringformat:'.1f' }}"
                                     style="width: 0%;"></div>
                             </div>
-                            <div class="flex justify-between text-[11px] text-slate-400 font-semibold mt-1.5">
-                                <span>Começo</span>
-                                <span class="text-purple-600 font-bold">Meta alcançada: +80% ✨</span>
+                            <div class="flex justify-between text-[11px] text-slate-600 font-extrabold mt-1.5">
+                                <span>Começo (0%)</span>
+                                <span class="text-[#6D28D9]">Meta alcançada: +80% ✨</span>
                                 <span>100% Exato</span>
                             </div>
                         </div>
 
-                        <!-- Elementos / Palavras-chave acertadas -->
-                        <div class="pt-2 border-t border-slate-100">
-                            <span class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-2">
+                        <!-- Elementos / Palavras-chave Acertadas -->
+                        <div class="pt-3 border-t-2 border-slate-100">
+                            <span class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-2">
                                 ELEMENTOS QUE VOCÊ ACERTOU NESTA TENTATIVA:
                             </span>
                             <div class="flex flex-wrap gap-2">
                                 {% with acertadas=ultima_tentativa.get_palavras_acertadas_list %}
                                 {% if acertadas %}
                                 {% for kw in acertadas %}
-                                <span
-                                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200">
-                                    <span class="text-emerald-500 font-bold">✓</span> {{ kw }}
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-[#FAF5FF] text-[#1E0B36] border-2 border-[#1E0B36] shadow-neo-pop-sm">
+                                    <span class="text-emerald-600 font-black">✓</span> {{ kw }}
                                 </span>
                                 {% endfor %}
                                 {% else %}
-                                <span class="text-xs text-slate-400 italic">
-                                    Nenhuma palavra-chave identificada nesta tentativa. Dica: observe a imagem e siga as
-                                    pistas da mascote!
+                                <span class="text-xs text-slate-500 font-semibold italic bg-amber-50 p-2 rounded-xl border border-amber-200 block w-full">
+                                    Nenhuma palavra-chave identificada nesta tentativa. Dica: observe as cores, materiais e o estilo na imagem!
                                 </span>
                                 {% endif %}
                                 {% endwith %}
@@ -340,13 +420,12 @@
                         </div>
                     </div>
                     {% else %}
-                    <!-- Estado Vazio / Aguardando primeira tentativa -->
-                    <div class="py-6 text-center space-y-2">
-                        <div class="text-3xl text-purple-300">✨</div>
-                        <p class="text-sm font-semibold text-slate-700">Aguardando a 1ª tentativa da aluna</p>
-                        <p class="text-xs text-slate-400 max-w-sm mx-auto">
-                            Digite seu nome ao lado, observe a imagem com atenção e descreva o prompt que você acha que
-                            a gerou.
+                    <!-- Estado Vazio / Aguardando 1ª Tentativa -->
+                    <div class="py-8 text-center space-y-2 bg-[#FAF8FE] rounded-2xl border-2 border-dashed border-purple-200 p-6">
+                        <div class="text-4xl text-purple-400">✨</div>
+                        <p class="text-sm font-black text-[#1E0B36]">Aguardando a 1ª tentativa da aluna</p>
+                        <p class="text-xs text-slate-500 font-bold max-w-sm mx-auto">
+                            Preencha sua identificação ao lado, leia a imagem com atenção e descreva o prompt que você imagina que a gerou.
                         </p>
                     </div>
                     {% endif %}
@@ -354,77 +433,69 @@
 
             </div>
 
-            <!-- ========================================== -->
-            <!-- COLUNA DIREITA (Formulário e Histórico)    -->
-            <!-- ========================================== -->
-            <div class="lg:col-span-6 space-y-5">
+            <!-- ===================================================== -->
+            <!-- COLUNA DIREITA: IDENTIFICAÇÃO, PROMPT E HISTÓRICO     -->
+            <!-- ===================================================== -->
+            <div class="lg:col-span-6 space-y-6">
 
                 <!-- 1. Card Identificação da Participante -->
-                <section class="bg-white rounded-3xl p-5 border border-purple-100 shadow-soft-card">
-                    <div class="flex items-center justify-between mb-3">
+                <section class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#1E0B36] shadow-neo-pop space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
                         <div class="flex items-center gap-2">
-                            <span
-                                class="w-7 h-7 rounded-lg bg-pink-100 text-pink-700 flex items-center justify-center text-sm">
-                                👤
+                            <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-xs px-3 py-1 rounded-md border-2 border-[#1E0B36] shadow-neo-pop-sm transform -rotate-1">
+                                ALUNA PARTICIPANTE
                             </span>
-                            <h2 class="text-base font-extrabold text-slate-800">Identificação da Participante</h2>
                         </div>
 
                         {% if limite_atingido %}
-                        <span
-                            class="bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
+                        <span class="bg-amber-100 text-amber-900 border-2 border-[#1E0B36] text-xs font-black px-3.5 py-1 rounded-full shadow-neo-pop-sm flex items-center gap-1.5">
                             ● 3 Tentativas Concluídas
                         </span>
                         {% elif nome_participante %}
-                        <span
-                            class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span class="bg-emerald-100 text-emerald-900 border-2 border-[#1E0B36] text-xs font-black px-3.5 py-1 rounded-full shadow-neo-pop-sm flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
                             Participante Pronta para Jogar
                         </span>
                         {% else %}
-                        <span class="bg-slate-100 text-slate-600 text-xs font-medium px-3 py-1 rounded-full">
+                        <span class="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full border border-slate-300">
                             Digite seu nome para iniciar
                         </span>
                         {% endif %}
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
                         <div>
-                            <label for="nome_input"
-                                class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1.5">
+                            <label for="nome_input" class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1.5">
                                 NOME DA ALUNA / PARTICIPANTE *
                             </label>
                             <div class="relative">
-                                <span
-                                    class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                 </span>
                                 <input type="text" id="nome_input" name="nome_participante" form="prompt-form"
                                     value="{{ nome_participante }}" placeholder="Ex: Camila Ferreira Santos" required
-                                    class="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-800 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition"
+                                    class="w-full pl-10 pr-4 py-3 rounded-2xl border-2 border-slate-300 bg-purple-50/20 text-slate-900 text-xs sm:text-sm font-bold focus:outline-none focus:border-[#7C3AED] focus:bg-white focus:ring-4 focus:ring-purple-200/50 transition"
                                     {% if limite_atingido %}readonly{% endif %}>
                             </div>
                         </div>
 
                         <div>
-                            <label for="email_input"
-                                class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1.5">
+                            <label for="email_input" class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1.5">
                                 E-MAIL DA PARTICIPANTE *
                             </label>
                             <div class="relative">
-                                <span
-                                    class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                 </span>
                                 <input type="email" id="email_input" name="email_participante" form="prompt-form"
                                     value="{{ email_participante }}" placeholder="exemplo@ifma.edu.br" required
-                                    class="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-800 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition"
+                                    class="w-full pl-10 pr-4 py-3 rounded-2xl border-2 border-slate-300 bg-purple-50/20 text-slate-900 text-xs sm:text-sm font-bold focus:outline-none focus:border-[#7C3AED] focus:bg-white focus:ring-4 focus:ring-purple-200/50 transition"
                                     {% if limite_atingido %}readonly{% endif %}>
                             </div>
                         </div>
@@ -432,40 +503,36 @@
                 </section>
 
                 <!-- 2. Card Regra da Rodada & Textarea do Prompt -->
-                <section class="bg-white rounded-3xl p-5 border border-purple-100 shadow-soft-card space-y-4">
+                <section class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#1E0B36] shadow-neo-pop space-y-5">
 
-                    <!-- Faixa Lilás: Regra da Rodada e Status das Tentativas -->
-                    <div
-                        class="bg-[#F9F6FF] rounded-2xl p-3.5 border border-purple-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <!-- Faixa Lilás: Regra da Rodada e Stepper das 3 Tentativas -->
+                    <div class="bg-[#FAF5FF] rounded-2xl p-4 border-2 border-[#1E0B36] shadow-neo-pop-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <span class="text-[11px] uppercase tracking-wider text-purple-600 font-bold block">
+                            <span class="text-[10px] uppercase tracking-wider text-[#6D28D9] font-black block">
                                 REGRA DA RODADA
                             </span>
-                            <span class="text-slate-900 font-extrabold text-base">
+                            <span class="text-[#1E0B36] font-black text-base sm:text-lg">
                                 {% if limite_atingido %}
-                                Tentativa 3 de 3 (Finalizado)
+                                3 Tentativas Concluídas (Rodada Finalizada)
                                 {% else %}
                                 Tentativa {{ proxima_tentativa|default:1 }} de 3
                                 {% endif %}
                             </span>
                         </div>
 
-                        <!-- Pílulas das 3 etapas -->
+                        <!-- Stepper das 3 Etapas com Estilo Comic -->
                         <div class="flex items-center gap-1.5 flex-wrap">
                             {% for slot in slots_historico %}
                             {% if slot.status == 'concluida' %}
-                            <span
-                                class="bg-purple-100 text-purple-800 font-bold text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
-                                <span class="text-emerald-600 font-bold">●</span> {{ slot.numero }}ª Concluída
+                            <span class="bg-purple-100 text-[#1E0B36] border border-purple-400 font-black text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
+                                <span class="text-emerald-600 font-black">●</span> {{ slot.numero }}ª Concluída
                             </span>
                             {% elif slot.status == 'atual' %}
-                            <span
-                                class="bg-[#7C3AED] text-white font-extrabold text-xs px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                                <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> {{ slot.numero }}ª
-                                Atual
+                            <span class="bg-[#D946EF] text-white border-2 border-[#1E0B36] font-black text-xs px-3 py-1 rounded-full flex items-center gap-1.5 shadow-neo-pop-sm">
+                                <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> {{ slot.numero }}ª Atual
                             </span>
                             {% else %}
-                            <span class="bg-slate-100 text-slate-400 font-semibold text-xs px-2.5 py-1 rounded-full">
+                            <span class="bg-slate-100 text-slate-400 font-bold text-xs px-2.5 py-1 rounded-full border border-slate-200">
                                 {{ slot.numero }}ª Restante
                             </span>
                             {% endif %}
@@ -479,73 +546,60 @@
                         {% csrf_token %}
                         <input type="hidden" name="action" value="submit_prompt">
 
-                        <!-- Textarea Header e Ações -->
+                        <!-- Textarea Header e Botão Limpar -->
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <label for="prompt_text"
-                                    class="text-sm font-extrabold text-slate-800 flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 6h16M4 12h16m-7 6h7" />
-                                    </svg>
-                                    <span>Qual prompt você acha que criou essa imagem? <span
-                                            class="text-amber-400">✨</span></span>
+                                <label for="prompt_text" class="text-xs sm:text-sm font-black text-[#1E0B36] flex items-center gap-1.5">
+                                    <span class="bg-[#FEBE01] text-[#1E0B36] px-2 py-0.5 rounded text-xs font-black">PROMPT</span>
+                                    <span>Qual prompt você acha que criou essa imagem? ✨</span>
                                 </label>
                                 {% if not limite_atingido %}
                                 <button type="button" onclick="limparPrompt()"
-                                    class="text-xs text-slate-400 hover:text-purple-600 font-semibold flex items-center gap-1 transition">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                    Limpar
+                                    class="text-xs text-slate-500 hover:text-[#D946EF] font-black flex items-center gap-1 transition cursor-pointer">
+                                    <span>↺ Limpar</span>
                                 </button>
                                 {% endif %}
                             </div>
 
-                            <!-- Textarea -->
+                            <!-- Textarea Estilizado -->
                             <textarea id="prompt_text" name="prompt_enviado" rows="4" required
                                 oninput="atualizarContadores()"
                                 placeholder="Arte digital colorida e surrealista de uma flor mecânica cibernética brilhando com filamentos de luz neon dentro de uma esfera de cristal..."
-                                class="w-full p-4 rounded-2xl border border-slate-200 text-slate-700 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition bg-slate-50/30 resize-none"
+                                class="w-full p-4 rounded-2xl border-2 border-slate-300 text-slate-800 text-sm font-semibold leading-relaxed focus:outline-none focus:border-[#7C3AED] focus:bg-white focus:ring-4 focus:ring-purple-200/50 transition bg-purple-50/20 resize-none shadow-inner"
                                 {% if limite_atingido %}disabled{% endif %}></textarea>
 
                             <!-- Contadores de Palavras e Caracteres -->
-                            <div class="flex items-center justify-between text-xs mt-1.5 px-1">
-                                <span id="contador_palavras" class="text-purple-700 font-bold flex items-center gap-1">
+                            <div class="flex items-center justify-between text-xs mt-1.5 px-1 font-bold text-slate-500">
+                                <span id="contador_palavras" class="text-[#6D28D9] flex items-center gap-1">
                                     <span class="text-[10px]">Tt</span> 0 palavras escritas
                                 </span>
-                                <span id="contador_caracteres" class="text-slate-400 font-medium">
+                                <span id="contador_caracteres">
                                     0 caracteres
                                 </span>
                             </div>
                         </div>
 
-                        <!-- Botão de Ação -->
+                        <!-- Botão de Ação: O Botão Magnífico em 3D Neo-Pop -->
                         {% if not limite_atingido %}
                         <button type="submit"
-                            class="w-full bg-gradient-to-r from-[#7C3AED] via-[#C026D3] to-[#EC4899] text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-vibrant-glow hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 text-base cursor-pointer">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                            </svg>
+                            class="w-full bg-gradient-to-r from-[#7C3AED] via-[#C026D3] to-[#EC4899] text-white font-black text-base sm:text-lg py-4 px-6 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop hover:shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1.5 transition-all flex items-center justify-center gap-3 cursor-pointer">
+                            <span class="text-xl">🚀</span>
                             <span>Enviar e Avaliar Prompt ✨</span>
                         </button>
                         {% else %}
                         <!-- Estado de Limite Atingido (3 Tentativas) -->
-                        <div
-                            class="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-4 text-center space-y-3">
-                            <p class="text-sm font-extrabold text-purple-900">
+                        <div class="bg-gradient-to-r from-purple-100 via-pink-100 to-amber-100 border-2 border-[#1E0B36] rounded-2xl p-5 text-center space-y-3 shadow-neo-pop-sm">
+                            <p class="text-base font-black text-[#1E0B36]">
                                 🎉 Parabéns, {{ primeiro_nome }}! Suas 3 tentativas desta rodada foram concluídas.
                             </p>
-                            <p class="text-xs text-slate-500">
+                            <p class="text-xs font-bold text-slate-700">
                                 Sua melhor pontuação alcançada foi de
-                                <strong class="text-purple-700">{{ melhor_tentativa.similaridade|stringformat:".1f"
-                                    }}%</strong>.
+                                <strong class="text-[#6D28D9] text-sm">{{ melhor_tentativa.similaridade|stringformat:".1f" }}%</strong>.
                             </p>
                             <a href="{% url 'game:reset' %}"
-                                class="inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-md shadow-emerald-600/25 hover:brightness-110 transition cursor-pointer text-sm sm:text-base">
-                                <span>👤 Nova Participante / Próxima Aluna ✨</span>
+                                class="inline-flex items-center justify-center gap-2 w-full bg-[#10B981] hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop hover:shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition-all cursor-pointer text-sm sm:text-base">
+                                <span>👤</span>
+                                <span>Nova Participante / Próxima Aluna ✨</span>
                             </a>
                         </div>
                         {% endif %}
@@ -554,119 +608,149 @@
                 </section>
 
                 <!-- 3. Card Histórico das Tentativas (Limite de 3) -->
-                <section class="bg-white rounded-3xl p-5 border border-purple-100 shadow-soft-card">
-                    <div class="flex items-center justify-between mb-4">
+                <section class="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#1E0B36] shadow-neo-pop space-y-4">
+                    <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span
-                                class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">
-                                📋
+                            <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-xs px-3 py-1 rounded-md border-2 border-[#1E0B36] shadow-neo-pop-sm transform -rotate-1">
+                                HISTÓRICO DAS TENTATIVAS
                             </span>
-                            <h2 class="text-base font-extrabold text-slate-800">Histórico das Tentativas (Limite de 3)
-                            </h2>
                         </div>
-                        <span class="text-xs font-bold text-slate-400">Rodada {{ challenge.numero_rodada }}</span>
+                        <span class="text-xs font-black text-[#6D28D9] bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200">
+                            Rodada 0{{ challenge.numero_rodada }}
+                        </span>
                     </div>
 
-                    <!-- Lista dos 3 Slots -->
-                    <div class="space-y-3">
+                    <!-- Lista dos 3 Slots de Tentativas -->
+                    <div class="space-y-3 pt-1">
                         {% for slot in slots_historico %}
                         {% if slot.attempt %}
                         {% if slot.is_melhor %}
-                        <!-- Slot com Melhor Pontuação (Destaque Lilás/Dourado) -->
-                        <div class="border-2 border-purple-300 bg-purple-50/50 rounded-2xl p-3.5 shadow-xs">
+                        <!-- Slot com Melhor Pontuação (Destaque Dourado/Lilás) -->
+                        <div class="border-2 border-[#1E0B36] bg-[#FEFCE8] rounded-2xl p-4 shadow-neo-pop-sm">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <span
-                                        class="bg-[#7C3AED] text-white font-extrabold text-xs px-2.5 py-0.5 rounded-full">
+                                    <span class="bg-[#6D28D9] text-white font-black text-xs px-3 py-0.5 rounded-full border border-[#1E0B36]">
                                         Tentativa {{ slot.numero }}
                                     </span>
-                                    <span
-                                        class="bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1">
+                                    <span class="bg-[#FEBE01] text-[#1E0B36] border border-[#1E0B36] font-black text-[10px] px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
                                         ★ Melhor Pontuação ★
                                     </span>
                                 </div>
-                                <span class="text-[#7C3AED] font-extrabold text-base">
+                                <span class="text-[#6D28D9] font-black text-lg">
                                     {{ slot.attempt.similaridade|stringformat:".1f" }}%
                                 </span>
                             </div>
-                            <p class="text-xs text-slate-700 font-medium mt-2 italic line-clamp-2">
+                            <p class="text-xs text-slate-800 font-bold mt-2 italic line-clamp-2">
                                 "{{ slot.attempt.prompt_enviado }}"
                             </p>
                         </div>
                         {% else %}
                         <!-- Slot Concluído Comum -->
-                        <div class="border border-slate-200 bg-slate-50/50 rounded-2xl p-3.5">
+                        <div class="border-2 border-slate-200 bg-slate-50/70 rounded-2xl p-4">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-2">
-                                    <span
-                                        class="bg-slate-200 text-slate-800 font-bold text-xs px-2.5 py-0.5 rounded-full">
+                                    <span class="bg-slate-200 text-slate-800 font-black text-xs px-2.5 py-0.5 rounded-full">
                                         Tentativa {{ slot.numero }}
                                     </span>
-                                    <span class="text-[11px] text-slate-400 font-medium">
+                                    <span class="text-[11px] text-slate-500 font-bold">
                                         Enviada às {{ slot.attempt.data_envio|date:"H:i" }}
                                     </span>
                                 </div>
-                                <span
-                                    class="bg-white border border-slate-200 text-slate-800 font-bold text-sm px-2.5 py-0.5 rounded-lg shadow-2xs">
+                                <span class="bg-white border-2 border-slate-300 text-slate-800 font-black text-sm px-2.5 py-0.5 rounded-lg">
                                     {{ slot.attempt.similaridade|stringformat:".1f" }}%
                                 </span>
                             </div>
-                            <p class="text-xs text-slate-600 font-medium mt-2 italic line-clamp-2">
+                            <p class="text-xs text-slate-700 font-semibold mt-2 italic line-clamp-2">
                                 "{{ slot.attempt.prompt_enviado }}"
                             </p>
                         </div>
                         {% endif %}
                         {% else %}
                         <!-- Slot Vazio / Restante / Bloqueado -->
-                        <div
-                            class="border border-dashed border-slate-200 bg-white rounded-2xl p-3.5 flex items-center justify-between text-slate-400">
+                        <div class="border-2 border-dashed border-slate-300 bg-white rounded-2xl p-3.5 flex items-center justify-between text-slate-400">
                             <div class="flex items-center gap-2">
-                                <span class="text-xs font-semibold text-slate-400">Tentativa {{ slot.numero }}</span>
-                                <span class="text-xs text-slate-400">Ainda não utilizada (disponível para
-                                    desempate)</span>
+                                <span class="text-xs font-bold text-slate-500">Tentativa {{ slot.numero }}</span>
+                                <span class="text-xs text-slate-400 font-medium">Ainda não utilizada (disponível para desempate)</span>
                             </div>
-                            <span class="text-xs text-slate-300">🔒</span>
+                            <span class="text-sm">🔒</span>
                         </div>
                         {% endif %}
                         {% endfor %}
                     </div>
                 </section>
 
-                <!-- Footer Card com Mensagem de Protagonismo Feminino -->
-                <footer
-                    class="bg-white rounded-2xl p-3.5 border border-purple-100 shadow-soft-card flex items-center gap-3">
-                    <div
-                        class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center flex-shrink-0 text-sm">
-                        💖
-                    </div>
-                    <p class="text-[11px] sm:text-xs text-slate-600 leading-normal font-medium">
-                        <strong>Mermãs Digitais IFMA:</strong> Incentivando e fortalecendo meninas e mulheres
-                        maranhenses no protagonismo da Inteligência Artificial e nas carreiras de Ciência e Tecnologia.
-                    </p>
-                </footer>
-
             </div>
 
         </main>
+
+        <!-- ========================================================= -->
+        <!-- SEÇÃO CÓSMICA / RODAPÉ DO EVENTO MDX STEAM 2026           -->
+        <!-- ========================================================= -->
+        <footer class="bg-[#150529] border-2 border-[#FEBE01] text-white p-6 sm:p-8 rounded-3xl shadow-neo-pop-lg relative overflow-hidden mt-8">
+            <!-- Estrelas cintilantes decorativas no fundo cósmico -->
+            <div class="absolute inset-0 pointer-events-none opacity-40">
+                <span class="absolute top-4 left-10 text-[#FEBE01] text-lg">✦</span>
+                <span class="absolute top-8 right-16 text-white text-sm">✧</span>
+                <span class="absolute bottom-6 left-1/4 text-pink-400 text-xs">✦</span>
+                <span class="absolute bottom-10 right-1/3 text-[#FEBE01] text-base">★</span>
+            </div>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <!-- Mascote e Texto de Empoderamento -->
+                <div class="flex items-center gap-4 text-center md:text-left">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#6D28D9] to-[#EC4899] border-2 border-[#FEBE01] flex items-center justify-center p-2 flex-shrink-0 shadow-md">
+                        <img src="{% static 'game/img/robo_mascote.svg' %}" alt="Robô IA" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-center md:justify-start gap-2 flex-wrap mb-1">
+                            <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-[10px] px-2.5 py-0.5 rounded-md">
+                                MERMÃS DIGITAIS
+                            </span>
+                            <span class="bg-[#D946EF] text-white font-black uppercase text-[10px] px-2.5 py-0.5 rounded-md">
+                                IFMA CAMPUS
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-200 font-bold max-w-2xl leading-relaxed">
+                            Incentivando e fortalecendo meninas e mulheres maranhenses no protagonismo da Inteligência Artificial e nas carreiras de Ciência e Tecnologia.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Selos Oficiais -->
+                <div class="flex items-center gap-2 flex-wrap justify-center">
+                    <span class="bg-white/10 border border-white/20 text-xs font-black px-3 py-1.5 rounded-xl">
+                        MDX STEAM 2026
+                    </span>
+                    <span class="bg-[#FEBE01] text-[#1E0B36] font-black text-xs px-3 py-1.5 rounded-xl border border-[#1E0B36]">
+                        Google Gemini IA
+                    </span>
+                </div>
+            </div>
+        </footer>
 
     </div>
 
     <!-- Biblioteca Canvas Confetti para celebração visual -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
-    <!-- Metadados da rodada ativa para sincronização em tempo real com o painel da equipe -->
+    <!-- Metadados da rodada ativa para sincronização em tempo real -->
     <div id="active-challenge-info" data-current-id="{{ challenge.id }}" class="hidden"></div>
 
     <!-- Modal de Senha de 6 Dígitos para Alternar para o Modo Equipe -->
-    <div id="modal-pin-equipe" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl border border-purple-100 space-y-5 text-center">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#6D28D9] via-[#C026D3] to-[#FEBE01] text-white flex items-center justify-center font-bold text-2xl mx-auto shadow-md">
+    <div id="modal-pin-equipe" 
+        onclick="if(event.target === this) fecharModalPin()"
+        class="fixed inset-0 z-50 bg-[#1E0B36]/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-neo-pop border-2 border-[#1E0B36] space-y-5 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-[#FEBE01] border-2 border-[#1E0B36] text-[#1E0B36] flex items-center justify-center font-black text-3xl mx-auto shadow-neo-pop-sm">
                 🔐
             </div>
             <div>
-                <h3 class="text-lg font-extrabold text-slate-800">Modo Equipe Mermãs</h3>
-                <p class="text-xs text-slate-500 mt-1">
-                    Digite a senha de 6 dígitos para alternar para a modalidade equipe no estande.
+                <span class="bg-[#D946EF] text-white font-black uppercase text-xs px-3 py-1 rounded-md border border-[#1E0B36]">
+                    MODO OPERADOR
+                </span>
+                <h3 class="text-xl font-black text-[#1E0B36] mt-2">Equipe Mermãs</h3>
+                <p class="text-xs text-slate-600 font-bold mt-1">
+                    Digite o PIN de 6 dígitos para alternar para a modalidade equipe no estande.
                 </p>
             </div>
             <form method="POST" action="{% url 'game:trocar_modalidade_equipe' %}" class="space-y-4">
@@ -682,20 +766,20 @@
                         placeholder="••••••" 
                         required 
                         autocomplete="off"
-                        class="w-full text-center tracking-[0.5em] text-3xl font-black py-3 rounded-2xl border-2 border-purple-200 focus:border-purple-600 focus:outline-none bg-purple-50/40 text-purple-900"
+                        class="w-full text-center tracking-[0.5em] text-3xl font-black py-3 rounded-2xl border-2 border-[#1E0B36] focus:border-[#7C3AED] focus:outline-none bg-[#FAF5FF] text-[#1E0B36]"
                     >
                 </div>
                 <div class="flex gap-2">
                     <button 
                         type="button" 
                         onclick="fecharModalPin()" 
-                        class="flex-1 py-3 px-4 rounded-2xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+                        class="flex-1 py-3 px-4 rounded-2xl border-2 border-slate-300 text-xs font-black text-slate-700 hover:bg-slate-100 transition cursor-pointer"
                     >
                         Cancelar
                     </button>
                     <button 
                         type="submit" 
-                        class="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-extrabold hover:brightness-110 transition shadow-md shadow-purple-500/25"
+                        class="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#EC4899] text-white text-xs font-black border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition-all cursor-pointer"
                     >
                         Entrar →
                     </button>
@@ -709,7 +793,7 @@
         data-celebrate="{% if ultima_tentativa and ultima_tentativa.similaridade >= 80.0 %}true{% else %}false{% endif %}"
         class="hidden"></div>
 
-    <!-- Script para contadores em tempo real, narração da mascote e celebração -->
+    <!-- Scripts JavaScript do Jogo -->
     <script>
         function abrirModalPin() {
             const modal = document.getElementById('modal-pin-equipe');
@@ -727,6 +811,11 @@
                 modal.classList.add('hidden');
             }
         }
+
+        // Fechar modal ao pressionar ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') fecharModalPin();
+        });
 
         function atualizarContadores() {
             const textarea = document.getElementById('prompt_text');
@@ -760,13 +849,13 @@
             const utterance = new SpeechSynthesisUtterance(texto);
             utterance.lang = 'pt-BR';
             utterance.rate = 1.05;
-            utterance.pitch = 1.2; // Tom amigável e jovial para a mascote
+            utterance.pitch = 1.2;
 
             const btn = document.getElementById('btn-ouvir-audio');
             if (btn) {
-                btn.classList.add('bg-purple-200', 'animate-pulse');
+                btn.classList.add('bg-pink-300', 'animate-pulse');
                 utterance.onend = () => {
-                    btn.classList.remove('bg-purple-200', 'animate-pulse');
+                    btn.classList.remove('bg-pink-300', 'animate-pulse');
                 };
             }
 
@@ -786,7 +875,6 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data && data.ativo && data.id && data.id !== currentId) {
-                            // Se a aluna não estiver digitando um prompt no momento, recarrega com a nova rodada
                             const textarea = document.getElementById('prompt_text');
                             if (!textarea || textarea.value.trim() === '') {
                                 window.location.reload();
@@ -814,10 +902,10 @@
             const trigger = document.getElementById('game-confetti-trigger');
             if (trigger && trigger.dataset.celebrate === 'true' && typeof confetti === 'function') {
                 confetti({
-                    particleCount: 90,
-                    spread: 70,
+                    particleCount: 110,
+                    spread: 80,
                     origin: { y: 0.6 },
-                    colors: ['#6D28D9', '#C026D3', '#FEBE01', '#10B981', '#EC4899']
+                    colors: ['#6D28D9', '#C026D3', '#FEBE01', '#10B981', '#EC4899', '#1E0B36']
                 });
             }
         });

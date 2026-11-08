@@ -4,47 +4,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placar das Mermãs | MDX 2026 • IFMA</title>
+    <title>Placar das Mermãs | MDX STEAM 2026 • IFMA</title>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandViolet: '#6D28D9',
+                        brandMagenta: '#C026D3',
+                        brandYellow: '#FEBE01',
+                        brandDark: '#1E0B36',
+                    },
+                    boxShadow: {
+                        'neo-pop': '4px 4px 0px #1E0B36',
+                        'neo-pop-sm': '2px 2px 0px #1E0B36',
+                        'neo-pop-lg': '6px 6px 0px #1E0B36',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #FAF8FE;
+            background-color: #FAF7FE;
             background-image: 
-                linear-gradient(to right, rgba(109, 40, 217, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(109, 40, 217, 0.03) 1px, transparent 1px);
-            background-size: 32px 32px;
+                linear-gradient(to right, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px),
+                linear-gradient(to bottom, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px);
+            background-size: 30px 30px;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 28s linear infinite;
         }
     </style>
 </head>
-<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto space-y-6">
+<body class="min-h-screen text-slate-800 antialiased selection:bg-[#FEBE01] selection:text-[#1E0B36]">
+
+    <!-- Marquee Ticker Tape -->
+    <div class="bg-[#1E0B36] border-b-2 border-[#FEBE01] text-white py-2 overflow-hidden shadow-md select-none">
+        <div class="marquee-track flex items-center gap-8 whitespace-nowrap font-black uppercase text-xs tracking-wider">
+            <span class="flex items-center gap-2 text-[#FEBE01]">★ PLACAR DAS MERMÃS</span>
+            <span class="text-white/60">•</span>
+            <span class="text-white">MDX STEAM 2026 • IFMA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-pink-400">DESAFIO DE IA EDUCACIONAL</span>
+            <span class="text-white/60">•</span>
+            <span class="text-amber-300">★ RANKING OFICIAL DA RODADA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-fuchsia-300">MENINAS NA CIÊNCIA E TECNOLOGIA</span>
+            <span class="text-white/60">•</span>
+            <span class="flex items-center gap-2 text-[#FEBE01]">★ PLACAR DAS MERMÃS</span>
+            <span class="text-white/60">•</span>
+            <span class="text-white">MDX STEAM 2026 • IFMA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-pink-400">DESAFIO DE IA EDUCACIONAL</span>
+        </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
 
         <!-- Header -->
-        <header class="bg-white rounded-3xl border border-purple-100 shadow-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#6D28D9] via-[#C026D3] to-[#FEBE01] text-white flex items-center justify-center font-bold text-2xl shadow-md">
+        <header class="bg-white rounded-3xl border-2 border-[#1E0B36] shadow-neo-pop p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-[#FEBE01] border-2 border-[#1E0B36] text-[#1E0B36] flex items-center justify-center font-black text-3xl shadow-neo-pop-sm flex-shrink-0">
                     🏆
                 </div>
                 <div>
-                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        Placar das Mermãs <span class="text-amber-400">✨</span>
-                    </h1>
-                    <p class="text-xs text-slate-500 font-medium">
-                        MDX 2026 • IFMA — Rodada {{ challenge.numero_rodada }}: {{ challenge.titulo }}
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-2xl font-black text-[#1E0B36]">
+                            <span class="text-[#D946EF]">.</span>Placar das Mermãs
+                        </span>
+                        <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-[10px] px-2.5 py-0.5 rounded-md border border-[#1E0B36] transform -rotate-1">
+                            RODADA {{ challenge.numero_rodada }}
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-bold mt-1">
+                        MDX STEAM 2026 • IFMA — {{ challenge.titulo }}
                     </p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ challenge.id }}" class="inline-flex items-center gap-1.5 bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-bold px-3.5 py-2 rounded-2xl border border-pink-200 transition">
+
+            <div class="flex items-center gap-2 flex-wrap justify-end">
+                <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ challenge.id }}" 
+                    class="inline-flex items-center gap-1.5 bg-[#FAF5FF] hover:bg-purple-100 text-[#6D28D9] text-xs font-black px-4 py-2 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition">
                     <span>⚖️ Painel de Julgamento</span>
                 </a>
-                <a href="{% url 'game:index' %}" class="inline-flex items-center gap-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-4 py-2 rounded-2xl border border-purple-200 transition">
+                <a href="{% url 'game:index' %}" 
+                    class="inline-flex items-center gap-1.5 bg-[#FEBE01] hover:bg-amber-300 text-[#1E0B36] text-xs font-black px-4 py-2 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition">
                     <span>← Voltar ao Jogo</span>
                 </a>
             </div>
@@ -52,86 +110,89 @@
 
         {% if vencedora_oficial %}
             <!-- Banner Comemorativo de Vencedora Homologada pela Equipe -->
-            <section class="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 rounded-3xl p-6 text-slate-950 shadow-lg border-2 border-amber-500 flex flex-col sm:flex-row items-center justify-between gap-4 animate-bounce-subtle">
+            <section class="bg-gradient-to-r from-[#FEBE01] via-amber-300 to-[#FACC15] rounded-3xl p-6 text-[#1E0B36] border-2 border-[#1E0B36] shadow-neo-pop flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-2xl bg-white text-slate-900 flex items-center justify-center text-3xl shadow-md flex-shrink-0">
+                    <div class="w-16 h-16 rounded-2xl bg-white border-2 border-[#1E0B36] text-3xl flex items-center justify-center shadow-neo-pop-sm flex-shrink-0">
                         👑
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <span class="bg-slate-950 text-amber-300 text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-full">
-                                Vencedora Oficial Homologada
+                            <span class="bg-[#1E0B36] text-[#FEBE01] text-[10px] uppercase font-black px-2.5 py-0.5 rounded-md">
+                                Vencedora Oficial da Rodada
                             </span>
-                            <span class="text-xs font-bold text-slate-800">Decisão da Equipe Mermãs</span>
+                            <span class="text-xs font-black text-[#1E0B36]">★ Decisão Homologada pela Equipe</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-slate-950 mt-1">
+                        <h2 class="text-xl sm:text-2xl font-black text-[#1E0B36] mt-1">
                             {{ vencedora_oficial.nome_participante }}
                         </h2>
-                        <p class="text-xs font-semibold text-slate-800 italic max-w-xl">
+                        <p class="text-xs font-bold text-slate-800 italic max-w-xl mt-0.5">
                             "{{ vencedora_oficial.prompt_enviado }}"
                         </p>
                         {% if vencedora_oficial.observacao_equipe %}
-                            <p class="text-[11px] font-bold text-slate-900 mt-1 bg-white/60 px-2.5 py-0.5 rounded-lg w-fit">
-                                💬 Parecer: {{ vencedora_oficial.observacao_equipe }}
+                            <p class="text-[11px] font-black text-[#1E0B36] mt-2 bg-white/80 border border-[#1E0B36] px-2.5 py-0.5 rounded-lg w-fit">
+                                💬 Parecer da Equipe: {{ vencedora_oficial.observacao_equipe }}
                             </p>
                         {% endif %}
                     </div>
                 </div>
 
-                <div class="text-right sm:border-l sm:border-amber-600/30 sm:pl-6 flex-shrink-0">
-                    <span class="text-3xl font-black text-slate-950 block">
+                <div class="text-right sm:border-l-2 sm:border-[#1E0B36]/30 sm:pl-6 flex-shrink-0">
+                    <span class="text-4xl font-black text-[#1E0B36] block">
                         {{ vencedora_oficial.similaridade|stringformat:".1f" }}%
                     </span>
-                    <span class="text-[10px] uppercase font-extrabold text-slate-800">Score de Proximidade</span>
+                    <span class="text-[10px] uppercase font-black text-[#1E0B36]">Score de Proximidade</span>
                 </div>
             </section>
         {% endif %}
 
         <!-- Tabela do Ranking -->
-        <main class="bg-white rounded-3xl border border-purple-100 shadow-sm overflow-hidden">
-            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <main class="bg-white rounded-3xl border-2 border-[#1E0B36] shadow-neo-pop overflow-hidden">
+            <div class="p-5 border-b-2 border-slate-100 flex items-center justify-between flex-wrap gap-2">
                 <div>
-                    <h2 class="text-base font-extrabold text-slate-800">Ranking Oficial das Participantes</h2>
-                    <p class="text-xs text-slate-400">Classificação calculada pela melhor similaridade alcançada</p>
+                    <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-xs px-3 py-1 rounded-md border border-[#1E0B36]">
+                        CLASSIFICAÇÃO
+                    </span>
+                    <h2 class="text-base font-black text-[#1E0B36] mt-1.5">Ranking Oficial das Participantes</h2>
+                    <p class="text-xs text-slate-500 font-bold">Classificação calculada pela melhor similaridade alcançada por aluna</p>
                 </div>
-                <span class="bg-purple-100 text-purple-800 font-bold text-xs px-3 py-1 rounded-full">
+                <span class="bg-[#FAF5FF] text-[#6D28D9] border-2 border-[#1E0B36] font-black text-xs px-3.5 py-1 rounded-full shadow-neo-pop-sm">
                     {{ total_participantes }} alunas jogaram
                 </span>
             </div>
 
             {% if ranking %}
-                <div class="divide-y divide-slate-100">
+                <div class="divide-y-2 divide-slate-100">
                     {% for item in ranking %}
-                        <div class="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-purple-50/30 transition {% if item.posicao <= 3 %}bg-amber-50/20{% endif %}">
+                        <div class="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-purple-50/40 transition {% if item.posicao == 1 %}bg-amber-50/40{% elif item.posicao <= 3 %}bg-purple-50/20{% endif %}">
                             <div class="flex items-center gap-3 sm:gap-4">
-                                <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-extrabold {{ item.badge_class }} border shadow-2xs">
+                                <span class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black {{ item.badge_class }} border-2 border-[#1E0B36] shadow-neo-pop-sm flex-shrink-0">
                                     {{ item.medalha }}
                                 </span>
                                 <div>
-                                    <h3 class="text-sm sm:text-base font-extrabold text-slate-800">
+                                    <h3 class="text-sm sm:text-base font-black text-[#1E0B36]">
                                         {{ item.nome }}
                                     </h3>
                                     {% if item.email %}
-                                        <p class="text-[11px] text-purple-700 font-semibold truncate">
+                                        <p class="text-[11px] text-[#6D28D9] font-bold truncate">
                                             ✉ {{ item.email }}
                                         </p>
                                     {% endif %}
-                                    <p class="text-[11px] text-slate-400 font-medium">
+                                    <p class="text-[11px] text-slate-500 font-bold">
                                         {{ item.total_tentativas }} tentativa{{ item.total_tentativas|pluralize }} realizada{{ item.total_tentativas|pluralize }} • {{ item.data|date:"H:i" }}
                                     </p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-lg sm:text-2xl font-extrabold text-[#7C3AED]">
+                                <span class="text-xl sm:text-3xl font-black text-[#6D28D9]">
                                     {{ item.melhor_score|stringformat:".1f" }}%
                                 </span>
-                                <span class="block text-[10px] uppercase font-bold text-slate-400">Score Máximo</span>
+                                <span class="block text-[10px] uppercase font-black text-slate-500">Melhor Tentativa</span>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="p-8 text-center text-slate-400 text-sm">
+                <div class="p-8 text-center text-slate-500 font-bold text-sm">
                     Nenhuma aluna enviou tentativas nesta rodada ainda. Seja a primeira a jogar!
                 </div>
             {% endif %}
@@ -140,4 +201,3 @@
     </div>
 </body>
 </html>
-

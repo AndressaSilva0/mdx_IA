@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none">
+  <!-- Foguete / Mochila Rosa atrás -->
+  <rect x="55" y="55" width="50" height="65" rx="18" fill="#EC4899" stroke="#1E0B36" stroke-width="4"/>
+  <path d="M48 95 L55 80 L55 105 Z" fill="#F43F5E" stroke="#1E0B36" stroke-width="3"/>
+  <path d="M112 95 L105 80 L105 105 Z" fill="#F43F5E" stroke="#1E0B36" stroke-width="3"/>
+  <!-- Jatos de Foguete com estrelas -->
+  <path d="M62 120 Q66 138 70 120" fill="#FEBE01" stroke="#1E0B36" stroke-width="3"/>
+  <path d="M90 120 Q94 138 98 120" fill="#FEBE01" stroke="#1E0B36" stroke-width="3"/>
+
+  <!-- Cabelo Afro Volumoso Roxo Escuro / Cósmico -->
+  <circle cx="80" cy="65" r="52" fill="#1E0B36" stroke="#1E0B36" stroke-width="3"/>
+  <circle cx="42" cy="65" r="26" fill="#1E0B36"/>
+  <circle cx="118" cy="65" r="26" fill="#1E0B36"/>
+  <circle cx="80" cy="35" r="28" fill="#1E0B36"/>
+  <circle cx="52" cy="42" r="24" fill="#1E0B36"/>
+  <circle cx="108" cy="42" r="24" fill="#1E0B36"/>
+
+  <!-- Estrelinhas no cabelo (✦ ✧) -->
+  <path d="M45 42 L47 47 L52 48 L48 52 L49 57 L45 54 L41 57 L42 52 L38 48 L43 47 Z" fill="#FEBE01"/>
+  <circle cx="112" cy="48" r="2.5" fill="#FFFFFF"/>
+  <circle cx="95" cy="30" r="2" fill="#FEBE01"/>
+  <circle cx="65" cy="28" r="2.5" fill="#FFFFFF"/>
+  <path d="M118 68 L119 71 L122 72 L120 74 L121 77 L118 75 L115 77 L116 74 L114 72 L117 71 Z" fill="#F472B6"/>
+
+  <!-- Rosto Pele Negra / Morena Quente -->
+  <ellipse cx="80" cy="78" rx="26" ry="28" fill="#8D5B4C" stroke="#1E0B36" stroke-width="3.5"/>
+  <!-- Orelhas com brincos de argola dourada -->
+  <circle cx="54" cy="80" r="6" fill="#8D5B4C" stroke="#1E0B36" stroke-width="2.5"/>
+  <circle cx="106" cy="80" r="6" fill="#8D5B4C" stroke="#1E0B36" stroke-width="2.5"/>
+  <circle cx="53" cy="86" r="5" fill="none" stroke="#FEBE01" stroke-width="2.5"/>
+  <circle cx="107" cy="86" r="5" fill="none" stroke="#FEBE01" stroke-width="2.5"/>
+
+  <!-- Olhos expressivos e gentis -->
+  <ellipse cx="71" cy="75" rx="4.5" ry="5.5" fill="#1E0B36"/>
+  <circle cx="72.5" cy="73.5" r="2" fill="#FFFFFF"/>
+  <ellipse cx="89" cy="75" rx="4.5" ry="5.5" fill="#1E0B36"/>
+  <circle cx="90.5" cy="73.5" r="2" fill="#FFFFFF"/>
+  <!-- Sobrancelhas -->
+  <path d="M66 67 Q71 65 76 68" stroke="#1E0B36" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M84 68 Q89 65 94 67" stroke="#1E0B36" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Sorriso radiante -->
+  <path d="M74 86 Q80 94 86 86" stroke="#1E0B36" stroke-width="2.5" stroke-linecap="round" fill="#FFFFFF"/>
+
+  <!-- Moletom Amarelo do Evento -->
+  <path d="M50 114 C50 102 62 98 80 98 C98 98 110 102 110 114 L115 150 L45 150 Z" fill="#FEBE01" stroke="#1E0B36" stroke-width="3.5"/>
+  <!-- Gola roxa / cordão -->
+  <path d="M72 98 Q80 108 88 98" fill="#7C3AED" stroke="#1E0B36" stroke-width="2.5"/>
+  <!-- Detalhe STEM no peito -->
+  <text x="80" y="128" text-anchor="middle" fill="#1E0B36" font-family="sans-serif" font-weight="900" font-size="11">STEM!</text>
+</svg>

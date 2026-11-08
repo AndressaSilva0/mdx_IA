@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Prompts e Imagens | Equipe MDX 2026</title>
+    <title>Gestão de Prompts e Imagens | Equipe MDX STEAM 2026</title>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -19,6 +19,12 @@
                         brandViolet: '#6D28D9',
                         brandMagenta: '#C026D3',
                         brandYellow: '#FEBE01',
+                        brandDark: '#1E0B36',
+                    },
+                    boxShadow: {
+                        'neo-pop': '4px 4px 0px #1E0B36',
+                        'neo-pop-sm': '2px 2px 0px #1E0B36',
+                        'neo-pop-lg': '6px 6px 0px #1E0B36',
                     }
                 }
             }
@@ -27,55 +33,81 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #FAF8FE;
+            background-color: #FAF7FE;
             background-image: 
-                linear-gradient(to right, rgba(109, 40, 217, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(109, 40, 217, 0.03) 1px, transparent 1px);
-            background-size: 32px 32px;
+                linear-gradient(to right, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px),
+                linear-gradient(to bottom, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px);
+            background-size: 30px 30px;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 28s linear infinite;
         }
     </style>
 </head>
-<body class="min-h-screen py-6 px-4 sm:px-6 lg:px-8 text-slate-800">
+<body class="min-h-screen text-slate-800 antialiased selection:bg-[#FEBE01] selection:text-[#1E0B36]">
 
-    <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Marquee Ticker Tape -->
+    <div class="bg-[#1E0B36] border-b-2 border-[#FEBE01] text-white py-2 overflow-hidden shadow-md select-none">
+        <div class="marquee-track flex items-center gap-8 whitespace-nowrap font-black uppercase text-xs tracking-wider">
+            <span class="flex items-center gap-2 text-[#FEBE01]">★ PAINEL DA EQUIPE MERMÃS</span>
+            <span class="text-white/60">•</span>
+            <span class="text-white">MDX STEAM 2026 • IFMA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-pink-400">GESTÃO DE PROMPTS & IMAGENS IA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-amber-300">★ ALTERNAÇÃO DE RODADAS NO ESTANDE</span>
+            <span class="text-white/60">•</span>
+            <span class="text-fuchsia-300">GOOGLE GEMINI ASSISTANT</span>
+            <span class="text-white/60">•</span>
+            <span class="flex items-center gap-2 text-[#FEBE01]">★ PAINEL DA EQUIPE MERMÃS</span>
+            <span class="text-white/60">•</span>
+            <span class="text-white">MDX STEAM 2026 • IFMA</span>
+        </div>
+    </div>
 
-        <!-- ========================================== -->
-        <!-- CABEÇALHO DO PAINEL DA EQUIPE              -->
-        <!-- ========================================== -->
-        <header class="bg-white rounded-3xl border border-purple-100 shadow-sm p-5 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#6D28D9] via-[#C026D3] to-[#FEBE01] text-white flex items-center justify-center font-bold text-2xl shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        <!-- CABEÇALHO DO PAINEL DA EQUIPE -->
+        <header class="bg-white rounded-3xl border-2 border-[#1E0B36] shadow-neo-pop p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-[#FEBE01] border-2 border-[#1E0B36] text-[#1E0B36] flex items-center justify-center font-black text-3xl shadow-neo-pop-sm flex-shrink-0">
                     🎨
                 </div>
                 <div>
-                    <div class="flex items-center gap-2">
-                        <h1 class="text-lg font-extrabold text-[#581C87] tracking-tight">Painel da Equipe Mermãs</h1>
-                        <span class="bg-purple-100 text-purple-800 font-extrabold text-[11px] px-2.5 py-0.5 rounded-full">
-                            MDX 2026 • IFMA
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h1 class="text-xl sm:text-2xl font-black text-[#1E0B36] tracking-tight">Painel da Equipe Mermãs</h1>
+                        <span class="bg-[#D946EF] text-white font-black uppercase text-[10px] px-2.5 py-0.5 rounded-md border border-[#1E0B36]">
+                            OPERADOR ESTANDE
                         </span>
                     </div>
-                    <p class="text-xs text-slate-500 font-medium">Controle de Prompts, Imagens de IA e Escolha da Rodada Ativa</p>
+                    <p class="text-xs text-slate-600 font-bold mt-1">Cadastro de Desafios, Imagens de IA e Troca de Rodada no Estande</p>
                 </div>
             </div>
 
             <!-- Navegação entre Telas do Admin e Jogo -->
-            <div class="flex items-center flex-wrap gap-2">
+            <div class="flex items-center flex-wrap gap-2.5 justify-end">
                 <!-- Tela 1 (Ativa) -->
-                <span class="bg-[#7C3AED] text-white text-xs font-bold px-4 py-2 rounded-2xl shadow-sm flex items-center gap-1.5">
+                <span class="bg-[#6D28D9] text-white text-xs font-black px-4 py-2.5 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm flex items-center gap-1.5">
                     <span>🖼️</span>
                     <span>1. Prompts & Imagens</span>
                 </span>
                 
                 <!-- Tela 2 -->
-                <a href="{% url 'game:operator_julgamento' %}" class="bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-4 py-2 rounded-2xl border border-purple-200 transition flex items-center gap-1.5">
+                <a href="{% url 'game:operator_julgamento' %}" class="bg-[#FAF5FF] hover:bg-purple-100 text-[#6D28D9] text-xs font-black px-4 py-2.5 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center gap-1.5">
                     <span>⚖️</span>
                     <span>2. Julgamento & Vencedoras</span>
                 </a>
 
-                <!-- Alternar para Modo Participante (Aluna) -->
-                <a href="{% url 'game:sair_modalidade_equipe' %}" class="bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-extrabold px-4 py-2 rounded-2xl border border-amber-300 transition flex items-center gap-1.5 shadow-2xs" title="Alternar de volta para o modo participante">
+                <!-- Alternar para Modo Aluna -->
+                <a href="{% url 'game:sair_modalidade_equipe' %}" class="bg-[#FEBE01] hover:bg-amber-300 text-[#1E0B36] text-xs font-black px-4 py-2.5 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center gap-1.5" title="Alternar de volta para a visualização da aluna">
                     <span>👩‍🎓</span>
-                    <span>Mudar para Modo Participante</span>
+                    <span>Mudar para Modo Aluna</span>
                 </a>
             </div>
         </header>
@@ -84,39 +116,38 @@
         {% if messages %}
             <div class="space-y-2">
                 {% for message in messages %}
-                    <div class="p-4 rounded-2xl text-sm font-semibold flex items-center justify-between shadow-xs {% if message.tags == 'error' %}bg-rose-50 text-rose-800 border border-rose-200{% elif message.tags == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200{% else %}bg-purple-50 text-purple-800 border border-purple-200{% endif %}">
-                        <span>{{ message }}</span>
-                        <button type="button" onclick="this.parentElement.remove()" class="text-xs opacity-60 hover:opacity-100">✕</button>
+                    <div class="p-4 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-between border-2 border-[#1E0B36] shadow-neo-pop-sm {% if message.tags == 'error' %}bg-rose-100 text-rose-950{% elif message.tags == 'warning' %}bg-amber-100 text-amber-950{% else %}bg-purple-100 text-purple-950{% endif %}">
+                        <span>✨ {{ message }}</span>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-xs font-black opacity-70 hover:opacity-100 px-2">✕</button>
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
 
-        <!-- ========================================== -->
-        <!-- BANNER DA RODADA ATIVA NO ESTANDE          -->
-        <!-- ========================================== -->
+        <!-- BANNER DA RODADA ATIVA NO ESTANDE -->
         {% if desafio_ativo %}
-            <section class="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-3xl p-5 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 border border-purple-800">
+            <section class="bg-[#1E0B36] rounded-3xl p-5 text-white border-2 border-[#FEBE01] shadow-neo-pop flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-amber-400 flex-shrink-0 bg-slate-950">
+                    <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#FEBE01] flex-shrink-0 bg-slate-950 shadow-neo-pop-sm">
                         <img src="{{ desafio_ativo.get_image_url }}" alt="{{ desafio_ativo.titulo }}" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span class="text-xs uppercase font-extrabold text-amber-300 tracking-wider">Rodada Ativa no Estande Agora</span>
+                            <span class="text-[11px] uppercase font-black text-[#FEBE01] tracking-wider">Rodada Ativa no Estande Agora</span>
                         </div>
-                        <h2 class="text-base sm:text-lg font-extrabold text-white">
+                        <h2 class="text-base sm:text-lg font-black text-white mt-0.5">
                             Rodada {{ desafio_ativo.numero_rodada }}: {{ desafio_ativo.titulo }}
                         </h2>
-                        <p class="text-xs text-purple-200/80 line-clamp-1 max-w-xl">
+                        <p class="text-xs text-purple-200/90 font-medium line-clamp-1 max-w-xl">
                             Prompt Original: "{{ desafio_ativo.prompt_original }}"
                         </p>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ desafio_ativo.id }}" class="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-extrabold text-xs px-4 py-2.5 rounded-2xl shadow-md transition flex items-center gap-1.5">
+                    <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ desafio_ativo.id }}" 
+                        class="bg-[#FEBE01] hover:bg-amber-300 text-[#1E0B36] font-black text-xs px-5 py-3 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center gap-2">
                         <span>⚖️ Julgar Esta Rodada</span>
                         <span>→</span>
                     </a>
@@ -124,21 +155,19 @@
             </section>
         {% endif %}
 
-        <!-- ========================================== -->
-        <!-- GRID PRINCIPAL: FORMULÁRIO vs LISTA        -->
-        <!-- ========================================== -->
+        <!-- GRID PRINCIPAL: FORMULÁRIO vs LISTA -->
         <main class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
             <!-- COLUNA ESQUERDA: Formulário de Registro -->
             <div class="lg:col-span-5 space-y-5">
                 
                 <!-- Assistente Gemini para Criação Rápida -->
-                <div class="bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 rounded-3xl p-5 border border-purple-200/80 shadow-xs">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-lg">✨</span>
-                        <h2 class="text-sm font-extrabold text-purple-950">Gerador de Ideias com Google Gemini AI</h2>
+                <div class="bg-gradient-to-br from-purple-100 via-pink-100 to-amber-100 rounded-3xl p-5 border-2 border-[#1E0B36] shadow-neo-pop space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-[#FEBE01] text-[#1E0B36] text-xs font-black px-2 py-0.5 rounded border border-[#1E0B36]">IA</span>
+                        <h2 class="text-sm font-black text-[#1E0B36]">Gerador de Ideias com Google Gemini AI</h2>
                     </div>
-                    <p class="text-xs text-purple-900/80 mb-3">
+                    <p class="text-xs text-slate-800 font-bold">
                         Digite um tema ou ideia e o Gemini gera automaticamente o prompt descritivo, palavras-chave e dica da mascote!
                     </p>
                     <form method="POST" action="{% url 'game:operator_desafios' %}" class="flex gap-2">
@@ -147,12 +176,12 @@
                         <input 
                             type="text" 
                             name="tema_sugestao" 
-                            placeholder="Ex: Meninas na robótica espacial nos Lençóis Maranhenses..."
-                            class="flex-1 px-3.5 py-2.5 rounded-2xl border border-purple-200 text-xs text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            placeholder="Ex: Meninas na robótica espacial nos Lençóis..."
+                            class="flex-1 px-3.5 py-2.5 rounded-2xl border-2 border-[#1E0B36] text-xs font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                         >
                         <button 
                             type="submit" 
-                            class="bg-[#7C3AED] hover:bg-purple-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-2xl transition shadow-xs flex-shrink-0"
+                            class="bg-[#6D28D9] hover:bg-purple-700 text-white font-black text-xs px-4 py-2.5 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex-shrink-0 cursor-pointer"
                         >
                             Gerar com IA
                         </button>
@@ -160,14 +189,16 @@
                 </div>
 
                 <!-- Formulário Principal de Registro -->
-                <section class="bg-white rounded-3xl p-6 border border-purple-100 shadow-sm space-y-4">
-                    <div class="border-b border-slate-100 pb-3">
-                        <h2 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
-                            <span>📝</span>
+                <section class="bg-white rounded-3xl p-6 border-2 border-[#1E0B36] shadow-neo-pop space-y-4">
+                    <div class="border-b-2 border-slate-100 pb-3">
+                        <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-xs px-3 py-1 rounded-md border border-[#1E0B36]">
+                            CADASTRO
+                        </span>
+                        <h2 class="text-base font-black text-[#1E0B36] mt-2 flex items-center gap-2">
                             <span>Cadastrar Novo Desafio / Imagem</span>
                         </h2>
-                        <p class="text-xs text-slate-400">
-                            Registre a imagem gerada por IA e o prompt original de referência que as alunas tentarão descobrir.
+                        <p class="text-xs text-slate-500 font-bold">
+                            Registre a imagem gerada por IA e o prompt original de referência.
                         </p>
                     </div>
 
@@ -177,7 +208,7 @@
 
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
+                                <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1">
                                     Nº da Rodada *
                                 </label>
                                 <input 
@@ -186,26 +217,26 @@
                                     value="{{ sugestao_gemini.numero_rodada|default:'02' }}" 
                                     required 
                                     placeholder="Ex: 02"
-                                    class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-slate-300 text-xs font-bold focus:outline-none focus:border-[#7C3AED]"
                                 >
                             </div>
 
                             <div>
-                                <label class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
+                                <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1">
                                     Estilo Visual
                                 </label>
                                 <input 
                                     type="text" 
                                     name="estilo_tag" 
                                     value="{{ sugestao_gemini.estilo_tag|default:'Estilo Mágico & Futurista' }}" 
-                                    placeholder="Ex: Cyberpunk, 3D Render"
-                                    class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    placeholder="Ex: Cyberpunk, 3D"
+                                    class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-slate-300 text-xs font-bold focus:outline-none focus:border-[#7C3AED]"
                                 >
                             </div>
                         </div>
 
                         <div>
-                            <label class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
+                            <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1">
                                 Título do Desafio *
                             </label>
                             <input 
@@ -214,40 +245,40 @@
                                 value="{{ sugestao_gemini.titulo|default:'' }}" 
                                 required 
                                 placeholder="Ex: Sonda Robótica Lunar em Vidro Cósmico"
-                                class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-slate-300 text-xs font-bold focus:outline-none focus:border-[#7C3AED]"
                             >
                         </div>
 
                         <!-- Imagem: Upload de Arquivo OU URL -->
-                        <div class="space-y-2 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
-                            <label class="text-[11px] uppercase tracking-wider text-slate-700 font-bold block">
+                        <div class="space-y-2 bg-[#FAF5FF] p-3.5 rounded-2xl border-2 border-[#1E0B36]">
+                            <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block">
                                 Imagem Gerada por IA *
                             </label>
                             
                             <div>
-                                <span class="text-[10px] text-slate-400 block mb-1">1. Fazer Upload do Arquivo (JPG/PNG):</span>
+                                <span class="text-[10px] text-slate-500 font-bold block mb-1">1. Fazer Upload do Arquivo (JPG/PNG):</span>
                                 <input 
                                     type="file" 
                                     name="imagem" 
                                     accept="image/*"
-                                    class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200"
+                                    class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-[#1E0B36] file:text-xs file:font-black file:bg-[#FEBE01] file:text-[#1E0B36]"
                                 >
                             </div>
 
-                            <div class="pt-2 border-t border-slate-200">
-                                <span class="text-[10px] text-slate-400 block mb-1">OU 2. Informar URL da imagem:</span>
+                            <div class="pt-2 border-t border-purple-200">
+                                <span class="text-[10px] text-slate-500 font-bold block mb-1">OU 2. Informar URL da imagem:</span>
                                 <input 
                                     type="url" 
                                     name="imagem_url" 
                                     placeholder="https://exemplo.com/imagem_ia.jpg"
-                                    class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    class="w-full px-3 py-2 rounded-xl border-2 border-slate-300 text-xs bg-white font-semibold focus:outline-none focus:border-[#7C3AED]"
                                 >
                             </div>
                         </div>
 
                         <!-- Prompt Original de Referência -->
                         <div>
-                            <label class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
+                            <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1">
                                 Prompt Original de Referência (Secreto) *
                             </label>
                             <textarea 
@@ -255,14 +286,14 @@
                                 rows="3" 
                                 required 
                                 placeholder="Descreva o prompt exato que gerou a imagem na IA..."
-                                class="w-full p-3 rounded-2xl border border-slate-200 text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                class="w-full p-3 rounded-2xl border-2 border-slate-300 text-xs font-semibold leading-relaxed focus:outline-none focus:border-[#7C3AED]"
                             >{{ sugestao_gemini.prompt_original|default:'' }}</textarea>
-                            <span class="text-[10px] text-slate-400">Este é o texto contra o qual o algoritmo vai comparar o prompt digitado pela participante.</span>
+                            <span class="text-[10px] text-slate-500 font-bold">Texto contra o qual o algoritmo compara as tentativas.</span>
                         </div>
 
                         <!-- Palavras-chave -->
                         <div>
-                            <label class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
+                            <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1">
                                 Palavras-Chave de Avaliação (separadas por vírgula) *
                             </label>
                             <input 
@@ -270,14 +301,14 @@
                                 name="palavras_chave" 
                                 value="{{ sugestao_gemini.palavras_chave|default:'' }}" 
                                 required 
-                                placeholder="esfera de cristal, robô, luz neon, espaço sideral"
-                                class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                placeholder="esfera de cristal, robô, luz neon, espaço"
+                                class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-slate-300 text-xs font-bold focus:outline-none focus:border-[#7C3AED]"
                             >
                         </div>
 
                         <!-- Dica Mascote -->
                         <div>
-                            <label class="text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">
+                            <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1">
                                 Dica de Apoio da Mascote
                             </label>
                             <input 
@@ -285,7 +316,7 @@
                                 name="dica_mascote" 
                                 value="{{ sugestao_gemini.dica_mascote|default:'' }}" 
                                 placeholder="Oi, {nome}! Olhe com atenção os detalhes da imagem..."
-                                class="w-full px-3.5 py-2.5 rounded-2xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-slate-300 text-xs font-bold focus:outline-none focus:border-[#7C3AED]"
                             >
                         </div>
 
@@ -295,9 +326,9 @@
                                 type="checkbox" 
                                 id="ativar_imediatamente" 
                                 name="ativar_imediatamente" 
-                                class="w-4 h-4 text-purple-600 rounded border-slate-300 focus:ring-purple-500"
+                                class="w-4 h-4 text-[#6D28D9] rounded border-slate-400 focus:ring-purple-500"
                             >
-                            <label for="ativar_imediatamente" class="text-xs font-bold text-slate-700 cursor-pointer">
+                            <label for="ativar_imediatamente" class="text-xs font-black text-[#1E0B36] cursor-pointer">
                                 Ativar imediatamente para ser a rodada em exibição no estande
                             </label>
                         </div>
@@ -305,7 +336,7 @@
                         <!-- Botão Salvar -->
                         <button 
                             type="submit" 
-                            class="w-full bg-gradient-to-r from-[#6D28D9] via-[#C026D3] to-[#EC4899] text-white font-extrabold py-3.5 px-6 rounded-2xl shadow-md shadow-purple-500/25 hover:brightness-110 active:scale-98 transition text-sm cursor-pointer"
+                            class="w-full bg-gradient-to-r from-[#6D28D9] via-[#C026D3] to-[#EC4899] text-white font-black py-4 px-6 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop hover:shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition text-sm cursor-pointer"
                         >
                             <span>Salvar e Cadastrar Desafio ✨</span>
                         </button>
@@ -319,10 +350,13 @@
                 
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-base font-extrabold text-slate-800">Rodadas e Desafios Cadastrados</h2>
-                        <p class="text-xs text-slate-400">Escolha qual imagem e prompt estarão ativos no estande das alunas agora</p>
+                        <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-xs px-3 py-1 rounded-md border border-[#1E0B36]">
+                            RODADAS CADASTRADAS
+                        </span>
+                        <h2 class="text-base font-black text-[#1E0B36] mt-1.5">Galeria de Desafios do Evento</h2>
+                        <p class="text-xs text-slate-500 font-bold">Clique em "Ativar Esta Rodada" para mudar a imagem do estande com 1 clique</p>
                     </div>
-                    <span class="bg-purple-100 text-purple-800 font-bold text-xs px-3 py-1 rounded-full">
+                    <span class="bg-[#FAF5FF] text-[#6D28D9] border-2 border-[#1E0B36] font-black text-xs px-3.5 py-1 rounded-full shadow-neo-pop-sm">
                         {{ desafios.count }} cadastrados
                     </span>
                 </div>
@@ -330,12 +364,12 @@
                 <!-- Lista de Cards dos Desafios -->
                 <div class="space-y-4">
                     {% for des in desafios %}
-                        <div class="bg-white rounded-3xl p-5 border {% if des.ativo %}border-2 border-purple-500 shadow-md shadow-purple-500/10{% else %}border-purple-100 shadow-xs{% endif %} transition">
+                        <div class="bg-white rounded-3xl p-5 border-2 {% if des.ativo %}border-[#6D28D9] shadow-neo-pop{% else %}border-[#1E0B36] shadow-neo-pop-sm{% endif %} transition">
                             <div class="flex flex-col sm:flex-row items-start gap-4">
                                 <!-- Imagem Thumbnail -->
-                                <div class="w-full sm:w-36 h-36 rounded-2xl overflow-hidden bg-slate-950 border border-slate-200 flex-shrink-0 relative group">
+                                <div class="w-full sm:w-36 h-36 rounded-2xl overflow-hidden bg-slate-950 border-2 border-[#1E0B36] flex-shrink-0 relative group shadow-neo-pop-sm">
                                     <img src="{{ des.get_image_url }}" alt="{{ des.titulo }}" class="w-full h-full object-cover">
-                                    <div class="absolute bottom-1.5 left-1.5 bg-black/70 backdrop-blur-xs text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
+                                    <div class="absolute bottom-1.5 left-1.5 bg-[#1E0B36]/80 text-white text-[9px] font-black px-2 py-0.5 rounded-full border border-[#FEBE01]">
                                         Rodada {{ des.numero_rodada }}
                                     </div>
                                 </div>
@@ -344,13 +378,13 @@
                                 <div class="flex-1 space-y-2">
                                     <div class="flex items-start justify-between gap-2 flex-wrap">
                                         <div>
-                                            <h3 class="text-base font-extrabold text-slate-900">{{ des.titulo }}</h3>
-                                            <span class="text-xs font-semibold text-purple-600">{{ des.estilo_tag }}</span>
+                                            <h3 class="text-base font-black text-[#1E0B36]">{{ des.titulo }}</h3>
+                                            <span class="text-xs font-black text-[#6D28D9]">{{ des.estilo_tag }}</span>
                                         </div>
 
                                         <!-- Badge de Status / Botão Ativar -->
                                         {% if des.ativo %}
-                                            <span class="bg-emerald-500 text-white font-extrabold text-xs px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
+                                            <span class="bg-[#10B981] text-white font-black text-xs px-3.5 py-1.5 rounded-full border-2 border-[#1E0B36] flex items-center gap-1.5 shadow-neo-pop-sm">
                                                 <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                                                 Ativo no Estande
                                             </span>
@@ -361,37 +395,37 @@
                                                 <input type="hidden" name="challenge_id" value="{{ des.id }}">
                                                 <button 
                                                     type="submit" 
-                                                    class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-extrabold text-xs px-3.5 py-1.5 rounded-full transition shadow-xs flex items-center gap-1 cursor-pointer"
+                                                    class="bg-[#FEBE01] hover:bg-amber-300 text-[#1E0B36] font-black text-xs px-4 py-1.5 rounded-full border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center gap-1 cursor-pointer"
                                                 >
-                                                    <span>🚀 Ativar Esta Rodada</span>
+                                                    <span>🚀 Ativar no Estande</span>
                                                 </button>
                                             </form>
                                         {% endif %}
                                     </div>
 
                                     <!-- Prompt Original Cadastrado -->
-                                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs text-slate-700">
-                                        <span class="text-[10px] font-bold uppercase text-slate-400 block mb-0.5">Prompt Original Salvo:</span>
-                                        <p class="italic line-clamp-2">"{{ des.prompt_original }}"</p>
+                                    <div class="bg-[#FAF5FF] p-3 rounded-xl border border-purple-200 text-xs text-slate-800">
+                                        <span class="text-[10px] font-black uppercase text-[#6D28D9] block mb-0.5">Prompt Original Salvo:</span>
+                                        <p class="italic line-clamp-2 font-bold">"{{ des.prompt_original }}"</p>
                                     </div>
 
                                     <!-- Palavras-chave -->
                                     <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                                        <span class="text-[10px] font-bold text-slate-400">Palavras-Chave:</span>
+                                        <span class="text-[10px] font-black text-[#1E0B36]">Palavras-Chave:</span>
                                         {% for kw in des.get_palavras_chave_list %}
-                                            <span class="bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                            <span class="bg-purple-100 text-[#1E0B36] border border-[#1E0B36] text-[10px] font-black px-2 py-0.5 rounded-md">
                                                 {{ kw }}
                                             </span>
                                         {% endfor %}
                                     </div>
 
                                     <!-- Rodapé do Card com Métricas e Ações -->
-                                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                                        <span class="text-slate-500 font-medium">
-                                            <strong>{{ des.attempts.count }}</strong> tentativa{{ des.attempts.count|pluralize }} realizada{{ des.attempts.count|pluralize }}
+                                    <div class="pt-2 border-t-2 border-slate-100 flex items-center justify-between text-xs">
+                                        <span class="text-slate-600 font-bold">
+                                            <strong>{{ des.attempts.count }}</strong> tentativa{{ des.attempts.count|pluralize }} registrada{{ des.attempts.count|pluralize }}
                                         </span>
 
-                                        <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ des.id }}" class="text-purple-600 hover:text-purple-800 font-bold flex items-center gap-1">
+                                        <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ des.id }}" class="text-[#6D28D9] hover:text-purple-900 font-black flex items-center gap-1">
                                             <span>Ver Tentativas & Julgamento</span>
                                             <span>→</span>
                                         </a>
@@ -401,7 +435,7 @@
                             </div>
                         </div>
                     {% empty %}
-                        <div class="p-8 bg-white rounded-3xl border border-purple-100 text-center text-slate-400">
+                        <div class="p-8 bg-white rounded-3xl border-2 border-[#1E0B36] text-center text-slate-500 font-bold shadow-neo-pop-sm">
                             Nenhum desafio cadastrado ainda. Use o formulário ao lado para cadastrar a primeira rodada!
                         </div>
                     {% endfor %}
@@ -415,4 +449,3 @@
 
 </body>
 </html>
-
