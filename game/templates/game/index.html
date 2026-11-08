@@ -192,9 +192,11 @@
                     <!-- Avatar Mascote -->
                     <div
                         class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-100/70 border border-amber-300 p-1 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-xs">
-                        <img src="{% static 'game/img/mascote.png' %}" alt="Mascote Mermãs"
+                        <img src="{% static 'game/img/mascote.png' %}" 
+                            alt="Mascote Mermãs"
                             class="w-full h-full object-contain"
-                            onerror="this.src='{% static 'game/img/mascote_hires.png' %}'; this.onerror=null;">
+                            data-fallback="{% static 'game/img/mascote_hires.png' %}"
+                            onerror="this.src=this.dataset.fallback; this.onerror=null;">
                     </div>
                     <!-- Conteúdo da Dica -->
                     <div class="flex-1">
@@ -284,8 +286,10 @@
                         <!-- Barra de Progresso com Gradiente -->
                         <div>
                             <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner">
-                                <div class="h-3 rounded-full bg-gradient-to-r from-[#7C3AED] via-[#C026D3] to-[#FEBE01] transition-all duration-700 ease-out"
-                                    style="width: {{ ultima_tentativa.similaridade }}%;"></div>
+                                <div id="barra-progresso"
+                                    class="h-3 rounded-full bg-gradient-to-r from-[#7C3AED] via-[#C026D3] to-[#FEBE01] transition-all duration-700 ease-out"
+                                    data-progress="{{ ultima_tentativa.similaridade|stringformat:'.1f' }}"
+                                    style="width: 0%;"></div>
                             </div>
                             <div class="flex justify-between text-[11px] text-slate-400 font-semibold mt-1.5">
                                 <span>Começo</span>
@@ -611,6 +615,11 @@
     <!-- Biblioteca Canvas Confetti para celebração visual -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
+    <!-- Gatilho de metadados para celebração sem tags Django dentro do script JS -->
+    <div id="game-confetti-trigger" 
+         data-celebrate="{% if ultima_tentativa and ultima_tentativa.similaridade >= 80.0 %}true{% else %}false{% endif %}"
+         class="hidden"></div>
+
     <!-- Script para contadores em tempo real, narração da mascote e celebração -->
     <script>
         function atualizarContadores() {
@@ -658,12 +667,21 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // Celebração de confetes ao obter alta pontuação (Meta +80%)
+        // Inicialização de animações, contadores e celebração
         document.addEventListener('DOMContentLoaded', () => {
             atualizarContadores();
 
-            {% if ultima_tentativa and ultima_tentativa.similaridade >= 80.0 %}
-            if (typeof confetti === 'function') {
+            // Animação suave da barra de progresso
+            const bar = document.getElementById('barra-progresso');
+            if (bar && bar.dataset.progress) {
+                setTimeout(() => {
+                    bar.style.width = bar.dataset.progress + '%';
+                }, 100);
+            }
+
+            // Celebração de confetes ao obter alta pontuação (Meta +80%)
+            const trigger = document.getElementById('game-confetti-trigger');
+            if (trigger && trigger.dataset.celebrate === 'true' && typeof confetti === 'function') {
                 confetti({
                     particleCount: 90,
                     spread: 70,
@@ -671,7 +689,6 @@
                     colors: ['#6D28D9', '#C026D3', '#FEBE01', '#10B981', '#EC4899']
                 });
             }
-            {% endif %}
         });
     </script>
 </body>
