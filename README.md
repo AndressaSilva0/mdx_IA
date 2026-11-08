@@ -106,10 +106,15 @@ GEMINI_MODEL=gemini-3.1-flash-lite
 
 ---
 
-## 🎮 Acesso ao Painel do Estande
+## 🎮 Operação no Estande do Evento
+- **Alternância Rápida de Modalidade**:
+  - No topo da tela há o botão **"Mudar para Modo Equipe"**.
+  - Digite a **Senha de 6 Dígitos** (padrão: `262026`, configurável via `EQUIPE_PIN` no `.env`) para entrar no modo de gestão técnica.
+  - Para voltar à tela das alunas, basta clicar em **"👩‍🎓 Mudar para Modo Participante"**.
+- **Registro das Participantes**:
+  - Cada aluna digita seu **Nome Completo** e **E-mail**.
+  - O sistema registra e trava após exatamente **3 tentativas** por rodada.
+  - O ranking e o relatório para certificados guardam tanto o nome quanto o e-mail da participante.
 - **Link do Jogo**: `/`
-- **Placar de Líderes**: `/ranking/`
-- **Painel Administrativo**: `/admin/`
-  - **Usuário**: `operador`
-  - **Senha**: `mermas2026ifma`
-  - *No Admin você pode cadastrar novas rodadas, trocar a imagem do desafio e exportar relatórios em CSV.*
+- **Placar das Mermãs**: `/ranking/`
+- **Painel Administrativo da Equipe**: `/operador/desafios/` e `/operador/julgamento/` (ou `/admin/`)
