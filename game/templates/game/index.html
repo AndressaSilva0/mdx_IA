@@ -474,7 +474,8 @@
                     </div>
 
                     <!-- Formulário de Envio do Prompt -->
-                    <form id="prompt-form" method="POST" action="{% url 'game:index' %}" class="space-y-4">
+                    <form id="prompt-form" method="POST" action="{% url 'game:index' %}" class="space-y-4"
+                        onsubmit="const btn = this.querySelector('button[type=submit]'); if (btn) { btn.disabled = true; btn.innerHTML = '<span>🔮 Avaliando Prompt com IA...</span>'; btn.classList.add('opacity-80', 'cursor-wait'); }">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="submit_prompt">
 
@@ -518,7 +519,6 @@
                                 <span id="contador_caracteres" class="text-slate-400 font-medium">
                                     0 caracteres
                                 </span>
-                                der
                             </div>
                         </div>
 
