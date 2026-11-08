@@ -1,0 +1,50 @@
+# ==========================================
+# Git Ignore - Mermãs Digitais | MDX 2026
+# ==========================================
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+ENV/
+.aider-venv/
+
+# Arquivos de Configuração e Chaves Secretas (NUNCA COMMITTAR)
+.env
+.env.local
+.env.*.local
+*.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Arquivos de Banco de Dados Local
+*.sqlite3
+db.sqlite3
+
+# Arquivos de Coleta Estática e Uploads de Usuários
+/staticfiles/
+/media/challenges/*
+!/media/challenges/flor_cristal.jpg
+
+# Logs e arquivos de depuração
+*.log
+local_settings.py
+.webassets-cache
+
+# IDEs e Editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testes e Cobertura
+.coverage
+htmlcov/
+.pytest_cache/
+
