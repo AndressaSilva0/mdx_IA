@@ -204,7 +204,7 @@
                 </div>
 
                 <!-- Desafios Temáticos Oficiais Prontos para o Estande (1 Clique) -->
-                <div class="bg-white rounded-3xl p-4 border-2 border-[#1E0B36] shadow-neo-pop space-y-2">
+                <div id="area_presets_oficiais" class="bg-white rounded-3xl p-4 border-2 border-[#1E0B36] shadow-neo-pop space-y-2">
                     <span class="text-[10px] font-black uppercase tracking-wider text-[#6D28D9] block">
                         💡 Ou Escolha um Desafio Oficial Pronto (1 Clique):
                     </span>
@@ -406,6 +406,45 @@
                                             </button>
                                         </div>
                                     </div>
+
+                                    <!-- AVISO DE COTA ZERO DO GOOGLE GEMINI FREE TIER -->
+                                    <div id="aviso_cota_gemini" class="hidden absolute inset-0 z-30 bg-[#1E0B36]/95 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center">
+                                        <div class="w-11 h-11 rounded-2xl bg-[#FEBE01] border-2 border-[#1E0B36] text-[#1E0B36] flex items-center justify-center font-black text-xl shadow-neo-pop-sm mb-2">
+                                            🤖
+                                        </div>
+                                        <span class="bg-amber-300 text-[#1E0B36] font-black text-[10px] uppercase px-3 py-0.5 rounded-full border border-[#1E0B36] tracking-wide mb-1">
+                                            RESPOSTA DA API DO GOOGLE
+                                        </span>
+                                        <h4 class="text-white text-xs font-black leading-tight mb-1">
+                                            Google Gemini Chamado: Cota Free de Imagens = 0
+                                        </h4>
+                                        <p id="texto_detalhes_cota_gemini" class="text-slate-200 text-[10px] font-bold max-w-xs leading-snug mb-3">
+                                            A API do Google foi chamada, mas o Google AI Studio possui cota 0 no plano gratuito para o modelo de imagem (exige faturamento ativado).
+                                        </p>
+                                        <div class="flex flex-col w-full gap-1.5 max-w-xs">
+                                            <button 
+                                                type="button" 
+                                                onclick="usarMotorNeuralAposGemini()" 
+                                                class="w-full bg-[#10B981] hover:bg-emerald-400 text-white font-black text-xs py-2.5 px-3 rounded-xl border-2 border-[#1E0B36] shadow-neo-pop-sm cursor-pointer transition hover:translate-y-0.5"
+                                            >
+                                                ⚡ Gerar com Motor Gratuito Alternativo
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onclick="rolarParaModelosProntos()" 
+                                                class="w-full bg-[#FEBE01] hover:bg-amber-300 text-[#1E0B36] font-black text-xs py-2 px-3 rounded-xl border-2 border-[#1E0B36] shadow-neo-pop-sm cursor-pointer transition"
+                                            >
+                                                🌸 Usar Modelo Pronto Oficial (300 DPI)
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onclick="fecharAvisoCotaGemini()" 
+                                                class="w-full bg-white/20 hover:bg-white/30 text-white font-bold text-[11px] py-1.5 px-3 rounded-xl border border-white/40 cursor-pointer transition"
+                                            >
+                                                ✕ Fechar Aviso
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Seletor de Motor IA e Botão de Geração -->
@@ -413,8 +452,8 @@
                                     <div class="flex items-center justify-between text-[11px] font-black text-slate-700 px-1">
                                         <span>Provedor de Imagem IA:</span>
                                         <select id="seletor_provedor_ia" class="text-[11px] font-black bg-[#FAF5FF] border-2 border-[#1E0B36] rounded-lg px-2 py-1 text-[#6D28D9] focus:outline-none cursor-pointer">
-                                            <option value="gemini" selected>✨ Google Gemini (gemini-2.5-flash-image)</option>
-                                            <option value="pollinations">⚡ Motor Neural Gratuito</option>
+                                            <option value="gemini" selected>✨ Google Gemini (Requer AI Studio com Faturamento)</option>
+                                            <option value="pollinations">⚡ Motor Neural Gratuito (1 a cada 45s)</option>
                                         </select>
                                     </div>
 
@@ -888,6 +927,39 @@
             }
         }
 
+        // Funções para Controle do Aviso de Cota do Google Gemini
+        function mostrarAvisoCotaGemini(mensagemErro) {
+            fecharAvisoObrigatorio();
+            const aviso = document.getElementById('aviso_cota_gemini');
+            const textoDetalhes = document.getElementById('texto_detalhes_cota_gemini');
+            if (textoDetalhes && mensagemErro) {
+                textoDetalhes.textContent = mensagemErro;
+            }
+            if (aviso) aviso.classList.remove('hidden');
+        }
+
+        function fecharAvisoCotaGemini() {
+            const aviso = document.getElementById('aviso_cota_gemini');
+            if (aviso) aviso.classList.add('hidden');
+        }
+
+        function usarMotorNeuralAposGemini() {
+            fecharAvisoCotaGemini();
+            const seletor = document.getElementById('seletor_provedor_ia');
+            if (seletor) seletor.value = 'pollinations';
+            gerarPreviaImagemIA();
+        }
+
+        function rolarParaModelosProntos() {
+            fecharAvisoCotaGemini();
+            const presets = document.getElementById('area_presets_oficiais');
+            if (presets) {
+                presets.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                presets.classList.add('ring-4', 'ring-[#FEBE01]', 'transition');
+                setTimeout(() => presets.classList.remove('ring-4', 'ring-[#FEBE01]'), 2000);
+            }
+        }
+
         // Funções para Controle do Aviso em Vermelho de Campos Obrigatórios (Sem window.alert!)
         function mostrarAvisoObrigatorio() {
             const aviso = document.getElementById('aviso_campos_obrigatorios');
@@ -1020,12 +1092,10 @@
             }
 
             // 2. Geração via Google Gemini (gemini-2.5-flash-image)
-            let gerouComSucesso = false;
-
             if (provedor === 'gemini') {
-                if (spinnerTitle) spinnerTitle.textContent = 'Gerando com Google Gemini (gemini-2.5-flash-image)...';
-                if (spinnerSub) spinnerSub.textContent = 'Processamento nativo multimodelo do Google AI Studio';
-                if (previewInfo) previewInfo.textContent = 'Processando com Gemini API...';
+                if (spinnerTitle) spinnerTitle.textContent = 'Chamando Google Gemini (gemini-2.5-flash-image)...';
+                if (spinnerSub) spinnerSub.textContent = 'Conectando aos servidores do Google AI Studio';
+                if (previewInfo) previewInfo.textContent = 'Processando na API oficial do Google...';
 
                 try {
                     const geminiResp = await fetch(`/api/gerar-imagem-gemini/?prompt=${encodeURIComponent(prompt)}`);
@@ -1036,18 +1106,25 @@
                         if (urlInput) urlInput.value = geminiData.local_url;
                         if (previewInfo) previewInfo.textContent = `✓ Imagem gerada com Google Gemini (${geminiData.provedor})!`;
                         if (badge) badge.classList.remove('hidden');
-                        gerouComSucesso = true;
+                        if (spinner) spinner.classList.add('hidden');
+                        return;
                     } else {
-                        console.warn('Gemini não gerou imagem (cota free = 0):', geminiData.erro);
+                        // Resposta oficial do Google Gemini com erro de cota / plano gratuito
+                        if (spinner) spinner.classList.add('hidden');
+                        mostrarAvisoCotaGemini(geminiData.erro || 'O Google Gemini retornou cota zero para modelos de imagem no plano gratuito do AI Studio.');
+                        return; // NUNCA faz fallback silencioso!
                     }
                 } catch (gemErr) {
                     console.warn('Erro ao chamar API Gemini local:', gemErr);
+                    if (spinner) spinner.classList.add('hidden');
+                    mostrarAvisoCotaGemini('Erro ao conectar ao Google Gemini. Verifique a conexão com a internet.');
+                    return;
                 }
             }
 
-            // 3. Fallback Direto para Motor Neural (Sem nenhuma janela popup de login!)
-            if (!gerouComSucesso) {
-                if (spinnerTitle) spinnerTitle.textContent = 'Gerando com Motor Neural HD...';
+            // 3. Geração via Motor Neural Gratuito Alternativo (Pollinations)
+            if (provedor === 'pollinations') {
+                if (spinnerTitle) spinnerTitle.textContent = 'Gerando com Motor Neural Gratuito...';
                 if (spinnerSub) spinnerSub.textContent = 'Aplicando renderização de alta fidelidade 8K';
                 if (previewInfo) previewInfo.textContent = 'Gerando imagem HD com IA...';
 
@@ -1069,7 +1146,6 @@
                         if (previewInfo) previewInfo.textContent = 'Aguarde o intervalo de 45s ou faça upload manual';
                     };
                     imgPreview.src = neuralUrl;
-                    gerouComSucesso = true;
                 }
             }
 

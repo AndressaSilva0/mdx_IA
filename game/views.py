@@ -483,7 +483,9 @@ def api_gerar_imagem_gemini(request):
         return JsonResponse({
             'sucesso': False,
             'erro': resultado.get('error', 'Falha ao gerar imagem com Gemini.'),
-            'chave_aq': os.getenv('GEMINI_API_KEY', '').startswith('AQ.')
+            'cota_zero': resultado.get('cota_zero', False),
+            'google_error_raw': resultado.get('google_error_raw', ''),
+            'chave_configurada': bool(os.getenv('GEMINI_API_KEY')),
         }, status=400)
 
 def trocar_modalidade_equipe(request):

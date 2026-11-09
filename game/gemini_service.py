@@ -267,13 +267,24 @@ def generate_image_with_gemini(prompt: str, model_name: str = "gemini-2.5-flash-
         except errors.APIError as e:
             logger.warning(f"Erro Gemini API no modelo {m} ({e.code}): {e.message}")
             ultimo_erro = f"Gemini API Error ({e.code}): {e.message}"
+            if e.code == 429 or "RESOURCE_EXHAUSTED" in str(e) or "free_tier_requests" in str(e):
+                return {
+                    "success": False,
+                    "cota_zero": True,
+                    "error": (
+                        "O Google Gemini foi chamado com sucesso, mas a API retornou erro 429 (Cota Free = 0). "
+                        "No Google AI Studio gratuito, a cota de geração de imagens é 0 requisições por dia. "
+                        "Para gerar imagens nativas com gemini-2.5-flash-image, o Google exige ativar o faturamento (Pay-as-you-go) em aistudio.google.com."
+                    ),
+                    "google_error_raw": e.message
+                }
             if e.code == 401 or "UNAUTHENTICATED" in str(e):
                 return {
                     "success": False,
+                    "cota_zero": False,
                     "error": (
                         "Chave não autenticada (401). "
-                        "Para gerar imagens nativas com o Gemini, use uma chave do Google AI Studio "
-                        "(aistudio.google.com/app/apikey) que inicia com 'AIzaSy...'."
+                        "Verifique se a chave GEMINI_API_KEY no arquivo .env foi copiada corretamente do Google AI Studio."
                     )
                 }
             continue
