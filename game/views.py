@@ -5,6 +5,7 @@ from django.conf import settings
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 import csv
+import os
 
 from .models import Challenge, ParticipantAttempt
 from .utils import calculate_prompt_similarity, generate_ai_image_url, download_and_save_ai_image
@@ -387,6 +388,66 @@ def api_otimizar_prompt_imagem(request):
         'imagem_url': img_url
     })
 
+def api_salvar_imagem_desafio(request):
+    """
+    Endpoint AJAX: Recebe imagem em Base64 (gerada via Puter.js / Canvas no frontend)
+    ou URL e salva como arquivo JPG permanente em media/challenges/.
+    Garante total estabilidade e funcionamento offline no estande.
+    """
+    if not check_equipe_permission(request):
+        return JsonResponse({'sucesso': False, 'erro': 'Não autorizado.'}, status=403)
+
+    if request.method != 'POST':
+        return JsonResponse({'sucesso': False, 'erro': 'Método inválido.'}, status=405)
+
+    import json
+    import base64
+    import time
+
+    try:
+        if request.body:
+            data = json.loads(request.body.decode('utf-8'))
+        else:
+            data = request.POST
+    except Exception:
+        data = request.POST
+
+    image_data = data.get('image_data', '').strip()
+    image_url = data.get('image_url', '').strip()
+
+    if not image_data and not image_url:
+        return JsonResponse({'sucesso': False, 'erro': 'Nenhuma imagem enviada.'}, status=400)
+
+    filename = f"desafio_ia_{int(time.time())}.jpg"
+    rel_path = f"challenges/{filename}"
+    full_path = os.path.join(settings.MEDIA_ROOT, rel_path)
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+    try:
+        if image_data.startswith('data:image'):
+            # Base64 gerado pelo Puter.js no navegador
+            header, encoded = image_data.split(',', 1)
+            raw_bytes = base64.b64decode(encoded)
+            with open(full_path, 'wb') as f:
+                f.write(raw_bytes)
+        elif image_url.startswith('http'):
+            # URL externa
+            import urllib.request
+            req = urllib.request.Request(image_url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=30) as resp, open(full_path, 'wb') as f:
+                f.write(resp.read())
+        else:
+            return JsonResponse({'sucesso': False, 'erro': 'Formato não suportado.'}, status=400)
+
+        local_media_url = f"/media/{rel_path}"
+        return JsonResponse({
+            'sucesso': True,
+            'local_url': local_media_url,
+            'rel_path': rel_path
+        })
+    except Exception as e:
+        return JsonResponse({'sucesso': False, 'erro': str(e)}, status=500)
+
 def trocar_modalidade_equipe(request):
     """
     Alterna para a modalidade 'Equipe' mediante conferência da Senha de 6 Dígitos.
@@ -501,7 +562,20 @@ def operator_desafios(request):
                     novo_desafio.imagem = request.FILES['imagem']
                     novo_desafio.save()
                 elif imagem_url:
-                    novo_desafio.imagem_url = imagem_url
+                    if imagem_url.startswith('data:image'):
+                        import base64
+                        import time
+                        header, encoded = imagem_url.split(',', 1)
+                        raw_bytes = base64.b64decode(encoded)
+                        rel_path = f"challenges/desafio_{novo_desafio.id}_{int(time.time())}.jpg"
+                        full_path = os.path.join(settings.MEDIA_ROOT, rel_path)
+                        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                        with open(full_path, 'wb') as f:
+                            f.write(raw_bytes)
+                        novo_desafio.imagem = rel_path
+                        novo_desafio.imagem_url = ""
+                    else:
+                        novo_desafio.imagem_url = imagem_url
                     novo_desafio.save()
                 else:
                     # Se não informou arquivo nem URL, gera automaticamente a imagem com IA a partir do prompt otimizado!

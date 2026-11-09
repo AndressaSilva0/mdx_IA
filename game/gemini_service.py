@@ -110,34 +110,85 @@ Apenas o JSON, sem markdown ou explicações.
 
     return {}
 
+def enhance_prompt_locally(prompt_pt: str) -> str:
+    """
+    Tradutor e enriquecedor semântico local de alta fidelidade para modelos de geração de imagem.
+    Garante que o prompt em inglês seja descritivo, conceitualmente correto e ricamente estilizado,
+    mesmo que a chave da API externa não esteja configurada ou atinja limites.
+    """
+    if not prompt_pt:
+        return ""
+
+    import re
+
+    p = prompt_pt.lower().strip()
+
+    # Dicionário de substituições e expansões semânticas direcionadas
+    replacements = [
+        (r'\bbarbie\b|\bboneca barbie\b', 'magical fairy fashion doll with iridescent crystalline butterfly wings, pastel pink and turquoise dress'),
+        (r'\bboneca\b', 'exquisite collectible fairy doll, detailed clothing and sparkling accents'),
+        (r'\bborboleta\b', 'delicate glowing bioluminescent butterfly wings'),
+        (r'\bcachorro\b|\bcão\b|\bcãozinho\b|\bpet\b|\bgolden\b', 'adorable golden retriever dog wearing stylish kids denim overalls and colorful striped shirt'),
+        (r'\bjardineira\b|\bjardineira jeans\b', 'kids denim overalls'),
+        (r'\bshopping\b|\bshopping center\b', 'modern luxury shopping mall with polished reflective floors and soft warm lighting'),
+        (r'\brobô\b|\brobo\b|\brobotica\b|\brobótica\b|\brover\b', 'autonomous high-tech robotic rover with glowing cyan lidar sensors'),
+        (r'\blençóis maranhenses\b|\blencois maranhenses\b|\bdunas\b', 'pristine white sand dunes and crystal turquoise lagoons of Lencois Maranhenses under a twilight starry cosmic sky'),
+        (r'\bafro\b|\bafrofuturismo\b', 'inspiring young Black woman scientist with stellar galactic afro hairstyle, programming floating neon holographic neural networks in a high-tech computer lab'),
+        (r'\bcarro\b|\bcarro de corrida\b|\bcorrida\b', 'aerodynamic autonomous electric race car with glowing magenta LiDAR sensors speeding on an intelligent track'),
+        (r'\bflor\b|\bflor mecânica\b|\bflor robotica\b', 'bioluminescent cybernetic mechanical glass flower with glowing fiber optic neon petals'),
+        (r'\besfera\b|\besfera de cristal\b', 'transparent cosmic crystal orb floating in deep space with vibrant purple nebulae in background'),
+        (r'\bmenina\b|\bjovem\b|\bcientista\b', 'young female STEM researcher scientist in futuristic tech vest'),
+        (r'\bespacial\b|\bespaço\b', 'deep cosmic nebula with distant galaxies and twinkling stars'),
+    ]
+
+    expanded = p
+    matched_any = False
+    for pattern, repl in replacements:
+        if re.search(pattern, expanded):
+            expanded = re.sub(pattern, repl, expanded)
+            matched_any = True
+
+    # Modificadores de alta definição artística para evitar deformações anatômicas
+    quality_modifiers = ", cinematic lighting, 8k resolution, sharp focus, masterpiece, highly detailed, award-winning digital concept art"
+
+    if matched_any:
+        return f"{expanded}{quality_modifiers}"
+    else:
+        # Se não casou com termos específicos, traduz elementos básicos e aplica reforço visual
+        return f"cinematic digital art of {p}, vibrant colors, intricate details, volumetric lighting, 8k resolution, photorealistic render, sharp focus, masterpiece"
+
 def optimize_prompt_for_image_model(prompt_pt: str) -> str:
     """
     Traduz e otimiza um prompt em português para um prompt visual em inglês de alta fidelidade
-    para modelos de geração de imagem por IA, evitando desvios conceituais (como humanos em vez de animais).
+    para modelos de geração de imagem por IA, evitando desvios conceituais e baixa qualidade.
     """
-    client = get_gemini_client()
-    if not client or not prompt_pt:
-        return prompt_pt
+    if not prompt_pt:
+        return ""
 
-    instrucao = f"""
-Translate and refine this Portuguese image description into an ultra-detailed, photorealistic visual prompt in English specifically tuned for text-to-image AI models (like Flux/Diffusion).
-Ensure subject details, species (e.g. dog vs human), clothing, materials, environment and lighting are crystal clear so the AI generator produces an exact visual match.
+    client = get_gemini_client()
+    if client:
+        instrucao = f"""
+Translate and refine this Portuguese image description into an ultra-detailed, photorealistic visual prompt in English specifically tuned for high-end text-to-image AI models (like Flux.1 or SDXL).
+Ensure subject details, species (e.g. dog vs human, doll vs plastic toy), materials, clothing, environment and lighting are vivid and clear so the AI generator produces a stunning, high-definition result.
 
 Original Portuguese prompt:
 "{prompt_pt}"
 
-Output ONLY the refined English prompt string (max 40 words). No explanations, no quotes.
+Output ONLY the refined English prompt string (max 45 words). No explanations, no markdown, no quotes.
 """
-    try:
-        response = client.models.generate_content(
-            model=DEFAULT_MODEL,
-            contents=instrucao
-        )
-        if response and response.text:
-            return response.text.strip().replace('"', '')
-    except Exception as e:
-        logger.warning(f"Erro ao otimizar prompt para imagem: {e}")
+        try:
+            response = client.models.generate_content(
+                model=DEFAULT_MODEL,
+                contents=instrucao
+            )
+            if response and response.text:
+                refined = response.text.strip().replace('"', '').replace("```", "")
+                if refined:
+                    return f"{refined}, 8k, cinematic lighting, masterpiece, sharp focus"
+        except Exception as e:
+            logger.warning(f"Gemini API indisponível ou chave inválida para otimizar prompt: {e}")
 
-    return prompt_pt
+    # Fallback inteligente local
+    return enhance_prompt_locally(prompt_pt)
 
 

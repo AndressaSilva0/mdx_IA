@@ -48,7 +48,17 @@
             width: max-content;
             animation: marquee 28s linear infinite;
         }
+        @keyframes alertShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: alertShake 0.4s ease-in-out;
+        }
     </style>
+    <!-- Puter.js para Geração de Imagens com FLUX.1 no Navegador sem chaves -->
+    <script src="https://js.puter.com/v2/"></script>
 </head>
 <body class="min-h-screen text-slate-800 antialiased selection:bg-[#FEBE01] selection:text-[#1E0B36]">
 
@@ -216,6 +226,9 @@
                         <button type="button" onclick="carregarPreset('carro')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
                             🏎️ Carro Autônomo
                         </button>
+                        <button type="button" onclick="carregarPreset('fada')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🦋 Fada Borboleta
+                        </button>
                     </div>
                 </div>
 
@@ -233,7 +246,7 @@
                         </p>
                     </div>
 
-                    <form method="POST" action="{% url 'game:operator_desafios' %}" enctype="multipart/form-data" class="space-y-4">
+                    <form id="form_cadastro_desafio" method="POST" action="{% url 'game:operator_desafios' %}" enctype="multipart/form-data" class="space-y-4">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="create_challenge">
 
@@ -345,26 +358,76 @@
                             </div>
 
                             <!-- Prévia da Imagem Gerada ou Selecionada -->
-                            <div id="preview_box" class="text-center p-3 bg-white rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm space-y-2">
+                            <div id="preview_box" class="text-center p-3 bg-white rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm space-y-2 relative">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-[10px] font-black text-[#1E0B36] uppercase">Prévia em Tempo Real da Imagem:</span>
-                                    <span id="preview_info_tag" class="text-[10px] text-purple-700 font-bold">Aguardando prompt...</span>
+                                    <span class="text-[10px] font-black text-[#1E0B36] uppercase">Prévia em Tempo Real:</span>
+                                    <span id="preview_info_tag" class="text-[10px] text-purple-700 font-bold">⚪ Aguardando prompt para gerar...</span>
                                 </div>
-                                <div class="w-full h-48 rounded-xl overflow-hidden bg-slate-900 border border-[#1E0B36] relative flex items-center justify-center">
-                                    <img id="img_preview" src="{% static 'game/img/pet_fashionista.jpg' %}" alt="Prévia da Imagem" class="w-full h-full object-cover">
-                                    <div id="img_loading_spinner" class="hidden absolute inset-0 bg-[#1E0B36]/80 flex flex-col items-center justify-center gap-2 text-white text-xs font-black">
-                                        <div class="w-8 h-8 border-4 border-[#FEBE01] border-t-transparent rounded-full animate-spin"></div>
-                                        <span>Gerando Imagem com IA...</span>
+
+                                <div class="w-full h-52 rounded-xl overflow-hidden bg-[#FAF5FF] border-2 border-[#1E0B36] relative flex items-center justify-center">
+                                    <!-- Imagem de Prévia com placeholder vazio por padrão (sem o cachorro que confundia!) -->
+                                    <img id="img_preview" src="{% static 'game/img/placeholder_empty.svg' %}" alt="Prévia da Imagem" class="w-full h-full object-cover">
+                                    
+                                    <!-- Spinner de Carregamento com IA -->
+                                    <div id="img_loading_spinner" class="hidden absolute inset-0 bg-[#1E0B36]/85 backdrop-blur-xs flex flex-col items-center justify-center gap-2.5 text-white text-xs font-black p-4 text-center z-10">
+                                        <div class="w-9 h-9 border-4 border-[#FEBE01] border-t-transparent rounded-full animate-spin"></div>
+                                        <div>
+                                            <span id="spinner_title_text" class="text-sm font-black text-[#FEBE01]">Gerando Imagem com IA...</span>
+                                            <p id="spinner_sub_text" class="text-[11px] text-slate-300 font-bold mt-0.5">Criando visual em alta fidelidade a partir do prompt</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- AVISO EM VERMELHO DE CAMPOS OBRIGATÓRIOS (Substitui o window.alert!) -->
+                                    <div id="aviso_campos_obrigatorios" class="hidden absolute inset-0 z-20 bg-rose-950/90 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center animate-shake">
+                                        <div class="w-12 h-12 rounded-2xl bg-rose-500 border-2 border-white text-white flex items-center justify-center font-black text-2xl shadow-neo-pop-sm mb-2">
+                                            🚨
+                                        </div>
+                                        <span class="bg-white text-rose-700 font-black text-[10px] uppercase px-3 py-0.5 rounded-full border border-rose-200 tracking-wide mb-1">
+                                            ATENÇÃO: CAMPOS OBRIGATÓRIOS
+                                        </span>
+                                        <h4 class="text-white text-sm font-black leading-tight mb-1">
+                                            Obrigatório preencher o Prompt e Palavras-Chave!
+                                        </h4>
+                                        <p class="text-rose-100 text-[11px] font-bold max-w-xs leading-snug mb-3">
+                                            Para a IA conseguir criar a imagem de referência do estande, preencha o <strong>Prompt Original</strong> e as <strong>Palavras-Chave</strong> nos campos acima.
+                                        </p>
+                                        <div class="flex gap-2">
+                                            <button 
+                                                type="button" 
+                                                onclick="focarCamposObrigatorios()" 
+                                                class="bg-[#FEBE01] hover:bg-amber-300 text-[#1E0B36] font-black text-xs py-2 px-4 rounded-xl border-2 border-[#1E0B36] shadow-neo-pop-sm cursor-pointer transition hover:translate-y-0.5"
+                                            >
+                                                ✍️ Preencher Agora
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onclick="fecharAvisoObrigatorio()" 
+                                                class="bg-white/20 hover:bg-white/30 text-white font-bold text-xs py-2 px-3 rounded-xl border border-white/40 cursor-pointer transition"
+                                            >
+                                                ✕ Fechar
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="flex items-center gap-2 pt-1">
+                                <!-- Seletor de Motor IA e Botão de Geração -->
+                                <div class="pt-1 space-y-2">
+                                    <div class="flex items-center justify-between text-[11px] font-black text-slate-700 px-1">
+                                        <span>Provedor de Imagem IA:</span>
+                                        <select id="seletor_provedor_ia" class="text-[11px] font-black bg-[#FAF5FF] border-2 border-[#1E0B36] rounded-lg px-2 py-1 text-[#6D28D9] focus:outline-none cursor-pointer">
+                                            <option value="flux" selected>🌟 FLUX.1 Ultra (Alta Qualidade)</option>
+                                            <option value="pollinations">⚡ Motor Neural Rápido</option>
+                                        </select>
+                                    </div>
+
                                     <button 
                                         type="button" 
                                         onclick="gerarPreviaImagemIA()"
-                                        class="flex-1 bg-[#10B981] hover:bg-emerald-600 text-white font-black text-xs py-2 px-3 rounded-xl border border-[#1E0B36] shadow-xs hover:translate-y-0.5 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                                        id="btn_gerar_imagem_ia"
+                                        class="w-full bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white font-black text-xs py-2.5 px-3 rounded-xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center justify-center gap-1.5 cursor-pointer"
                                     >
-                                        <span>🎨 Gerar Nova Variação com IA</span>
+                                        <span id="btn_gerar_icon">🎨</span>
+                                        <span id="btn_gerar_text">Gerar Nova Imagem com IA a partir do Prompt</span>
                                     </button>
                                 </div>
                             </div>
@@ -383,13 +446,13 @@
                             </div>
 
                             <div class="pt-2 border-t border-purple-200">
-                                <span class="text-[10px] text-slate-700 font-bold block mb-1">OU 2. URL da Imagem (preenchida automaticamente pela IA):</span>
+                                <span class="text-[10px] text-slate-700 font-bold block mb-1">OU 2. URL da Imagem (preenchida automaticamente pela IA ou arquivo local):</span>
                                 <input 
                                     type="text" 
                                     name="imagem_url" 
                                     id="id_imagem_url"
-                                    value="/media/challenges/pet_fashionista.jpg"
-                                    placeholder="https://... ou /media/challenges/..."
+                                    value=""
+                                    placeholder="Vazia - preenchida automaticamente pela IA ou deixe para upload"
                                     onchange="previewUrlImage(this.value)"
                                     class="w-full px-3 py-2 rounded-xl border-2 border-slate-300 text-xs bg-white font-semibold focus:outline-none focus:border-[#7C3AED]"
                                 >
@@ -722,6 +785,15 @@
                 palavras_chave: "carro autônomo, sensores lidar, pista inteligente, corrida robótica, circuitos neon",
                 dica_mascote: "Oi, {nome}! Foque nos sensores luminosos do carrinho e no conceito de veículo autônomo de corrida!",
                 imagem_url: "/media/challenges/carro_autonomo.jpg"
+            },
+            'fada': {
+                titulo: "Fada Borboleta Encantada",
+                numero_rodada: "03",
+                estilo_tag: "Arte Fantasia & Alta Definição",
+                prompt_original: "Uma adorável boneca fada mágica com delicadas asas translúcidas de borboleta brilhando em tons cristalinos de rosa e turquesa, vestido cintilante de alta costura em uma floresta bioluminescente, iluminação suave cinematográfica 8k.",
+                palavras_chave: "fada borboleta, asas cristalinas, vestido cintilante, boneca fada, floresta bioluminescente",
+                dica_mascote: "Oi, {nome}! Repare nas asas translúcidas de borboleta e no vestido mágico brilhante da fada!",
+                imagem_url: "/media/challenges/barbie_butterfly.jpg"
             }
         };
 
@@ -813,51 +885,188 @@
             }
         }
 
+        // Funções para Controle do Aviso em Vermelho de Campos Obrigatórios (Sem window.alert!)
+        function mostrarAvisoObrigatorio() {
+            const aviso = document.getElementById('aviso_campos_obrigatorios');
+            const promptInput = document.getElementById('id_prompt_original');
+            const palavrasInput = document.getElementById('id_palavras_chave');
+
+            if (aviso) {
+                aviso.classList.remove('hidden');
+            }
+
+            if (promptInput && !promptInput.value.trim()) {
+                promptInput.classList.add('ring-2', 'ring-rose-500', 'border-rose-500', 'bg-rose-50/50');
+            }
+            if (palavrasInput && !palavrasInput.value.trim()) {
+                palavrasInput.classList.add('ring-2', 'ring-rose-500', 'border-rose-500', 'bg-rose-50/50');
+            }
+
+            // Garante foco e rolagem até os campos
+            if (promptInput && !promptInput.value.trim()) {
+                promptInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function fecharAvisoObrigatorio() {
+            const aviso = document.getElementById('aviso_campos_obrigatorios');
+            if (aviso) aviso.classList.add('hidden');
+        }
+
+        function focarCamposObrigatorios() {
+            fecharAvisoObrigatorio();
+            const promptInput = document.getElementById('id_prompt_original');
+            const palavrasInput = document.getElementById('id_palavras_chave');
+
+            if (promptInput && !promptInput.value.trim()) {
+                promptInput.focus();
+                promptInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (palavrasInput && !palavrasInput.value.trim()) {
+                palavrasInput.focus();
+                palavrasInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Remove destaques vermelhos quando o operador digita nos campos
+        document.addEventListener('DOMContentLoaded', () => {
+            const promptInput = document.getElementById('id_prompt_original');
+            const palavrasInput = document.getElementById('id_palavras_chave');
+            const formCadastro = document.getElementById('form_cadastro_desafio');
+
+            const limparErro = (el) => {
+                el.classList.remove('ring-2', 'ring-rose-500', 'border-rose-500', 'bg-rose-50/50');
+                if ((!promptInput || promptInput.value.trim()) && (!palavrasInput || palavrasInput.value.trim())) {
+                    fecharAvisoObrigatorio();
+                }
+            };
+
+            if (promptInput) promptInput.addEventListener('input', () => limparErro(promptInput));
+            if (palavrasInput) palavrasInput.addEventListener('input', () => limparErro(palavrasInput));
+
+            if (formCadastro) {
+                formCadastro.addEventListener('submit', (e) => {
+                    const pVal = promptInput ? promptInput.value.trim() : '';
+                    const kVal = palavrasInput ? palavrasInput.value.trim() : '';
+                    if (!pVal || !kVal) {
+                        e.preventDefault();
+                        mostrarAvisoObrigatorio();
+                    }
+                });
+            }
+        });
+
         async function gerarPreviaImagemIA() {
             const promptInput = document.getElementById('id_prompt_original');
+            const palavrasInput = document.getElementById('id_palavras_chave');
             const prompt = promptInput ? promptInput.value.trim() : '';
-            if (!prompt) {
-                alert('⚠️ Digite primeiro o "Prompt Original de Referência" acima para que a IA possa gerar a imagem correspondente!');
-                if (promptInput) promptInput.focus();
+            const palavras = palavrasInput ? palavrasInput.value.trim() : '';
+
+            // Validação visual sem alerts cinzas do navegador!
+            if (!prompt || !palavras) {
+                mostrarAvisoObrigatorio();
                 return;
             }
 
+            fecharAvisoObrigatorio();
+
             const spinner = document.getElementById('img_loading_spinner');
+            const spinnerTitle = document.getElementById('spinner_title_text');
+            const spinnerSub = document.getElementById('spinner_sub_text');
             const previewInfo = document.getElementById('preview_info_tag');
             const badge = document.getElementById('badge_imagem_status');
+            const imgPreview = document.getElementById('img_preview');
+            const urlInput = document.getElementById('id_imagem_url');
+            const provedor = document.getElementById('seletor_provedor_ia') ? document.getElementById('seletor_provedor_ia').value : 'flux';
+
             if (spinner) spinner.classList.remove('hidden');
-            if (previewInfo) previewInfo.textContent = 'Otimizando e gerando imagem com IA...';
 
-            const seed = Math.floor(Math.random() * 100000);
-
+            // 1. Obtém o prompt traduzido e enriquecido do backend
+            let promptVisual = prompt;
             try {
-                const response = await fetch(`/api/otimizar-prompt-imagem/?prompt=${encodeURIComponent(prompt)}&seed=${seed}`);
-                const result = await response.json();
-
-                if (result.sucesso && result.imagem_url) {
-                    const urlInput = document.getElementById('id_imagem_url');
-                    if (urlInput) urlInput.value = result.imagem_url;
-
-                    const imgPreview = document.getElementById('img_preview');
-                    if (imgPreview) {
-                        imgPreview.onload = function() {
-                            if (spinner) spinner.classList.add('hidden');
-                            if (badge) badge.classList.remove('hidden');
-                            if (previewInfo) previewInfo.textContent = '✓ Nova variação de imagem gerada com IA!';
-                        };
-                        imgPreview.onerror = function() {
-                            if (spinner) spinner.classList.add('hidden');
-                        };
-                        imgPreview.src = result.imagem_url;
-                    }
-                } else {
-                    if (spinner) spinner.classList.add('hidden');
-                    alert('Falha ao gerar variação. Tente novamente.');
+                const optResp = await fetch(`/api/otimizar-prompt-imagem/?prompt=${encodeURIComponent(prompt)}`);
+                const optData = await optResp.json();
+                if (optData.sucesso && optData.prompt_en) {
+                    promptVisual = optData.prompt_en;
                 }
-            } catch (e) {
-                console.error(e);
-                if (spinner) spinner.classList.add('hidden');
+            } catch (err) {
+                console.warn('Otimização online indisponível, usando prompt direto:', err);
             }
+
+            // 2. Geração via FLUX.1 (Puter.js) ou Fallback para Motor Neural
+            let gerouComSucesso = false;
+
+            if (provedor === 'flux' && window.puter && puter.ai && puter.ai.txt2img) {
+                if (spinnerTitle) spinnerTitle.textContent = 'Gerando com FLUX.1 Ultra (Alta Qualidade)...';
+                if (spinnerSub) spinnerSub.textContent = 'Criando arte fotorrealista sem distorções plásticas';
+                if (previewInfo) previewInfo.textContent = 'Processando com FLUX.1 Ultra...';
+
+                try {
+                    const imgElement = await puter.ai.txt2img(promptVisual);
+                    if (imgElement && imgElement.src) {
+                        imgPreview.src = imgElement.src;
+                        
+                        // Salva permanentemente no servidor local (media/challenges/)
+                        try {
+                            const saveResp = await fetch('/api/salvar-imagem-gerada/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                                },
+                                body: JSON.stringify({
+                                    image_data: imgElement.src,
+                                    prefixo: 'flux'
+                                })
+                            });
+                            const saveData = await saveResp.json();
+                            if (saveData.sucesso && saveData.local_url) {
+                                if (urlInput) urlInput.value = saveData.local_url;
+                                if (previewInfo) previewInfo.textContent = '✓ Imagem FLUX.1 salva em Alta Definição!';
+                            } else {
+                                if (urlInput) urlInput.value = imgElement.src;
+                                if (previewInfo) previewInfo.textContent = '✓ Imagem FLUX.1 gerada!';
+                            }
+                        } catch (saveErr) {
+                            if (urlInput) urlInput.value = imgElement.src;
+                            if (previewInfo) previewInfo.textContent = '✓ Imagem FLUX.1 gerada!';
+                        }
+
+                        if (badge) badge.classList.remove('hidden');
+                        gerouComSucesso = true;
+                    }
+                } catch (fluxErr) {
+                    console.warn('FLUX.1 Puter indisponível, alternando para motor neural:', fluxErr);
+                }
+            }
+
+            // Fallback para Motor Neural com prompt enriquecido em alta resolução
+            if (!gerouComSucesso) {
+                if (spinnerTitle) spinnerTitle.textContent = 'Gerando com Motor Neural HD...';
+                if (spinnerSub) spinnerSub.textContent = 'Aplicando renderização de alta fidelidade 8K';
+                if (previewInfo) previewInfo.textContent = 'Gerando imagem HD com IA...';
+
+                const seed = Math.floor(Math.random() * 1000000);
+                const encodedPrompt = encodeURIComponent(promptVisual);
+                const neuralUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${seed}`;
+
+                if (urlInput) urlInput.value = neuralUrl;
+
+                if (imgPreview) {
+                    imgPreview.onload = function() {
+                        if (spinner) spinner.classList.add('hidden');
+                        if (badge) badge.classList.remove('hidden');
+                        if (previewInfo) previewInfo.textContent = '✓ Nova imagem HD gerada com IA!';
+                    };
+                    imgPreview.onerror = function() {
+                        if (spinner) spinner.classList.add('hidden');
+                        if (previewInfo) previewInfo.textContent = 'Erro ao carregar prévia remota.';
+                    };
+                    imgPreview.src = neuralUrl;
+                    gerouComSucesso = true;
+                }
+            }
+
+            if (spinner) spinner.classList.add('hidden');
         }
 
         function previewLocalImage(input) {
@@ -899,22 +1108,37 @@
         }
 
         function limparFormulario() {
-            if (confirm('Deseja limpar todos os campos do formulário de cadastro?')) {
-                document.getElementById('id_titulo').value = '';
-                document.getElementById('id_numero_rodada').value = '03';
-                document.getElementById('id_estilo_tag').value = 'Estilo Mágico & Futurista';
-                document.getElementById('id_prompt_original').value = '';
-                document.getElementById('id_palavras_chave').value = '';
-                document.getElementById('id_dica_mascote').value = '';
-                document.getElementById('id_imagem_url').value = '';
-                const imgFile = document.getElementById('id_imagem_file');
-                if (imgFile) imgFile.value = '';
-                const previewInfo = document.getElementById('preview_info_tag');
-                if (previewInfo) previewInfo.textContent = 'Aguardando seleção...';
-                const badge = document.getElementById('badge_imagem_status');
-                if (badge) badge.classList.add('hidden');
+            document.getElementById('id_titulo').value = '';
+            document.getElementById('id_numero_rodada').value = '03';
+            document.getElementById('id_estilo_tag').value = 'Estilo Mágico & Futurista';
+            document.getElementById('id_prompt_original').value = '';
+            document.getElementById('id_palavras_chave').value = '';
+            document.getElementById('id_dica_mascote').value = '';
+            document.getElementById('id_imagem_url').value = '';
+            
+            const imgFile = document.getElementById('id_imagem_file');
+            if (imgFile) imgFile.value = '';
+
+            const imgPreview = document.getElementById('img_preview');
+            if (imgPreview) {
+                // Reseta para o placeholder vazio - NUNCA o cachorro!
+                imgPreview.src = "{% static 'game/img/placeholder_empty.svg' %}";
             }
+
+            const previewInfo = document.getElementById('preview_info_tag');
+            if (previewInfo) previewInfo.textContent = '⚪ Nenhuma imagem gerada ainda';
+
+            const badge = document.getElementById('badge_imagem_status');
+            if (badge) badge.classList.add('hidden');
+
+            fecharAvisoObrigatorio();
+
+            const promptInput = document.getElementById('id_prompt_original');
+            const palavrasInput = document.getElementById('id_palavras_chave');
+            if (promptInput) promptInput.classList.remove('ring-2', 'ring-rose-500', 'border-rose-500', 'bg-rose-50/50');
+            if (palavrasInput) palavrasInput.classList.remove('ring-2', 'ring-rose-500', 'border-rose-500', 'bg-rose-50/50');
         }
+
         function abrirModalExcluir(id, rodada, titulo) {
             const idInput = document.getElementById('modal-excluir-challenge-id');
             const rodadaSpan = document.getElementById('modal-excluir-rodada');

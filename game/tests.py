@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase, Client
 from django.urls import reverse
 from game.models import Challenge, ParticipantAttempt
@@ -326,5 +327,23 @@ class MDXGameTests(TestCase):
         }, follow=True)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(Challenge.objects.filter(id=c.id).count(), 0)
+
+    def test_salvar_imagem_desafio_base64(self):
+        session = self.client.session
+        session['is_equipe'] = True
+        session.save()
+
+        # Mini 1x1 GIF em base64
+        tiny_b64 = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        url = reverse('game:api_salvar_imagem_gerada')
+        res = self.client.post(
+            url,
+            data=json.dumps({'image_data': tiny_b64}),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertTrue(data['sucesso'])
+        self.assertTrue(data['local_url'].startswith('/media/challenges/'))
 
 
