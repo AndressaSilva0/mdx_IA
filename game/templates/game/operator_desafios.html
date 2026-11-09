@@ -57,8 +57,6 @@
             animation: alertShake 0.4s ease-in-out;
         }
     </style>
-    <!-- Puter.js para Geração de Imagens com FLUX.1 no Navegador sem chaves -->
-    <script src="https://js.puter.com/v2/"></script>
 </head>
 <body class="min-h-screen text-slate-800 antialiased selection:bg-[#FEBE01] selection:text-[#1E0B36]">
 
@@ -416,8 +414,7 @@
                                         <span>Provedor de Imagem IA:</span>
                                         <select id="seletor_provedor_ia" class="text-[11px] font-black bg-[#FAF5FF] border-2 border-[#1E0B36] rounded-lg px-2 py-1 text-[#6D28D9] focus:outline-none cursor-pointer">
                                             <option value="gemini" selected>✨ Google Gemini (gemini-2.5-flash-image)</option>
-                                            <option value="flux">🌟 FLUX.1 Ultra (via Puter.js)</option>
-                                            <option value="pollinations">⚡ Motor Neural Rápido</option>
+                                            <option value="pollinations">⚡ Motor Neural Gratuito</option>
                                         </select>
                                     </div>
 
@@ -425,11 +422,16 @@
                                         type="button" 
                                         onclick="gerarPreviaImagemIA()"
                                         id="btn_gerar_imagem_ia"
-                                        class="w-full bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white font-black text-xs py-2.5 px-3 rounded-xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                                        class="w-full bg-gradient-to-r from-[#10B981] to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white font-black text-xs py-2.5 px-3 rounded-xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <span id="btn_gerar_icon">🎨</span>
                                         <span id="btn_gerar_text">Gerar Nova Imagem com IA a partir do Prompt</span>
                                     </button>
+
+                                    <div id="cooldown_aviso" class="hidden text-[10px] text-amber-700 font-bold bg-amber-50 p-2 rounded-xl border border-amber-300 flex items-center justify-between">
+                                        <span>⏳ Aguarde o intervalo da IA:</span>
+                                        <span id="cooldown_contador" class="font-black text-[#1E0B36]">45s</span>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -956,6 +958,30 @@
             }
         });
 
+        let cooldownTimer = null;
+        function iniciarCooldown(segundos = 45) {
+            const aviso = document.getElementById('cooldown_aviso');
+            const contador = document.getElementById('cooldown_contador');
+            const btn = document.getElementById('btn_gerar_imagem_ia');
+
+            if (!aviso || !contador || !btn) return;
+
+            let restante = segundos;
+            aviso.classList.remove('hidden');
+            btn.disabled = true;
+
+            if (cooldownTimer) clearInterval(cooldownTimer);
+            cooldownTimer = setInterval(() => {
+                restante--;
+                contador.textContent = `${restante}s`;
+                if (restante <= 0) {
+                    clearInterval(cooldownTimer);
+                    aviso.classList.add('hidden');
+                    btn.disabled = false;
+                }
+            }, 1000);
+        }
+
         async function gerarPreviaImagemIA() {
             const promptInput = document.getElementById('id_prompt_original');
             const palavrasInput = document.getElementById('id_palavras_chave');
@@ -977,7 +1003,7 @@
             const badge = document.getElementById('badge_imagem_status');
             const imgPreview = document.getElementById('img_preview');
             const urlInput = document.getElementById('id_imagem_url');
-            const provedor = document.getElementById('seletor_provedor_ia') ? document.getElementById('seletor_provedor_ia').value : 'flux';
+            const provedor = document.getElementById('seletor_provedor_ia') ? document.getElementById('seletor_provedor_ia').value : 'gemini';
 
             if (spinner) spinner.classList.remove('hidden');
 
@@ -993,7 +1019,7 @@
                 console.warn('Otimização online indisponível, usando prompt direto:', err);
             }
 
-            // 2. Geração via Google Gemini (gemini-2.5-flash-image) ou FLUX.1
+            // 2. Geração via Google Gemini (gemini-2.5-flash-image)
             let gerouComSucesso = false;
 
             if (provedor === 'gemini') {
@@ -1012,62 +1038,14 @@
                         if (badge) badge.classList.remove('hidden');
                         gerouComSucesso = true;
                     } else {
-                        console.warn('Gemini não retornou imagem:', geminiData.erro);
-                        if (geminiData.chave_aq) {
-                            console.info('Chave atual começa com AQ.; ativando fallback automático para FLUX.1 Ultra');
-                        }
+                        console.warn('Gemini não gerou imagem (cota free = 0):', geminiData.erro);
                     }
                 } catch (gemErr) {
                     console.warn('Erro ao chamar API Gemini local:', gemErr);
                 }
             }
 
-            // Se o Gemini não estiver disponível ou provedor for FLUX, gera via FLUX.1 (Puter.js)
-            if (!gerouComSucesso && (provedor === 'flux' || provedor === 'gemini') && window.puter && puter.ai && puter.ai.txt2img) {
-                if (spinnerTitle) spinnerTitle.textContent = 'Gerando com FLUX.1 Ultra (Alta Qualidade)...';
-                if (spinnerSub) spinnerSub.textContent = 'Criando arte fotorrealista sem distorções plásticas';
-                if (previewInfo) previewInfo.textContent = 'Processando com FLUX.1 Ultra...';
-
-                try {
-                    const imgElement = await puter.ai.txt2img(promptVisual);
-                    if (imgElement && imgElement.src) {
-                        imgPreview.src = imgElement.src;
-                        
-                        // Salva permanentemente no servidor local (media/challenges/)
-                        try {
-                            const saveResp = await fetch('/api/salvar-imagem-gerada/', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                                },
-                                body: JSON.stringify({
-                                    image_data: imgElement.src,
-                                    prefixo: 'flux'
-                                })
-                            });
-                            const saveData = await saveResp.json();
-                            if (saveData.sucesso && saveData.local_url) {
-                                if (urlInput) urlInput.value = saveData.local_url;
-                                if (previewInfo) previewInfo.textContent = '✓ Imagem FLUX.1 salva em Alta Definição!';
-                            } else {
-                                if (urlInput) urlInput.value = imgElement.src;
-                                if (previewInfo) previewInfo.textContent = '✓ Imagem FLUX.1 gerada!';
-                            }
-                        } catch (saveErr) {
-                            if (urlInput) urlInput.value = imgElement.src;
-                            if (previewInfo) previewInfo.textContent = '✓ Imagem FLUX.1 gerada!';
-                        }
-
-                        if (badge) badge.classList.remove('hidden');
-                        gerouComSucesso = true;
-                    }
-                } catch (fluxErr) {
-                    console.warn('FLUX.1 Puter indisponível, alternando para motor neural:', fluxErr);
-                }
-            }
-
-            // Fallback para Motor Neural com prompt enriquecido em alta resolução
+            // 3. Fallback Direto para Motor Neural (Sem nenhuma janela popup de login!)
             if (!gerouComSucesso) {
                 if (spinnerTitle) spinnerTitle.textContent = 'Gerando com Motor Neural HD...';
                 if (spinnerSub) spinnerSub.textContent = 'Aplicando renderização de alta fidelidade 8K';
@@ -1084,15 +1062,19 @@
                         if (spinner) spinner.classList.add('hidden');
                         if (badge) badge.classList.remove('hidden');
                         if (previewInfo) previewInfo.textContent = '✓ Nova imagem HD gerada com IA!';
+                        iniciarCooldown(45);
                     };
                     imgPreview.onerror = function() {
                         if (spinner) spinner.classList.add('hidden');
-                        if (previewInfo) previewInfo.textContent = 'Erro ao carregar prévia remota.';
+                        if (previewInfo) previewInfo.textContent = 'Aguarde o intervalo de 45s ou faça upload manual';
                     };
                     imgPreview.src = neuralUrl;
                     gerouComSucesso = true;
                 }
             }
+
+            if (spinner) spinner.classList.add('hidden');
+        }
 
             if (spinner) spinner.classList.add('hidden');
         }
