@@ -540,19 +540,15 @@
                                                 <span>✏️ Editar / Trocar Imagem</span>
                                             </button>
 
-                                            <!-- Botão de Excluir Rodada -->
-                                            <form method="POST" action="{% url 'game:operator_desafios' %}" class="inline" onsubmit="return confirm('⚠️ Tem certeza que deseja EXCLUIR permanentemente a Rodada {{ des.numero_rodada }} ({{ des.titulo }})?');">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="action" value="delete_challenge">
-                                                <input type="hidden" name="challenge_id" value="{{ des.id }}">
-                                                <button 
-                                                    type="submit" 
-                                                    class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-black text-xs px-3 py-1.5 rounded-xl border border-rose-300 transition flex items-center gap-1 cursor-pointer"
-                                                    title="Excluir este desafio se a imagem não ficou boa"
-                                                >
-                                                    <span>🗑️ Excluir</span>
-                                                </button>
-                                            </form>
+                                            <!-- Botão que abre o Modal de Confirmação de Exclusão -->
+                                            <button 
+                                                type="button" 
+                                                onclick="abrirModalExcluir('{{ des.id }}', '{{ des.numero_rodada|escapejs }}', '{{ des.titulo|escapejs }}')"
+                                                class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-black text-xs px-3 py-1.5 rounded-xl border border-rose-300 transition flex items-center gap-1 cursor-pointer"
+                                                title="Excluir este desafio da galeria"
+                                            >
+                                                <span>🗑️ Excluir</span>
+                                            </button>
 
                                             <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ des.id }}" class="text-[#6D28D9] hover:text-purple-900 font-black flex items-center gap-1">
                                                 <span>Ver Julgamento →</span>
@@ -625,6 +621,57 @@
 
         </main>
 
+    </div>
+
+    <!-- Modal Personalizado de Confirmação de Exclusão de Rodada -->
+    <div id="modal-confirmar-exclusao" 
+        onclick="if(event.target === this) fecharModalExcluir()"
+        class="fixed inset-0 z-50 bg-[#1E0B36]/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-neo-pop border-2 border-[#1E0B36] space-y-4 text-center relative">
+            
+            <div class="w-16 h-16 rounded-2xl bg-rose-100 border-2 border-[#1E0B36] text-rose-600 flex items-center justify-center font-black text-3xl mx-auto shadow-neo-pop-sm">
+                🗑️
+            </div>
+
+            <div>
+                <span class="bg-rose-600 text-white font-black uppercase text-xs px-3 py-1 rounded-md border border-[#1E0B36]">
+                    CONFIRMAR EXCLUSÃO
+                </span>
+                <h3 class="text-xl font-black text-[#1E0B36] mt-2">Excluir esta Rodada?</h3>
+                <p class="text-xs text-slate-600 font-bold mt-2 leading-relaxed">
+                    Você tem certeza que deseja excluir permanentemente a <span id="modal-excluir-rodada" class="font-black text-[#1E0B36]">Rodada</span>?
+                </p>
+                <div class="mt-2 bg-[#FAF5FF] p-3 rounded-2xl border-2 border-[#1E0B36] text-xs font-black text-[#6D28D9] italic" id="modal-excluir-titulo">
+                    "Título do Desafio"
+                </div>
+                <p class="text-[11px] text-slate-500 font-bold mt-2">
+                    ⚠️ Essa ação removerá o prompt e a imagem da galeria.
+                </p>
+            </div>
+
+            <!-- Formulário de Exclusão com Confirmação -->
+            <form method="POST" action="{% url 'game:operator_desafios' %}" class="flex gap-2.5 pt-1">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_challenge">
+                <input type="hidden" name="challenge_id" id="modal-excluir-challenge-id" value="">
+
+                <button 
+                    type="button" 
+                    onclick="fecharModalExcluir()" 
+                    class="flex-1 py-3 px-4 rounded-2xl border-2 border-slate-300 text-xs font-black text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+                >
+                    ✕ Cancelar
+                </button>
+
+                <button 
+                    type="submit" 
+                    class="flex-1 py-3 px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                    <span>🗑️ Sim, Excluir</span>
+                </button>
+            </form>
+
+        </div>
     </div>
 
     <!-- Scripts de Prévia e Geração Automática de Imagem IA -->
@@ -868,6 +915,31 @@
                 if (badge) badge.classList.add('hidden');
             }
         }
+        function abrirModalExcluir(id, rodada, titulo) {
+            const idInput = document.getElementById('modal-excluir-challenge-id');
+            const rodadaSpan = document.getElementById('modal-excluir-rodada');
+            const tituloDiv = document.getElementById('modal-excluir-titulo');
+
+            if (idInput) idInput.value = id;
+            if (rodadaSpan) rodadaSpan.textContent = `Rodada ${rodada}`;
+            if (tituloDiv) tituloDiv.textContent = `"${titulo}"`;
+
+            const modal = document.getElementById('modal-confirmar-exclusao');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function fecharModalExcluir() {
+            const modal = document.getElementById('modal-confirmar-exclusao');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') fecharModalExcluir();
+        });
     </script>
 </body>
 </html>
