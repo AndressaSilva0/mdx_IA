@@ -391,17 +391,26 @@ def trocar_modalidade_equipe(request):
     """
     Alterna para a modalidade 'Equipe' mediante conferência da Senha de 6 Dígitos.
     Isso substitui logins complexos na máquina do estande por um PIN rápido e seguro.
+    Suporta tanto requisições AJAX (com balão flutuante imediato) quanto formulário padrão.
     """
     if request.method == 'POST':
         pin_enviado = request.POST.get('pin', '').strip()
         pin_correto = str(getattr(settings, 'EQUIPE_PIN', '262026')).strip()
+        is_ajax = (request.headers.get('x-requested-with') == 'XMLHttpRequest' or 
+                   'application/json' in request.headers.get('Accept', ''))
 
         if pin_enviado == pin_correto:
             request.session['is_equipe'] = True
             messages.success(request, "🔓 Modo Equipe ativado com sucesso! Bem-vinda à área técnica.")
+            if is_ajax:
+                from django.urls import reverse
+                return JsonResponse({'sucesso': True, 'redirect_url': reverse('game:operator_desafios')})
             return redirect('game:operator_desafios')
         else:
-            messages.error(request, "Senha de 6 dígitos incorreta! Digite o PIN da equipe do estande.")
+            msg_erro = "Senha de 6 dígitos incorreta! Digite o PIN da equipe do estande."
+            if is_ajax:
+                return JsonResponse({'sucesso': False, 'mensagem': msg_erro}, status=400)
+            messages.error(request, msg_erro)
             return redirect('game:index')
 
     return redirect('game:index')

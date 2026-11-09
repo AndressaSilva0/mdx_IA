@@ -92,14 +92,24 @@ class MDXGameTests(TestCase):
     def test_pin_6_digitos_modalidade_switch(self):
         url_pin = reverse('game:trocar_modalidade_equipe')
         
-        # Teste 1: PIN Errado
+        # Teste 1: PIN Errado (Formulário tradicional)
         res_errado = self.client.post(url_pin, {'pin': '000000'}, follow=True)
         self.assertEqual(res_errado.status_code, 200)
         self.assertFalse(self.client.session.get('is_equipe'))
 
-        # Teste 2: PIN Correto de 6 dígitos (262026)
-        res_correto = self.client.post(url_pin, {'pin': '262026'}, follow=True)
-        self.assertEqual(res_correto.status_code, 200)
+        # Teste 1.1: PIN Errado via AJAX (deve retornar JSON com status 400 para balão flutuante)
+        res_ajax_errado = self.client.post(url_pin, {'pin': '111111'}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(res_ajax_errado.status_code, 400)
+        data_err = res_ajax_errado.json()
+        self.assertFalse(data_err['sucesso'])
+        self.assertIn('incorreta', data_err['mensagem'])
+
+        # Teste 2: PIN Correto de 6 dígitos via AJAX
+        res_ajax_correto = self.client.post(url_pin, {'pin': '262026'}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(res_ajax_correto.status_code, 200)
+        data_correto = res_ajax_correto.json()
+        self.assertTrue(data_correto['sucesso'])
+        self.assertIn('operador/desafios', data_correto['redirect_url'])
         self.assertTrue(self.client.session.get('is_equipe'))
 
         # Teste 3: Sair da modalidade equipe
