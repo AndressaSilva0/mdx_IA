@@ -1,32 +1,103 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDX 2026 | Desafio de IA - Nenhum Desafio Ativo</title>
+    <title>MDX STEAM 2026 | Desafio de IA - Preparando Estande</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandViolet: '#6D28D9',
+                        brandMagenta: '#C026D3',
+                        brandYellow: '#FEBE01',
+                        brandDark: '#1E0B36',
+                    },
+                    boxShadow: {
+                        'neo-pop': '4px 4px 0px #1E0B36',
+                        'neo-pop-sm': '2px 2px 0px #1E0B36',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #FAF7FE;
+            background-image: 
+                linear-gradient(to right, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px),
+                linear-gradient(to bottom, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px);
+            background-size: 30px 30px;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 28s linear infinite;
+        }
     </style>
 </head>
-<body class="bg-[#FAF8FE] min-h-screen flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-white rounded-3xl p-8 border border-purple-100 shadow-xl text-center">
-        <div class="w-16 h-16 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
-            ✨
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#FEBE01] selection:text-[#1E0B36]">
+
+    <!-- Marquee Ticker Tape -->
+    <div class="bg-[#1E0B36] border-b-2 border-[#FEBE01] text-white py-2 overflow-hidden shadow-md select-none">
+        <div class="marquee-track flex items-center gap-8 whitespace-nowrap font-black uppercase text-xs tracking-wider">
+            <span class="flex items-center gap-2 text-[#FEBE01]">★ MDX STEAM 2026</span>
+            <span class="text-white/60">•</span>
+            <span class="text-white">MERMÃS DIGITAIS • IFMA</span>
+            <span class="text-white/60">•</span>
+            <span class="text-pink-400">DESAFIO DE IA EDUCACIONAL</span>
+            <span class="text-white/60">•</span>
+            <span class="text-amber-300">★ AGUARDANDO ATIVAÇÃO DE RODADA</span>
         </div>
-        <h1 class="text-xl font-extrabold text-slate-800 mb-2">Mermãs Digitais | MDX 2026</h1>
-        <p class="text-sm text-slate-500 mb-6">
-            Nenhum desafio ativo no momento. O operador do estande precisa cadastrar ou ativar uma rodada no painel administrativo.
-        </p>
-        <a href="/admin/" class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition">
-            <span>Acessar Painel Django Admin</span>
-            <span>→</span>
-        </a>
     </div>
+
+    <div class="flex-1 flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-3xl p-8 border-2 border-[#1E0B36] shadow-neo-pop text-center space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-[#1E0B36] border-2 border-[#FEBE01] p-2 mx-auto shadow-neo-pop-sm flex items-center justify-center">
+                <img src="{% static 'game/img/robo_mascote.svg' %}" alt="Robô Mascote" class="w-full h-full object-contain">
+            </div>
+
+            <div>
+                <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-[10px] px-2.5 py-0.5 rounded-md border border-[#1E0B36]">
+                    ESTANDE EM PREPARAÇÃO
+                </span>
+                <h1 class="text-2xl font-black text-[#1E0B36] mt-2">
+                    <span class="text-[#D946EF]">.</span>Mermãs Digitais
+                </h1>
+                <p class="text-xs text-slate-600 font-bold mt-1">
+                    Nenhum desafio ativo no estande neste momento. A equipe do estande precisa ativar uma rodada no painel.
+                </p>
+            </div>
+
+            <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
+                <a href="{% url 'game:operator_desafios' %}" 
+                    class="flex-1 inline-flex items-center justify-center gap-2 bg-[#6D28D9] hover:bg-purple-700 text-white font-black text-xs py-3.5 px-4 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition">
+                    <span>🛠️ Painel da Equipe</span>
+                </a>
+                <a href="/admin/" 
+                    class="flex-1 inline-flex items-center justify-center gap-2 bg-[#FAF5FF] hover:bg-purple-100 text-[#6D28D9] font-black text-xs py-3.5 px-4 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition">
+                    <span>Django Admin</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé Sutil -->
+    <footer class="text-center py-4 text-xs font-bold text-slate-500">
+        Mermãs Digitais | MDX STEAM 2026 • IFMA
+    </footer>
+
 </body>
 </html>
-
