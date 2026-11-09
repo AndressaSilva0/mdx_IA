@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none">
+  <!-- Foguete / Mochila Roxa atrás -->
+  <rect x="55" y="55" width="50" height="65" rx="18" fill="#7C3AED" stroke="#1E0B36" stroke-width="4"/>
+  <path d="M48 95 L55 80 L55 105 Z" fill="#6D28D9" stroke="#1E0B36" stroke-width="3"/>
+  <path d="M112 95 L105 80 L105 105 Z" fill="#6D28D9" stroke="#1E0B36" stroke-width="3"/>
+  <!-- Jatos de Foguete com faíscas roxas e douradas -->
+  <path d="M62 120 Q66 138 70 120" fill="#A855F7" stroke="#1E0B36" stroke-width="3"/>
+  <path d="M90 120 Q94 138 98 120" fill="#FEBE01" stroke="#1E0B36" stroke-width="3"/>
+
+  <!-- Cabelo Afro Volumoso Roxo Escuro / Cósmico -->
+  <circle cx="80" cy="65" r="52" fill="#1E0B36" stroke="#1E0B36" stroke-width="3"/>
+  <circle cx="42" cy="65" r="26" fill="#1E0B36"/>
+  <circle cx="118" cy="65" r="26" fill="#1E0B36"/>
+  <circle cx="80" cy="35" r="28" fill="#1E0B36"/>
+  <circle cx="52" cy="42" r="24" fill="#1E0B36"/>
+  <circle cx="108" cy="42" r="24" fill="#1E0B36"/>
+
+  <!-- ESTRELINHAS ROXAS E COLORIDAS NO CABELO -->
+  <!-- Estrela Roxa Lilás Topo -->
+  <path d="M80 18 L82 23 L87 25 L82 27 L80 32 L78 27 L73 25 L78 23 Z" fill="#C084FC"/>
+  <!-- Estrela Dourada Esquerda -->
+  <path d="M45 42 L47 47 L52 48 L48 52 L49 57 L45 54 L41 57 L42 52 L38 48 L43 47 Z" fill="#FEBE01"/>
+  <!-- Estrela Roxa Neon Direita -->
+  <path d="M115 40 L117 44 L121 45 L117 46 L115 50 L113 46 L109 45 L113 44 Z" fill="#8B5CF6"/>
+  <!-- Estrela Ciano Esquerda -->
+  <path d="M32 60 L34 63 L38 64 L34 65 L32 68 L30 65 L26 64 L30 63 Z" fill="#06B6D4"/>
+  <!-- Estrela Rosa Chiclete Direita -->
+  <path d="M118 68 L119 71 L122 72 L120 74 L121 77 L118 75 L115 77 L116 74 L114 72 L117 71 Z" fill="#F472B6"/>
+  <!-- Estrela Roxa Violeta Puff Superior -->
+  <path d="M60 28 L61.5 31 L65 32 L61.5 33 L60 36 L58.5 33 L55 32 L58.5 31 Z" fill="#A855F7"/>
+  <path d="M98 26 L99.5 29 L103 30 L99.5 31 L98 34 L96.5 31 L93 30 L96.5 29 Z" fill="#FEBE01"/>
+
+  <!-- Pontos cintilantes -->
+  <circle cx="112" cy="48" r="2.5" fill="#FFFFFF"/>
+  <circle cx="95" cy="30" r="2" fill="#C084FC"/>
+  <circle cx="65" cy="28" r="2.5" fill="#8B5CF6"/>
+  <circle cx="48" cy="74" r="2" fill="#FEBE01"/>
+  <circle cx="125" cy="58" r="2" fill="#06B6D4"/>
+
+  <!-- Rosto Pele Negra / Morena Quente -->
+  <ellipse cx="80" cy="78" rx="26" ry="28" fill="#8D5B4C" stroke="#1E0B36" stroke-width="3.5"/>
+  <!-- Brincos de argola Roxa/Dourada -->
+  <circle cx="54" cy="80" r="6" fill="#8D5B4C" stroke="#1E0B36" stroke-width="2.5"/>
+  <circle cx="106" cy="80" r="6" fill="#8D5B4C" stroke="#1E0B36" stroke-width="2.5"/>
+  <circle cx="53" cy="86" r="5" fill="none" stroke="#C084FC" stroke-width="2.5"/>
+  <circle cx="107" cy="86" r="5" fill="none" stroke="#C084FC" stroke-width="2.5"/>
+
+  <!-- Olhos piscando alegre / expressivo -->
+  <path d="M66 76 Q71 70 76 76" stroke="#1E0B36" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <circle cx="71" cy="71" r="1.5" fill="#FEBE01"/>
+  <ellipse cx="89" cy="75" rx="4.5" ry="5.5" fill="#1E0B36"/>
+  <circle cx="90.5" cy="73.5" r="2" fill="#FFFFFF"/>
+  <!-- Sobrancelhas -->
+  <path d="M66 67 Q71 63 76 67" stroke="#1E0B36" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M84 66 Q89 63 94 66" stroke="#1E0B36" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Sorriso radiante com covinha -->
+  <path d="M73 86 Q80 95 87 86" stroke="#1E0B36" stroke-width="2.5" stroke-linecap="round" fill="#FFFFFF"/>
+
+  <!-- Moletom Roxo e Amarelo com Estrela -->
+  <path d="M50 114 C50 102 62 98 80 98 C98 98 110 102 110 114 L115 150 L45 150 Z" fill="#8B5CF6" stroke="#1E0B36" stroke-width="3.5"/>
+  <path d="M72 98 Q80 108 88 98" fill="#FEBE01" stroke="#1E0B36" stroke-width="2.5"/>
+  <!-- Estrela Dourada no Moletom -->
+  <path d="M80 120 L82 125 L87 126 L83 130 L84 135 L80 132 L76 135 L77 130 L73 126 L78 125 Z" fill="#FEBE01" stroke="#1E0B36" stroke-width="1.5"/>
+</svg>

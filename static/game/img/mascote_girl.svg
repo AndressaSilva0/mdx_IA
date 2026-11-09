@@ -15,12 +15,37 @@
   <circle cx="52" cy="42" r="24" fill="#1E0B36"/>
   <circle cx="108" cy="42" r="24" fill="#1E0B36"/>
 
-  <!-- Estrelinhas no cabelo (✦ ✧) -->
+  <!-- ============================================== -->
+  <!-- ESTRELINHAS NO CABELO: ROXAS, DOURADAS, ROSAS E CIANO -->
+  <!-- ============================================== -->
+  <!-- Estrela Roxa Neon 4 Pontas (Topo) -->
+  <path d="M80 18 L82 23 L87 25 L82 27 L80 32 L78 27 L73 25 L78 23 Z" fill="#A855F7"/>
+  <!-- Estrela Roxa Lilás (Direita) -->
+  <path d="M106 32 L107.5 35 L111 36 L107.5 37 L106 40 L104.5 37 L101 36 L104.5 35 Z" fill="#C084FC"/>
+  <!-- Estrela Roxa Violeta (Esquerda) -->
+  <path d="M54 30 L55.5 33 L59 34 L55.5 35 L54 38 L52.5 35 L49 34 L52.5 33 Z" fill="#8B5CF6"/>
+  
+  <!-- Estrela Amarela / Dourada 5 Pontas (Esquerda) -->
   <path d="M45 42 L47 47 L52 48 L48 52 L49 57 L45 54 L41 57 L42 52 L38 48 L43 47 Z" fill="#FEBE01"/>
+  <!-- Estrela Rosa Chiclete 5 Pontas (Direita) -->
+  <path d="M118 68 L119 71 L122 72 L120 74 L121 77 L118 75 L115 77 L116 74 L114 72 L117 71 Z" fill="#F472B6"/>
+  <!-- Estrela Ciano Neon 4 Pontas (Puff Esquerdo) -->
+  <path d="M30 62 L32 65 L36 66 L32 67 L30 70 L28 67 L24 66 L28 65 Z" fill="#06B6D4"/>
+  <!-- Estrela Magenta 4 Pontas (Puff Direito Alto) -->
+  <path d="M126 50 L127.5 53 L131 54 L127.5 55 L126 58 L124.5 55 L121 54 L124.5 53 Z" fill="#EC4899"/>
+  <!-- Estrela Dourada Mini (Puff Superior) -->
+  <path d="M68 22 L69 24 L71 25 L69 26 L68 28 L67 26 L65 25 L67 24 Z" fill="#FEBE01"/>
+  <path d="M92 24 L93 26 L95 27 L93 28 L92 30 L91 28 L89 27 L91 26 Z" fill="#FEBE01"/>
+
+  <!-- Pontos de Brilho Cósmico Coloridos e Brancos -->
   <circle cx="112" cy="48" r="2.5" fill="#FFFFFF"/>
   <circle cx="95" cy="30" r="2" fill="#FEBE01"/>
-  <circle cx="65" cy="28" r="2.5" fill="#FFFFFF"/>
-  <path d="M118 68 L119 71 L122 72 L120 74 L121 77 L118 75 L115 77 L116 74 L114 72 L117 71 Z" fill="#F472B6"/>
+  <circle cx="65" cy="28" r="2.5" fill="#C084FC"/>
+  <circle cx="38" cy="50" r="2" fill="#8B5CF6"/>
+  <circle cx="124" cy="62" r="2" fill="#06B6D4"/>
+  <circle cx="48" cy="74" r="1.8" fill="#F472B6"/>
+  <circle cx="76" cy="14" r="1.5" fill="#FFFFFF"/>
+  <circle cx="86" cy="15" r="1.5" fill="#FEBE01"/>
 
   <!-- Rosto Pele Negra / Morena Quente -->
   <ellipse cx="80" cy="78" rx="26" ry="28" fill="#8D5B4C" stroke="#1E0B36" stroke-width="3.5"/>
