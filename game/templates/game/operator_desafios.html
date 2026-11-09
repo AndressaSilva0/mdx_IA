@@ -227,6 +227,18 @@
                         <button type="button" onclick="carregarPreset('fada')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
                             🦋 Fada Borboleta
                         </button>
+                        <button type="button" onclick="carregarPreset('alcantara')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🛰️ Base Alcântara
+                        </button>
+                        <button type="button" onclick="carregarPreset('cocais')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🧬 Flora dos Cocais
+                        </button>
+                        <button type="button" onclick="carregarPreset('vr')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🥽 Gamer VR & Dev
+                        </button>
+                        <button type="button" onclick="carregarPreset('submarino')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🌊 Robô Submarino
+                        </button>
                     </div>
                 </div>
 
@@ -452,8 +464,9 @@
                                     <div class="flex items-center justify-between text-[11px] font-black text-slate-700 px-1">
                                         <span>Provedor de Imagem IA:</span>
                                         <select id="seletor_provedor_ia" class="text-[11px] font-black bg-[#FAF5FF] border-2 border-[#1E0B36] rounded-lg px-2 py-1 text-[#6D28D9] focus:outline-none cursor-pointer">
-                                            <option value="gemini" selected>✨ Google Gemini (Requer AI Studio com Faturamento)</option>
-                                            <option value="pollinations">⚡ Motor Neural Gratuito (1 a cada 45s)</option>
+                                            <option value="pollinations" selected>⚡ Motor Neural Gratuito (Pollinations • Sem chave)</option>
+                                            <option value="huggingface">🤗 Hugging Face FLUX.1 (Grátis com Token hf_)</option>
+                                            <option value="gemini">✨ Google Gemini (Requer faturamento ativado)</option>
                                         </select>
                                     </div>
 
@@ -830,12 +843,48 @@
             },
             'fada': {
                 titulo: "Fada Borboleta Encantada",
-                numero_rodada: "03",
+                numero_rodada: "06",
                 estilo_tag: "Arte Fantasia & Alta Definição",
                 prompt_original: "Uma adorável boneca fada mágica com delicadas asas translúcidas de borboleta brilhando em tons cristalinos de rosa e turquesa, vestido cintilante de alta costura em uma floresta bioluminescente, iluminação suave cinematográfica 8k.",
                 palavras_chave: "fada borboleta, asas cristalinas, vestido cintilante, boneca fada, floresta bioluminescente",
                 dica_mascote: "Oi, {nome}! Repare nas asas translúcidas de borboleta e no vestido mágico brilhante da fada!",
                 imagem_url: "/media/challenges/barbie_butterfly.jpg"
+            },
+            'alcantara': {
+                titulo: "Engenharia Aeroespacial na Base de Alcântara",
+                numero_rodada: "07",
+                estilo_tag: "Aeroespacial & Fotografia Realista",
+                prompt_original: "Uma jovem cientista e engenheira aeroespacial brasileira com colete de alta tecnologia e capacete ajustando os sensores ópticos de um mini foguete de pesquisa na plataforma de lançamento do Centro Espacial de Alcântara, com o oceano Atlântico ao fundo e céu crepuscular dourado, fotografia cinematográfica 8k, hiper-realista, iluminação dramática.",
+                palavras_chave: "Base de Alcântara, engenheira aeroespacial, mini foguete, sensores ópticos, oceano atlântico",
+                dica_mascote: "Oi, {nome}! Olhe com atenção o cenário da Base Espacial de Alcântara, a cientista maranhense e o mini foguete com sensores!",
+                imagem_url: "/media/challenges/engenharia_alcantara.jpg"
+            },
+            'cocais': {
+                titulo: "Biotecnologia e Flora Encantada dos Cocais",
+                numero_rodada: "08",
+                estilo_tag: "Biotecnologia & Solarpunk",
+                prompt_original: "Uma jovem estudante pesquisadora de biotecnologia em um laboratório do futuro iluminado por luz neon verde-esmeralda, analisando uma planta botânica mágica com folhas que brilham com circuitos de luz e tubos de ensaio de vidro cristalino, render 3D em alta definição, iluminação volumétrica, estética solarpunk.",
+                palavras_chave: "biotecnologia, planta mágica/bioluminescente, laboratório futurista, circuitos de luz, tubos de ensaio",
+                dica_mascote: "Oi, {nome}! Repare na planta que brilha no laboratório botânico, nos tubos de vidro e na luz esmeralda!",
+                imagem_url: "/media/challenges/biotecnologia_cocais.jpg"
+            },
+            'vr': {
+                titulo: "Menina Desenvolvedora de Jogos e Realidade Virtual",
+                numero_rodada: "09",
+                estilo_tag: "Gamer & Realidade Virtual",
+                prompt_original: "Uma jovem aluna desenvolvedora de jogos usando um headset moderno de realidade virtual neon com hologramas tridimensionais flutuando ao redor dela, mostrando personagens de videogame pixel art e blocos de código brilhantes, quarto gamer futurista com iluminação roxa e ciano, 8k.",
+                palavras_chave: "headset VR/óculos de realidade virtual, desenvolvedora de jogos, hologramas flutuantes, quarto gamer, código neon",
+                dica_mascote: "Oi, {nome}! Foque nos óculos de realidade virtual, nos hologramas flutuantes de personagens e no ambiente gamer!",
+                imagem_url: "/media/challenges/game_dev_vr.jpg"
+            },
+            'submarino': {
+                titulo: "Robô Submarino Explorando os Corais da Costa do Maranhão",
+                numero_rodada: "10",
+                estilo_tag: "Oceanografia & Robótica Submarina",
+                prompt_original: "Um simpático mini robô submarino amarelo de exploração com faróis LED brilhantes e braço mecânico delicado explorando um recife de corais exuberante e colorido com peixes tropicais nas águas cristalinas do litoral maranhense, fotografia macro subaquática cinematográfica 8k.",
+                palavras_chave: "robô submarino, recife de corais, faróis de led, peixes tropicais, fundo do mar",
+                dica_mascote: "Oi, {nome}! Repare no simpático robozinho submarino amarelo com seus faróis acesos explorando os corais marinhos!",
+                imagem_url: "/media/challenges/robo_submarino.jpg"
             }
         };
 
@@ -1118,6 +1167,36 @@
                     console.warn('Erro ao chamar API Gemini local:', gemErr);
                     if (spinner) spinner.classList.add('hidden');
                     mostrarAvisoCotaGemini('Erro ao conectar ao Google Gemini. Verifique a conexão com a internet.');
+                    return;
+                }
+            }
+
+            // 3. Geração via Hugging Face (FLUX.1-schnell)
+            if (provedor === 'huggingface') {
+                if (spinnerTitle) spinnerTitle.textContent = 'Chamando Hugging Face (FLUX.1-schnell)...';
+                if (spinnerSub) spinnerSub.textContent = 'Renderizando imagem em alta fidelidade com IA aberta';
+                if (previewInfo) previewInfo.textContent = 'Processando com Hugging Face FLUX.1...';
+
+                try {
+                    const hfResp = await fetch(`/api/gerar-imagem-huggingface/?prompt=${encodeURIComponent(prompt)}`);
+                    const hfData = await hfResp.json();
+
+                    if (hfData.sucesso && hfData.local_url) {
+                        imgPreview.src = hfData.local_url;
+                        if (urlInput) urlInput.value = hfData.local_url;
+                        if (previewInfo) previewInfo.textContent = `✓ Imagem gerada com ${hfData.provedor}!`;
+                        if (badge) badge.classList.remove('hidden');
+                        if (spinner) spinner.classList.add('hidden');
+                        return;
+                    } else {
+                        if (spinner) spinner.classList.add('hidden');
+                        mostrarAvisoCotaGemini(hfData.erro || 'Configure o token gratuito HUGGINGFACE_API_KEY no arquivo .env.');
+                        return;
+                    }
+                } catch (hfErr) {
+                    console.warn('Erro ao chamar API Hugging Face:', hfErr);
+                    if (spinner) spinner.classList.add('hidden');
+                    mostrarAvisoCotaGemini('Erro de conexão com o Hugging Face.');
                     return;
                 }
             }

@@ -299,4 +299,61 @@ def generate_image_with_gemini(prompt: str, model_name: str = "gemini-2.5-flash-
     }
 
 
+def generate_image_with_huggingface(prompt: str, model_name: str = "black-forest-labs/FLUX.1-schnell") -> dict:
+    """
+    Gera imagem gratuita e de altíssima fidelidade utilizando a API de Inferência do Hugging Face.
+    Suporta modelos de última geração como FLUX.1-schnell e Stable Diffusion XL.
+    Requer chave gratuita 'HUGGINGFACE_API_KEY' (token hf_...) configurada no .env.
+    """
+    import urllib.request
+    import urllib.error
+    import json
+
+    hf_token = os.environ.get("HUGGINGFACE_API_KEY", "").strip()
+    if not hf_token:
+        return {
+            "success": False,
+            "chave_ausente": True,
+            "error": (
+                "Chave HUGGINGFACE_API_KEY não configurada no .env. "
+                "Crie uma conta gratuita em huggingface.co e gere seu token gratuito (Read) em huggingface.co/settings/tokens."
+            )
+        }
+
+    url = f"https://router.huggingface.co/hf-inference/models/{model_name}"
+    headers = {
+        "Authorization": f"Bearer {hf_token}",
+        "Content-Type": "application/json",
+        "User-Agent": "MermasDigitais-IFMA/1.0"
+    }
+    payload = json.dumps({"inputs": prompt}).encode("utf-8")
+    req = urllib.request.Request(url, data=payload, headers=headers)
+
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            raw_bytes = resp.read()
+            mime_type = resp.headers.get_content_type() or "image/jpeg"
+            b64_encoded = base64.b64encode(raw_bytes).decode("utf-8")
+            return {
+                "success": True,
+                "model_used": f"Hugging Face ({model_name.split('/')[-1]})",
+                "mime_type": mime_type,
+                "data_uri": f"data:{mime_type};base64,{b64_encoded}",
+                "raw_bytes": raw_bytes
+            }
+    except urllib.error.HTTPError as e:
+        err_msg = e.read().decode('utf-8', errors='ignore')
+        logger.warning(f"Erro Hugging Face API ({e.code}): {err_msg}")
+        return {
+            "success": False,
+            "error": f"Hugging Face API ({e.code}): {err_msg[:200]}"
+        }
+    except Exception as e:
+        logger.warning(f"Exceção ao chamar Hugging Face: {e}")
+        return {
+            "success": False,
+            "error": f"Falha de conexão com Hugging Face: {str(e)}"
+        }
+
+
 

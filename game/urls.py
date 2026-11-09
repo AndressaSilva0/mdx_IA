@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/otimizar-prompt-imagem/', views.api_otimizar_prompt_imagem, name='api_otimizar_prompt_imagem'),
     path('api/salvar-imagem-gerada/', views.api_salvar_imagem_desafio, name='api_salvar_imagem_gerada'),
     path('api/gerar-imagem-gemini/', views.api_gerar_imagem_gemini, name='api_gerar_imagem_gemini'),
+    path('api/gerar-imagem-huggingface/', views.api_gerar_imagem_huggingface, name='api_gerar_imagem_huggingface'),
 
     # Alternância de Modalidade (Equipe / Participante via Senha de 6 Dígitos)
     path('equipe/entrar-pin/', views.trocar_modalidade_equipe, name='trocar_modalidade_equipe'),

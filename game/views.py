@@ -488,6 +488,45 @@ def api_gerar_imagem_gemini(request):
             'chave_configurada': bool(os.getenv('GEMINI_API_KEY')),
         }, status=400)
 
+def api_gerar_imagem_huggingface(request):
+    """
+    Endpoint AJAX: Gera imagem em alta fidelidade utilizando a API gratuita do Hugging Face (FLUX.1-schnell)
+    e salva o arquivo diretamente em media/challenges/.
+    """
+    if not check_equipe_permission(request):
+        return JsonResponse({'sucesso': False, 'erro': 'Não autorizado.'}, status=403)
+
+    prompt = request.GET.get('prompt', '').strip()
+    if not prompt:
+        return JsonResponse({'sucesso': False, 'erro': 'Prompt vazio.'}, status=400)
+
+    import time
+    from .gemini_service import generate_image_with_huggingface, optimize_prompt_for_image_model
+
+    prompt_refinado = optimize_prompt_for_image_model(prompt)
+    resultado = generate_image_with_huggingface(prompt_refinado)
+
+    if resultado.get('success') and resultado.get('raw_bytes'):
+        ext = "png" if "png" in resultado.get('mime_type', '') else "jpg"
+        rel_path = f"challenges/flux_{int(time.time())}.{ext}"
+        full_path = os.path.join(settings.MEDIA_ROOT, rel_path)
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        with open(full_path, 'wb') as f:
+            f.write(resultado['raw_bytes'])
+
+        return JsonResponse({
+            'sucesso': True,
+            'provedor': resultado.get('model_used', 'FLUX.1-schnell'),
+            'local_url': f"/media/{rel_path}",
+            'data_uri': resultado.get('data_uri'),
+        })
+    else:
+        return JsonResponse({
+            'sucesso': False,
+            'erro': resultado.get('error', 'Falha ao gerar imagem com Hugging Face.'),
+            'chave_ausente': resultado.get('chave_ausente', False),
+        }, status=400)
+
 def trocar_modalidade_equipe(request):
     """
     Alterna para a modalidade 'Equipe' mediante conferência da Senha de 6 Dígitos.
