@@ -419,19 +419,19 @@
                                         </div>
                                     </div>
 
-                                    <!-- AVISO DE COTA ZERO DO GOOGLE GEMINI FREE TIER -->
+                                    <!-- AVISO DE COTA / RETORNO DA API -->
                                     <div id="aviso_cota_gemini" class="hidden absolute inset-0 z-30 bg-[#1E0B36]/95 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center">
                                         <div class="w-11 h-11 rounded-2xl bg-[#FEBE01] border-2 border-[#1E0B36] text-[#1E0B36] flex items-center justify-center font-black text-xl shadow-neo-pop-sm mb-2">
-                                            🤖
+                                            ℹ️
                                         </div>
-                                        <span class="bg-amber-300 text-[#1E0B36] font-black text-[10px] uppercase px-3 py-0.5 rounded-full border border-[#1E0B36] tracking-wide mb-1">
-                                            RESPOSTA DA API DO GOOGLE
+                                        <span id="aviso_cota_badge" class="bg-amber-300 text-[#1E0B36] font-black text-[10px] uppercase px-3 py-0.5 rounded-full border border-[#1E0B36] tracking-wide mb-1">
+                                            AVISO DA API
                                         </span>
-                                        <h4 class="text-white text-xs font-black leading-tight mb-1">
-                                            Google Gemini Chamado: Cota Free de Imagens = 0
+                                        <h4 id="aviso_cota_titulo" class="text-white text-xs font-black leading-tight mb-1">
+                                            Geração Indisponível no Provedor
                                         </h4>
                                         <p id="texto_detalhes_cota_gemini" class="text-slate-200 text-[10px] font-bold max-w-xs leading-snug mb-3">
-                                            A API do Google foi chamada, mas o Google AI Studio possui cota 0 no plano gratuito para o modelo de imagem (exige faturamento ativado).
+                                            A API retornou indisponibilidade para este modelo.
                                         </p>
                                         <div class="flex flex-col w-full gap-1.5 max-w-xs">
                                             <button 
@@ -464,8 +464,7 @@
                                     <div class="flex items-center justify-between text-[11px] font-black text-slate-700 px-1">
                                         <span>Provedor de Imagem IA:</span>
                                         <select id="seletor_provedor_ia" class="text-[11px] font-black bg-[#FAF5FF] border-2 border-[#1E0B36] rounded-lg px-2 py-1 text-[#6D28D9] focus:outline-none cursor-pointer">
-                                            <option value="pollinations" selected>⚡ Motor Neural Gratuito (Pollinations • Sem chave)</option>
-                                            <option value="huggingface">🤗 Hugging Face FLUX.1 (Grátis com Token hf_)</option>
+                                            <option value="pollinations" selected>⚡ Motor Neural Gratuito (Pollinations • 100% Grátis)</option>
                                             <option value="gemini">✨ Google Gemini (Requer faturamento ativado)</option>
                                         </select>
                                     </div>
@@ -976,14 +975,17 @@
             }
         }
 
-        // Funções para Controle do Aviso de Cota do Google Gemini
-        function mostrarAvisoCotaGemini(mensagemErro) {
+        // Funções para Controle do Aviso de Cota / Provedor
+        function mostrarAvisoCotaGemini(mensagemErro, titulo = 'Geração Indisponível no Provedor', badge = 'AVISO DA API') {
             fecharAvisoObrigatorio();
             const aviso = document.getElementById('aviso_cota_gemini');
             const textoDetalhes = document.getElementById('texto_detalhes_cota_gemini');
-            if (textoDetalhes && mensagemErro) {
-                textoDetalhes.textContent = mensagemErro;
-            }
+            const badgeEl = document.getElementById('aviso_cota_badge');
+            const tituloEl = document.getElementById('aviso_cota_titulo');
+
+            if (badgeEl && badge) badgeEl.textContent = badge;
+            if (tituloEl && titulo) tituloEl.textContent = titulo;
+            if (textoDetalhes && mensagemErro) textoDetalhes.textContent = mensagemErro;
             if (aviso) aviso.classList.remove('hidden');
         }
 
@@ -1160,22 +1162,22 @@
                     } else {
                         // Resposta oficial do Google Gemini com erro de cota / plano gratuito
                         if (spinner) spinner.classList.add('hidden');
-                        mostrarAvisoCotaGemini(geminiData.erro || 'O Google Gemini retornou cota zero para modelos de imagem no plano gratuito do AI Studio.');
+                        mostrarAvisoCotaGemini(geminiData.erro || 'O Google Gemini retornou cota zero para modelos de imagem no plano gratuito do AI Studio.', 'Google Gemini: Cota Free = 0', 'RESPOSTA DO GOOGLE');
                         return; // NUNCA faz fallback silencioso!
                     }
                 } catch (gemErr) {
                     console.warn('Erro ao chamar API Gemini local:', gemErr);
                     if (spinner) spinner.classList.add('hidden');
-                    mostrarAvisoCotaGemini('Erro ao conectar ao Google Gemini. Verifique a conexão com a internet.');
+                    mostrarAvisoCotaGemini('Erro ao conectar ao Google Gemini. Verifique a conexão com a internet.', 'Erro de Conexão', 'FALHA DE REDE');
                     return;
                 }
             }
 
             // 3. Geração via Hugging Face (FLUX.1-schnell)
             if (provedor === 'huggingface') {
-                if (spinnerTitle) spinnerTitle.textContent = 'Chamando Hugging Face (FLUX.1-schnell)...';
-                if (spinnerSub) spinnerSub.textContent = 'Renderizando imagem em alta fidelidade com IA aberta';
-                if (previewInfo) previewInfo.textContent = 'Processando com Hugging Face FLUX.1...';
+                if (spinnerTitle) spinnerTitle.textContent = 'Chamando Hugging Face...';
+                if (spinnerSub) spinnerSub.textContent = 'Verificando disponibilidade do roteador Hugging Face';
+                if (previewInfo) previewInfo.textContent = 'Processando com Hugging Face...';
 
                 try {
                     const hfResp = await fetch(`/api/gerar-imagem-huggingface/?prompt=${encodeURIComponent(prompt)}`);
@@ -1190,13 +1192,13 @@
                         return;
                     } else {
                         if (spinner) spinner.classList.add('hidden');
-                        mostrarAvisoCotaGemini(hfData.erro || 'Configure o token gratuito HUGGINGFACE_API_KEY no arquivo .env.');
+                        mostrarAvisoCotaGemini('O Hugging Face descontinuou a geração de imagens gratuita no provedor serverless (erro 410/402). Utilize o Motor Gratuito padrão ou os modelos prontos.', 'Hugging Face: Modelo Descontinuado', 'AVISO HUGGING FACE');
                         return;
                     }
                 } catch (hfErr) {
                     console.warn('Erro ao chamar API Hugging Face:', hfErr);
                     if (spinner) spinner.classList.add('hidden');
-                    mostrarAvisoCotaGemini('Erro de conexão com o Hugging Face.');
+                    mostrarAvisoCotaGemini('Erro de conexão com o Hugging Face.', 'Erro de Conexão', 'FALHA DE REDE');
                     return;
                 }
             }
