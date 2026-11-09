@@ -149,72 +149,245 @@
         <!-- ========================================================= -->
         <!-- PÓDIO OFICIAL DOS 3 PRIMEIROS LUGARES (ZONA DE PREMIAÇÃO) -->
         <!-- ========================================================= -->
-        <section class="bg-white rounded-3xl border-2 border-[#1E0B36] shadow-neo-pop p-6 space-y-5">
-            <div class="text-center max-w-md mx-auto space-y-1">
-                <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-xs px-3 py-1 rounded-md border border-[#1E0B36] shadow-neo-pop-sm inline-block transform -rotate-1">
-                    ZONA DE PREMIAÇÃO
-                </span>
-                <h2 class="text-xl font-black text-[#1E0B36]">Pódio Oficial da Rodada</h2>
-                <p class="text-xs text-slate-600 font-bold">
-                    As 3 alunas com melhor pontuação recebem prêmios ao final da rodada!
-                </p>
+        <section class="bg-white rounded-3xl border-2 border-[#1E0B36] shadow-neo-pop p-6 sm:p-8 space-y-6 relative overflow-hidden">
+            
+            <!-- Estrelinhas e Sparkles Decorativas de Fundo -->
+            <div class="absolute top-3 left-4 pointer-events-none opacity-40">
+                <svg class="w-6 h-6 text-amber-400 animate-pulse" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/>
+                </svg>
+            </div>
+            <div class="absolute top-12 right-6 pointer-events-none opacity-40">
+                <svg class="w-5 h-5 text-fuchsia-400 animate-pulse" style="animation-delay: 0.5s;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/>
+                </svg>
+            </div>
+            <div class="absolute bottom-4 left-8 pointer-events-none opacity-30">
+                <svg class="w-4 h-4 text-purple-500 animate-pulse" style="animation-delay: 1s;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/>
+                </svg>
+            </div>
+            <div class="absolute bottom-6 right-10 pointer-events-none opacity-40">
+                <svg class="w-5 h-5 text-amber-300 animate-pulse" style="animation-delay: 1.5s;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/>
+                </svg>
             </div>
 
-            <!-- Grid do Pódio (Estilo Olímpico: 2º Lugar na Esquerda, 1º no Centro mais Alto, 3º na Direita) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-2">
-
-                <!-- 2º Lugar (Prata) -->
-                <div class="order-2 md:order-1 bg-[#F1F5F9] rounded-2xl border-2 border-[#1E0B36] p-5 text-center shadow-neo-pop-sm space-y-2">
-                    <div class="w-12 h-12 rounded-xl bg-slate-200 border-2 border-[#1E0B36] flex items-center justify-center text-2xl font-black mx-auto shadow-xs">
-                        🥈
+            <!-- Cabeçalho Ilustrado do Pódio -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b-2 border-purple-100 pb-5 relative z-10">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-14 h-14 rounded-2xl bg-[#FEBE01] border-2 border-[#1E0B36] p-1 shadow-neo-pop-sm flex-shrink-0 flex items-center justify-center transform -rotate-2 hover:rotate-0 transition">
+                        <img src="{% static 'game/img/mascote_foguete.png' %}" alt="Mascote Foguete" class="w-full h-full object-contain">
                     </div>
-                    <span class="bg-slate-300 text-slate-900 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full inline-block border border-slate-400">
-                        2º Lugar (Prêmio Prata)
-                    </span>
-                    {% if ranking_top3.1 %}
-                        <h3 class="text-base font-black text-[#1E0B36] truncate">{{ ranking_top3.1.nome }}</h3>
-                        <p class="text-2xl font-black text-[#6D28D9]">{{ ranking_top3.1.melhor_score|stringformat:".1f" }}%</p>
-                        <p class="text-[10px] text-slate-500 font-bold">{{ ranking_top3.1.total_tentativas }} tentativa{{ ranking_top3.1.total_tentativas|pluralize }}</p>
-                    {% else %}
-                        <h3 class="text-sm font-bold text-slate-400 italic">Aguardando você!</h3>
-                        <p class="text-xs text-slate-400">Jogue para conquistar!</p>
-                    {% endif %}
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="bg-[#FEBE01] text-[#1E0B36] font-black uppercase text-xs px-3 py-1 rounded-md border border-[#1E0B36] shadow-neo-pop-sm inline-flex items-center gap-1.5 transform -rotate-1">
+                                <span>✨ ZONA DE PREMIAÇÃO</span>
+                                <svg class="w-3.5 h-3.5 text-[#1E0B36]" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/>
+                                </svg>
+                            </span>
+                            <span class="bg-[#FAF5FF] text-[#6D28D9] border border-purple-300 text-[11px] font-black px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                                <span>🎁 Top 3 Ganham Prêmios Oficiais</span>
+                            </span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-black text-[#1E0B36] mt-1 flex items-center gap-2">
+                            <span>Pódio Oficial da Rodada</span>
+                            <span class="text-amber-400">✨</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 font-bold">
+                            As 3 alunas com melhor proximidade semântica levam a premiação no estande!
+                        </p>
+                    </div>
                 </div>
 
-                <!-- 1º Lugar (Ouro - Centro Elevado) -->
-                <div class="order-1 md:order-2 bg-[#FEFCE8] rounded-2xl border-2 border-[#1E0B36] p-6 text-center shadow-neo-pop space-y-2.5 md:-translate-y-2">
-                    <div class="w-16 h-16 rounded-2xl bg-[#FEBE01] border-2 border-[#1E0B36] flex items-center justify-center text-3xl font-black mx-auto shadow-neo-pop-sm">
-                        🥇
+                <div class="hidden lg:flex items-center gap-2.5 bg-[#FAF5FF] p-2.5 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm">
+                    <img src="{% static 'game/img/girl_laptop.png' %}" alt="Meninas STEM" class="w-10 h-10 object-contain">
+                    <div class="text-left pr-2">
+                        <span class="text-[10px] font-black text-[#6D28D9] uppercase block leading-tight">MDX STEAM 2026</span>
+                        <span class="text-xs font-black text-[#1E0B36]">Incentivando Meninas na IA ★</span>
                     </div>
-                    <span class="bg-[#FEBE01] text-[#1E0B36] font-black text-xs uppercase px-3 py-1 rounded-full inline-block border border-[#1E0B36]">
-                        👑 1º Lugar (Prêmio Ouro)
-                    </span>
-                    {% if ranking_top3.0 %}
-                        <h3 class="text-lg font-black text-[#1E0B36] truncate">{{ ranking_top3.0.nome }}</h3>
-                        <p class="text-4xl font-black text-[#6D28D9]">{{ ranking_top3.0.melhor_score|stringformat:".1f" }}%</p>
-                        <p class="text-[11px] text-slate-600 font-bold">{{ ranking_top3.0.total_tentativas }} tentativa{{ ranking_top3.0.total_tentativas|pluralize }} realizada{{ ranking_top3.0.total_tentativas|pluralize }}</p>
-                    {% else %}
-                        <h3 class="text-sm font-bold text-slate-400 italic">Aguardando a 1ª Líder!</h3>
-                        <p class="text-xs text-slate-400">Envie seu prompt e lidere!</p>
-                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Grid do Pódio Olímpico Tridimensional com Degraus Físicos (2º | 1º | 3º) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-end pt-4 relative z-10">
+
+                <!-- 🥈 2º LUGAR (PRATA - ESQUERDA) -->
+                <div class="order-2 md:order-1 flex flex-col items-center">
+                    <!-- Card Superior de Conteúdo -->
+                    <div class="w-full bg-gradient-to-b from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0] rounded-3xl border-2 border-[#1E0B36] p-5 text-center shadow-neo-pop relative space-y-2.5 overflow-hidden">
+                        
+                        <!-- Estrelinhas no Card -->
+                        <div class="absolute -top-1 -right-1 text-slate-400 text-lg opacity-60">✨</div>
+                        <div class="absolute -bottom-1 -left-1 text-indigo-400 text-sm opacity-50">✦</div>
+
+                        <!-- Medalha com Brilho -->
+                        <div class="relative w-14 h-14 mx-auto">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-300 border-2 border-[#1E0B36] flex items-center justify-center text-3xl font-black shadow-neo-pop-sm transform -rotate-3">
+                                🥈
+                            </div>
+                            <span class="absolute -top-1 -right-1 text-xs">🌟</span>
+                        </div>
+
+                        <span class="bg-gradient-to-r from-slate-200 to-slate-300 text-slate-900 font-black text-[10px] uppercase px-3 py-1 rounded-full inline-flex items-center gap-1 border border-slate-400 shadow-xs">
+                            <span>★ 2º LUGAR (PRATA)</span>
+                        </span>
+
+                        {% if ranking_top3.1 %}
+                            <div class="space-y-1">
+                                <h3 class="text-base font-black text-[#1E0B36] truncate px-1" title="{{ ranking_top3.1.nome }}">
+                                    {{ ranking_top3.1.nome }}
+                                </h3>
+                                <div class="bg-white/90 rounded-2xl p-2 border border-[#1E0B36]/20">
+                                    <span class="text-3xl font-black text-[#6D28D9] block leading-none">
+                                        {{ ranking_top3.1.melhor_score|stringformat:".1f" }}%
+                                    </span>
+                                    <span class="text-[9px] uppercase font-black text-slate-500">Score de Proximidade</span>
+                                </div>
+                                <p class="text-[10px] text-slate-600 font-bold pt-1">
+                                    {{ ranking_top3.1.total_tentativas }} tentativa{{ ranking_top3.1.total_tentativas|pluralize }} realizada{{ ranking_top3.1.total_tentativas|pluralize }}
+                                </p>
+                            </div>
+                        {% else %}
+                            <!-- Empty State Lúdico -->
+                            <div class="py-2 space-y-1.5">
+                                <h3 class="text-xs font-black text-[#1E0B36]">Prata à sua Espera! 🌟</h3>
+                                <p class="text-[10px] font-bold text-slate-500 max-w-xs mx-auto leading-snug">
+                                    A 2ª melhor pontuação garante medalha e premiação oficial no estande!
+                                </p>
+                                <a href="{% url 'game:index' %}" class="inline-flex items-center gap-1 text-[10px] font-black text-[#6D28D9] hover:underline pt-1">
+                                    <span>Jogue para conquistar →</span>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Degrau Físico do Pódio: 2º Lugar -->
+                    <div class="w-full bg-gradient-to-b from-slate-300 via-slate-400 to-slate-500 rounded-b-2xl border-x-2 border-b-2 border-[#1E0B36] h-16 sm:h-20 shadow-neo-pop flex flex-col items-center justify-center text-white relative">
+                        <span class="text-3xl sm:text-4xl font-black text-[#1E0B36]/80 drop-shadow-sm">2</span>
+                        <span class="text-[9px] uppercase font-black tracking-widest text-[#1E0B36]">PRATA</span>
+                    </div>
                 </div>
 
-                <!-- 3º Lugar (Bronze) -->
-                <div class="order-3 bg-[#FFF7ED] rounded-2xl border-2 border-[#1E0B36] p-5 text-center shadow-neo-pop-sm space-y-2">
-                    <div class="w-12 h-12 rounded-xl bg-amber-200 border-2 border-[#1E0B36] flex items-center justify-center text-2xl font-black mx-auto shadow-xs">
-                        🥉
+                <!-- 🥇 1º LUGAR (OURO - CENTRO GIGANTE & ELEVADO) -->
+                <div class="order-1 md:order-2 flex flex-col items-center md:-translate-y-4">
+                    <!-- Card Superior de Conteúdo -->
+                    <div class="w-full bg-gradient-to-b from-[#FEFCE8] via-[#FEF08A] to-[#FDE047] rounded-3xl border-3 border-[#1E0B36] p-6 text-center shadow-neo-pop-lg relative space-y-3 overflow-hidden">
+                        
+                        <!-- Faixa de Brilho Dourado e Sparkles -->
+                        <div class="absolute top-2 left-2 text-amber-500 text-xl animate-pulse">✨</div>
+                        <div class="absolute top-2 right-2 text-amber-500 text-xl animate-pulse" style="animation-delay: 0.3s;">✨</div>
+                        <div class="absolute -bottom-2 right-3 text-2xl opacity-40">👑</div>
+
+                        <!-- Coroa e Troféu Gigante do 1º Lugar -->
+                        <div class="relative w-20 h-20 mx-auto">
+                            <!-- Coroa Flutuante -->
+                            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-2xl animate-bounce">
+                                👑
+                            </div>
+                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#FEBE01] via-amber-300 to-amber-400 border-2 border-[#1E0B36] flex items-center justify-center text-4xl font-black shadow-neo-pop-sm">
+                                🏆
+                            </div>
+                            <span class="absolute -bottom-1 -right-1 text-lg">⭐</span>
+                            <span class="absolute -bottom-1 -left-1 text-lg">⭐</span>
+                        </div>
+
+                        <span class="bg-[#1E0B36] text-[#FEBE01] font-black text-xs uppercase px-4 py-1.5 rounded-full inline-flex items-center gap-1.5 border border-[#FEBE01] shadow-neo-pop-sm">
+                            <span>👑 1º LUGAR (OURO) ★</span>
+                        </span>
+
+                        {% if ranking_top3.0 %}
+                            <div class="space-y-1.5">
+                                <h3 class="text-lg sm:text-xl font-black text-[#1E0B36] truncate px-1" title="{{ ranking_top3.0.nome }}">
+                                    {{ ranking_top3.0.nome }}
+                                </h3>
+                                <div class="bg-white/95 rounded-2xl p-3 border-2 border-[#1E0B36] shadow-neo-pop-sm">
+                                    <span class="text-4xl sm:text-5xl font-black text-[#6D28D9] block leading-none tracking-tight">
+                                        {{ ranking_top3.0.melhor_score|stringformat:".1f" }}%
+                                    </span>
+                                    <span class="text-[10px] uppercase font-black text-slate-600 mt-1 block">★ Líder Absoluta da Rodada ★</span>
+                                </div>
+                                <p class="text-[11px] text-[#1E0B36] font-black pt-1">
+                                    {{ ranking_top3.0.total_tentativas }} tentativa{{ ranking_top3.0.total_tentativas|pluralize }} realizada{{ ranking_top3.0.total_tentativas|pluralize }}
+                                </p>
+                            </div>
+                        {% else %}
+                            <!-- Empty State Lúdico para o Topo -->
+                            <div class="py-2 space-y-1.5">
+                                <h3 class="text-sm font-black text-[#1E0B36]">Quem será a 1ª Líder? 👑</h3>
+                                <p class="text-[11px] font-bold text-slate-700 max-w-xs mx-auto leading-snug">
+                                    O trono de ouro está aberto! Seja a primeira a enviar o prompt e assuma a liderança no telão!
+                                </p>
+                                <a href="{% url 'game:index' %}" class="inline-flex items-center gap-1.5 bg-[#1E0B36] hover:bg-purple-950 text-[#FEBE01] text-xs font-black px-4 py-2 rounded-xl border border-[#FEBE01] shadow-neo-pop-sm mt-1 transition hover:translate-y-0.5">
+                                    <span>🚀 Jogar e Liderar</span>
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
-                    <span class="bg-amber-200 text-amber-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full inline-block border border-amber-400">
-                        3º Lugar (Prêmio Bronze)
-                    </span>
-                    {% if ranking_top3.2 %}
-                        <h3 class="text-base font-black text-[#1E0B36] truncate">{{ ranking_top3.2.nome }}</h3>
-                        <p class="text-2xl font-black text-[#6D28D9]">{{ ranking_top3.2.melhor_score|stringformat:".1f" }}%</p>
-                        <p class="text-[10px] text-slate-500 font-bold">{{ ranking_top3.2.total_tentativas }} tentativa{{ ranking_top3.2.total_tentativas|pluralize }}</p>
-                    {% else %}
-                        <h3 class="text-sm font-bold text-slate-400 italic">Aguardando você!</h3>
-                        <p class="text-xs text-slate-400">Jogue para conquistar!</p>
-                    {% endif %}
+
+                    <!-- Degrau Físico do Pódio: 1º Lugar (O Mais Alto) -->
+                    <div class="w-full bg-gradient-to-b from-[#FEBE01] via-amber-400 to-amber-500 rounded-b-2xl border-x-2 border-b-2 border-[#1E0B36] h-24 sm:h-28 shadow-neo-pop flex flex-col items-center justify-center text-[#1E0B36] relative">
+                        <span class="text-4xl sm:text-5xl font-black text-[#1E0B36] drop-shadow-sm">1</span>
+                        <span class="text-[10px] uppercase font-black tracking-widest text-[#1E0B36]">OURO • CAMPEÃ</span>
+                    </div>
+                </div>
+
+                <!-- 🥉 3º LUGAR (BRONZE - DIREITA) -->
+                <div class="order-3 flex flex-col items-center">
+                    <!-- Card Superior de Conteúdo -->
+                    <div class="w-full bg-gradient-to-b from-[#FFF7ED] via-[#FFEDD5] to-[#FED7AA] rounded-3xl border-2 border-[#1E0B36] p-5 text-center shadow-neo-pop relative space-y-2.5 overflow-hidden">
+                        
+                        <!-- Estrelinhas no Card -->
+                        <div class="absolute -top-1 -left-1 text-amber-500 text-lg opacity-60">✨</div>
+                        <div class="absolute -bottom-1 -right-1 text-orange-400 text-sm opacity-50">✦</div>
+
+                        <!-- Medalha com Brilho -->
+                        <div class="relative w-14 h-14 mx-auto">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-300 border-2 border-[#1E0B36] flex items-center justify-center text-3xl font-black shadow-neo-pop-sm transform rotate-3">
+                                🥉
+                            </div>
+                            <span class="absolute -top-1 -left-1 text-xs">💫</span>
+                        </div>
+
+                        <span class="bg-gradient-to-r from-amber-200 to-orange-200 text-amber-950 font-black text-[10px] uppercase px-3 py-1 rounded-full inline-flex items-center gap-1 border border-amber-400 shadow-xs">
+                            <span>★ 3º LUGAR (BRONZE)</span>
+                        </span>
+
+                        {% if ranking_top3.2 %}
+                            <div class="space-y-1">
+                                <h3 class="text-base font-black text-[#1E0B36] truncate px-1" title="{{ ranking_top3.2.nome }}">
+                                    {{ ranking_top3.2.nome }}
+                                </h3>
+                                <div class="bg-white/90 rounded-2xl p-2 border border-[#1E0B36]/20">
+                                    <span class="text-3xl font-black text-[#6D28D9] block leading-none">
+                                        {{ ranking_top3.2.melhor_score|stringformat:".1f" }}%
+                                    </span>
+                                    <span class="text-[9px] uppercase font-black text-slate-500">Score de Proximidade</span>
+                                </div>
+                                <p class="text-[10px] text-slate-600 font-bold pt-1">
+                                    {{ ranking_top3.2.total_tentativas }} tentativa{{ ranking_top3.2.total_tentativas|pluralize }} realizada{{ ranking_top3.2.total_tentativas|pluralize }}
+                                </p>
+                            </div>
+                        {% else %}
+                            <!-- Empty State Lúdico -->
+                            <div class="py-2 space-y-1.5">
+                                <h3 class="text-xs font-black text-[#1E0B36]">Garanta o Pódio! 💫</h3>
+                                <p class="text-[10px] font-bold text-slate-500 max-w-xs mx-auto leading-snug">
+                                    Fique entre as 3 melhores da rodada e comemore no telão com premiação!
+                                </p>
+                                <a href="{% url 'game:index' %}" class="inline-flex items-center gap-1 text-[10px] font-black text-[#6D28D9] hover:underline pt-1">
+                                    <span>Jogue para conquistar →</span>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Degrau Físico do Pódio: 3º Lugar -->
+                    <div class="w-full bg-gradient-to-b from-amber-300 via-amber-400 to-amber-600 rounded-b-2xl border-x-2 border-b-2 border-[#1E0B36] h-12 sm:h-14 shadow-neo-pop flex flex-col items-center justify-center text-white relative">
+                        <span class="text-2xl sm:text-3xl font-black text-[#1E0B36]/80 drop-shadow-sm">3</span>
+                        <span class="text-[9px] uppercase font-black tracking-widest text-[#1E0B36]">BRONZE</span>
+                    </div>
                 </div>
 
             </div>
@@ -274,8 +447,27 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="p-8 text-center text-slate-500 font-bold text-sm">
-                    Nenhuma aluna enviou tentativas nesta rodada ainda. Seja a primeira a jogar!
+                <div class="p-8 sm:p-12 text-center space-y-3.5 bg-gradient-to-b from-white to-[#FAF5FF]">
+                    <div class="w-16 h-16 rounded-3xl bg-[#FAF5FF] border-2 border-[#1E0B36] p-2.5 mx-auto shadow-neo-pop-sm flex items-center justify-center transform hover:rotate-6 transition">
+                        <img src="{% static 'game/img/robo_mascote.svg' %}" alt="Robô Mascote" class="w-full h-full object-contain">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="inline-flex items-center gap-1.5 text-amber-500 font-black text-[11px] uppercase tracking-wider">
+                            <span>✨</span>
+                            <span>RODADA RECÉM-INICIADA</span>
+                            <span>✨</span>
+                        </div>
+                        <h3 class="text-base sm:text-lg font-black text-[#1E0B36]">
+                            Nenhuma aluna enviou tentativas nesta rodada ainda!
+                        </h3>
+                        <p class="text-xs text-slate-500 font-bold max-w-sm mx-auto leading-relaxed">
+                            Seja a pioneira da Rodada {{ challenge.numero_rodada }}! Digite seu prompt de decodificação no estande e apareça no topo do telão!
+                        </p>
+                    </div>
+                    <a href="{% url 'game:index' %}" class="inline-flex items-center gap-2 bg-[#FEBE01] hover:bg-amber-300 text-[#1E0B36] font-black text-xs py-2.5 px-5 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition">
+                        <span>🎮 Começar a Jogar Esta Rodada</span>
+                        <span>→</span>
+                    </a>
                 </div>
             {% endif %}
         </main>
