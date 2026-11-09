@@ -82,9 +82,10 @@ Retorne estritamente um JSON no formato:
 {{
   "titulo": "Título curto e instigante do desafio",
   "numero_rodada": "02",
-  "estilo_tag": "Estilo da imagem (ex: Arte Digital Cyberpunk, Afrofuturismo, 3D Render)",
-  "prompt_original": "Descrição detalhada e rica em elementos visuais da cena, iluminação e cores",
-  "palavras_chave": "4 a 6 termos cruciais separados por vírgula",
+  "estilo_tag": "Estilo da imagem (ex: Arte Digital Cyberpunk, Afrofuturismo, Fotografia Realista)",
+  "prompt_original": "Descrição detalhada em português do Brasil e rica em elementos visuais da cena, iluminação e cores",
+  "prompt_visual_en": "Detailed photorealistic visual prompt in English specifically optimized for text-to-image AI models describing the exact subject, action, clothing, environment, lighting and quality (e.g. 8k, sharp focus)",
+  "palavras_chave": "4 a 6 termos cruciais separados por vírgula em português",
   "dica_mascote": "Dica pedagógica incentivando a aluna {{nome}} a focar nos detalhes mais marcantes"
 }}
 Apenas o JSON, sem markdown ou explicações.
@@ -108,4 +109,35 @@ Apenas o JSON, sem markdown ou explicações.
         logger.warning(f"Erro ao gerar desafio com Gemini: {e}")
 
     return {}
+
+def optimize_prompt_for_image_model(prompt_pt: str) -> str:
+    """
+    Traduz e otimiza um prompt em português para um prompt visual em inglês de alta fidelidade
+    para modelos de geração de imagem por IA, evitando desvios conceituais (como humanos em vez de animais).
+    """
+    client = get_gemini_client()
+    if not client or not prompt_pt:
+        return prompt_pt
+
+    instrucao = f"""
+Translate and refine this Portuguese image description into an ultra-detailed, photorealistic visual prompt in English specifically tuned for text-to-image AI models (like Flux/Diffusion).
+Ensure subject details, species (e.g. dog vs human), clothing, materials, environment and lighting are crystal clear so the AI generator produces an exact visual match.
+
+Original Portuguese prompt:
+"{prompt_pt}"
+
+Output ONLY the refined English prompt string (max 40 words). No explanations, no quotes.
+"""
+    try:
+        response = client.models.generate_content(
+            model=DEFAULT_MODEL,
+            contents=instrucao
+        )
+        if response and response.text:
+            return response.text.strip().replace('"', '')
+    except Exception as e:
+        logger.warning(f"Erro ao otimizar prompt para imagem: {e}")
+
+    return prompt_pt
+
 

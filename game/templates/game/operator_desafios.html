@@ -161,31 +161,62 @@
             <!-- COLUNA ESQUERDA: Formulário de Registro -->
             <div class="lg:col-span-5 space-y-5">
                 
-                <!-- Assistente Gemini para Criação Rápida -->
+                <!-- Assistente Gemini para Criação Rápida com AJAX e Imagem Automática -->
                 <div class="bg-gradient-to-br from-purple-100 via-pink-100 to-amber-100 rounded-3xl p-5 border-2 border-[#1E0B36] shadow-neo-pop space-y-3">
-                    <div class="flex items-center gap-2">
-                        <span class="bg-[#FEBE01] text-[#1E0B36] text-xs font-black px-2 py-0.5 rounded border border-[#1E0B36]">IA</span>
-                        <h2 class="text-sm font-black text-[#1E0B36]">Gerador de Ideias com Google Gemini AI</h2>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-[#FEBE01] text-[#1E0B36] text-xs font-black px-2 py-0.5 rounded border border-[#1E0B36]">IA</span>
+                            <h2 class="text-sm font-black text-[#1E0B36]">Gerador de Ideias com Google Gemini AI</h2>
+                        </div>
+                        <span class="text-[10px] bg-purple-200 text-[#6D28D9] font-black px-2 py-0.5 rounded-full border border-purple-400">
+                            Automático no Frontend
+                        </span>
                     </div>
                     <p class="text-xs text-slate-800 font-bold">
-                        Digite um tema ou ideia e o Gemini gera automaticamente o prompt descritivo, palavras-chave e dica da mascote!
+                        Digite um tema e o Gemini preenche todos os campos e <strong>já gera a imagem com IA automaticamente</strong> na tela!
                     </p>
-                    <form method="POST" action="{% url 'game:operator_desafios' %}" class="flex gap-2">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="gemini_suggest">
+                    <div class="flex gap-2">
                         <input 
                             type="text" 
-                            name="tema_sugestao" 
+                            id="tema_sugestao_input" 
                             placeholder="Ex: Meninas na robótica espacial nos Lençóis..."
                             class="flex-1 px-3.5 py-2.5 rounded-2xl border-2 border-[#1E0B36] text-xs font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            onkeydown="if(event.key === 'Enter') { event.preventDefault(); gerarIdeiaComGemini(); }"
                         >
                         <button 
-                            type="submit" 
-                            class="bg-[#6D28D9] hover:bg-purple-700 text-white font-black text-xs px-4 py-2.5 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex-shrink-0 cursor-pointer"
+                            type="button" 
+                            id="btn_gerar_gemini"
+                            onclick="gerarIdeiaComGemini()"
+                            class="bg-[#6D28D9] hover:bg-purple-700 text-white font-black text-xs px-4 py-2.5 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex-shrink-0 cursor-pointer flex items-center gap-1.5"
                         >
-                            Gerar com IA
+                            <span id="gemini_btn_icon">✨</span>
+                            <span id="gemini_btn_text">Gerar com IA</span>
                         </button>
-                    </form>
+                    </div>
+                </div>
+
+                <!-- Desafios Temáticos Oficiais Prontos para o Estande (1 Clique) -->
+                <div class="bg-white rounded-3xl p-4 border-2 border-[#1E0B36] shadow-neo-pop space-y-2">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-[#6D28D9] block">
+                        💡 Ou Escolha um Desafio Oficial Pronto (1 Clique):
+                    </span>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-left">
+                        <button type="button" onclick="carregarPreset('flor')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🌸 Flor Cósmica
+                        </button>
+                        <button type="button" onclick="carregarPreset('pet')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🐶 Pet Fashionista
+                        </button>
+                        <button type="button" onclick="carregarPreset('lencois')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🚀 Lençóis Espacial
+                        </button>
+                        <button type="button" onclick="carregarPreset('afro')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            👩🏾‍💻 Afrofuturismo IA
+                        </button>
+                        <button type="button" onclick="carregarPreset('carro')" class="p-2 rounded-xl border border-[#1E0B36] bg-[#FAF5FF] hover:bg-purple-100 text-[11px] font-black text-[#1E0B36] text-left transition truncate">
+                            🏎️ Carro Autônomo
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Formulário Principal de Registro -->
@@ -214,9 +245,10 @@
                                 <input 
                                     type="text" 
                                     name="numero_rodada" 
-                                    value="{{ sugestao_gemini.numero_rodada|default:'02' }}" 
+                                    id="id_numero_rodada"
+                                    value="{{ sugestao_gemini.numero_rodada|default:'03' }}" 
                                     required 
-                                    placeholder="Ex: 02"
+                                    placeholder="Ex: 03"
                                     class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-slate-300 text-xs font-bold focus:outline-none focus:border-[#7C3AED]"
                                 >
                             </div>
@@ -228,6 +260,7 @@
                                 <input 
                                     type="text" 
                                     name="estilo_tag" 
+                                    id="id_estilo_tag"
                                     value="{{ sugestao_gemini.estilo_tag|default:'Estilo Mágico & Futurista' }}" 
                                     placeholder="Ex: Cyberpunk, 3D"
                                     class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-slate-300 text-xs font-bold focus:outline-none focus:border-[#7C3AED]"
@@ -300,36 +333,43 @@
                             >
                         </div>
 
-                        <!-- Imagem: Gerar com IA, Upload ou URL -->
+                        <!-- Imagem: Prévia Automática, Gerar com IA, Upload ou URL -->
                         <div class="space-y-3 bg-[#FAF5FF] p-4 rounded-2xl border-2 border-[#1E0B36]">
                             <div class="flex items-center justify-between">
                                 <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block">
                                     Imagem da Rodada
                                 </label>
-                                <span class="bg-[#FEBE01] text-[#1E0B36] text-[10px] font-black px-2 py-0.5 rounded border border-[#1E0B36]">
-                                    Gerador Automático
+                                <span id="badge_imagem_status" class="bg-[#10B981] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border border-[#1E0B36] hidden">
+                                    ✓ Imagem Pronta
                                 </span>
                             </div>
 
-                            <!-- Botão de Ação Rápida: Gerar Imagem com IA a partir do Prompt -->
-                            <div>
-                                <button 
-                                    type="button" 
-                                    onclick="gerarPreviaImagemIA()"
-                                    class="w-full bg-[#10B981] hover:bg-emerald-600 text-white font-black text-xs py-2.5 px-4 rounded-xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center justify-center gap-2 cursor-pointer"
-                                >
-                                    <span>🎨 Gerar Imagem com IA a partir do Prompt Acima</span>
-                                </button>
-                            </div>
-
                             <!-- Prévia da Imagem Gerada ou Selecionada -->
-                            <div id="preview_box" class="hidden text-center p-2 bg-white rounded-xl border border-purple-200">
-                                <span class="text-[10px] text-slate-500 font-bold block mb-1">Prévia da Imagem Selecionada:</span>
-                                <div class="w-full h-44 rounded-lg overflow-hidden bg-slate-900 border border-[#1E0B36] relative">
-                                    <img id="img_preview" src="" alt="Prévia da Imagem" class="w-full h-full object-cover">
+                            <div id="preview_box" class="text-center p-3 bg-white rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop-sm space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-black text-[#1E0B36] uppercase">Prévia em Tempo Real da Imagem:</span>
+                                    <span id="preview_info_tag" class="text-[10px] text-purple-700 font-bold">Aguardando prompt...</span>
+                                </div>
+                                <div class="w-full h-48 rounded-xl overflow-hidden bg-slate-900 border border-[#1E0B36] relative flex items-center justify-center">
+                                    <img id="img_preview" src="{% static 'game/img/pet_fashionista.jpg' %}" alt="Prévia da Imagem" class="w-full h-full object-cover">
+                                    <div id="img_loading_spinner" class="hidden absolute inset-0 bg-[#1E0B36]/80 flex flex-col items-center justify-center gap-2 text-white text-xs font-black">
+                                        <div class="w-8 h-8 border-4 border-[#FEBE01] border-t-transparent rounded-full animate-spin"></div>
+                                        <span>Gerando Imagem com IA...</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2 pt-1">
+                                    <button 
+                                        type="button" 
+                                        onclick="gerarPreviaImagemIA()"
+                                        class="flex-1 bg-[#10B981] hover:bg-emerald-600 text-white font-black text-xs py-2 px-3 rounded-xl border border-[#1E0B36] shadow-xs hover:translate-y-0.5 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                                    >
+                                        <span>🎨 Gerar Nova Variação com IA</span>
+                                    </button>
                                 </div>
                             </div>
                             
+                            <!-- Opções de Envio -->
                             <div>
                                 <span class="text-[10px] text-slate-700 font-bold block mb-1">1. Fazer Upload de Arquivo do seu Computador (JPG/PNG):</span>
                                 <input 
@@ -343,20 +383,17 @@
                             </div>
 
                             <div class="pt-2 border-t border-purple-200">
-                                <span class="text-[10px] text-slate-700 font-bold block mb-1">OU 2. URL da Imagem de IA (gerada automaticamente):</span>
+                                <span class="text-[10px] text-slate-700 font-bold block mb-1">OU 2. URL da Imagem (preenchida automaticamente pela IA):</span>
                                 <input 
-                                    type="url" 
+                                    type="text" 
                                     name="imagem_url" 
                                     id="id_imagem_url"
-                                    placeholder="https://image.pollinations.ai/prompt/..."
+                                    value="/media/challenges/pet_fashionista.jpg"
+                                    placeholder="https://... ou /media/challenges/..."
                                     onchange="previewUrlImage(this.value)"
                                     class="w-full px-3 py-2 rounded-xl border-2 border-slate-300 text-xs bg-white font-semibold focus:outline-none focus:border-[#7C3AED]"
                                 >
                             </div>
-
-                            <p class="text-[11px] text-purple-900 font-bold bg-purple-50 p-2.5 rounded-xl border border-purple-200">
-                                💡 <strong>Geração Automática:</strong> Se você não enviar arquivo nem URL, nosso sistema gera e salva automaticamente uma imagem de IA realista baseada no seu prompt!
-                            </p>
                         </div>
 
                         <!-- Ativar Imediatamente -->
@@ -564,7 +601,144 @@
 
     <!-- Scripts de Prévia e Geração Automática de Imagem IA -->
     <script>
-        function gerarPreviaImagemIA() {
+        // Catálogo de Presets de Desafios Oficiais do Evento com Imagens de Alta Fidelidade
+        const PRESETS = {
+            'flor': {
+                titulo: "Flor Mecânica em Esfera de Cristal Cósmica",
+                numero_rodada: "01",
+                estilo_tag: "Estilo Mágico & Futurista",
+                prompt_original: "Arte digital colorida e surrealista de uma flor mecânica cibernética brilhando com filamentos de luz neon dentro de uma esfera de cristal transparente, flutuando no espaço sideral com nebulosas púrpuras ao fundo.",
+                palavras_chave: "esfera de cristal, flor robótica/mecânica, brilho bioluminescente, espaço sideral",
+                dica_mascote: "Oi, {nome}! Olhe com atenção os detalhes da imagem: a esfera de cristal transparente, a flor robótica e o fundo espacial.",
+                imagem_url: "/media/challenges/flor_cristal.jpg"
+            },
+            'pet': {
+                titulo: "O Mistério do Pet Fashionista",
+                numero_rodada: "02",
+                estilo_tag: "Fotografia Cinematográfica Realista",
+                prompt_original: "Um adorável cãozinho golden retriever caminhando alegremente em um shopping center moderno, vestindo um conjunto de roupas de criança composto por uma jardineira jeans e uma camiseta listrada colorida, reflexos no chão polido, alta resolução 8k.",
+                palavras_chave: "golden retriever, jardineira jeans, shopping center, camiseta listrada, fotografia realista",
+                dica_mascote: "Oi, {nome}! Observe a raça do cachorrinho, as roupas infantis que ele veste e o cenário do shopping!",
+                imagem_url: "/media/challenges/pet_fashionista.jpg"
+            },
+            'lencois': {
+                titulo: "Robótica Espacial nos Lençóis Maranhenses",
+                numero_rodada: "03",
+                estilo_tag: "Ficção Científica Realista",
+                prompt_original: "Uma jovem cientista brasileira com colete tecnológico testando um robô rover autônomo nas dunas brancas e lagoas azul-turquesa dos Lençóis Maranhenses sob um céu cósmico estrelado no crepúsculo, fotografia cinematográfica 8k.",
+                palavras_chave: "Lençóis Maranhenses, robô rover, menina cientista, dunas brancas, céu estrelado",
+                dica_mascote: "Oi, {nome}! Repare no cenário maranhense com dunas e no rover espacial sendo testado pela cientista!",
+                imagem_url: "/media/challenges/lencois_robotica.jpg"
+            },
+            'afro': {
+                titulo: "Afrofuturismo: Menina na Inteligência Artificial",
+                numero_rodada: "04",
+                estilo_tag: "Afrofuturismo & Cyberpunk",
+                prompt_original: "Uma inspiradora jovem cientista negra com cabelos afro estelares programando diagramas holográficos de inteligência artificial e circuitos neon flutuantes em um laboratório de computação de alta tecnologia, iluminação roxa e dourada, 8k.",
+                palavras_chave: "cientista negra, afrofuturismo, inteligência artificial, hologramas neon, laboratório de computação",
+                dica_mascote: "Oi, {nome}! Olhe com carinho a cientista com cabelos afro e as redes neurais holográficas ao redor dela!",
+                imagem_url: "/media/challenges/afrofuturismo_ia.jpg"
+            },
+            'carro': {
+                titulo: "Carro de Corrida Autônomo MDX",
+                numero_rodada: "05",
+                estilo_tag: "Tecnologia STEM & Alta Velocidade",
+                prompt_original: "Um mini carro de corrida autônomo e aerodinâmico com sensores LiDAR neon magenta brilhando e placas de circuitos aparentes acelerando em uma pista inteligente construída por estudantes, fotografia esportiva em alta velocidade 8k.",
+                palavras_chave: "carro autônomo, sensores lidar, pista inteligente, corrida robótica, circuitos neon",
+                dica_mascote: "Oi, {nome}! Foque nos sensores luminosos do carrinho e no conceito de veículo autônomo de corrida!",
+                imagem_url: "/media/challenges/carro_autonomo.jpg"
+            }
+        };
+
+        function carregarPreset(chave) {
+            const preset = PRESETS[chave];
+            if (!preset) return;
+
+            document.getElementById('id_titulo').value = preset.titulo;
+            document.getElementById('id_numero_rodada').value = preset.numero_rodada;
+            document.getElementById('id_estilo_tag').value = preset.estilo_tag;
+            document.getElementById('id_prompt_original').value = preset.prompt_original;
+            document.getElementById('id_palavras_chave').value = preset.palavras_chave;
+            document.getElementById('id_dica_mascote').value = preset.dica_mascote;
+            document.getElementById('id_imagem_url').value = preset.imagem_url;
+
+            const imgPreview = document.getElementById('img_preview');
+            const previewInfo = document.getElementById('preview_info_tag');
+            const badge = document.getElementById('badge_imagem_status');
+
+            if (imgPreview) {
+                imgPreview.src = preset.imagem_url;
+                if (previewInfo) previewInfo.textContent = `✓ Modelo Oficial: ${preset.titulo}`;
+                if (badge) badge.classList.remove('hidden');
+            }
+        }
+
+        async function gerarIdeiaComGemini() {
+            const inputTema = document.getElementById('tema_sugestao_input');
+            const tema = inputTema ? inputTema.value.trim() : '';
+
+            const btn = document.getElementById('btn_gerar_gemini');
+            const icon = document.getElementById('gemini_btn_icon');
+            const text = document.getElementById('gemini_btn_text');
+            const spinner = document.getElementById('img_loading_spinner');
+            const previewInfo = document.getElementById('preview_info_tag');
+            const badge = document.getElementById('badge_imagem_status');
+
+            // Feedback visual de carregamento
+            if (btn) btn.disabled = true;
+            if (icon) icon.textContent = '⏳';
+            if (text) text.textContent = 'Criando com IA...';
+            if (spinner) spinner.classList.remove('hidden');
+            if (previewInfo) previewInfo.textContent = 'Gemini criando desafio e gerando imagem...';
+
+            try {
+                const response = await fetch(`/api/gerar-ideia-ia/?tema=${encodeURIComponent(tema)}`);
+                const result = await response.json();
+
+                if (result.sucesso && result.dados) {
+                    const d = result.dados;
+                    if (d.titulo) document.getElementById('id_titulo').value = d.titulo;
+                    if (d.numero_rodada) document.getElementById('id_numero_rodada').value = d.numero_rodada;
+                    if (d.estilo_tag) document.getElementById('id_estilo_tag').value = d.estilo_tag;
+                    if (d.prompt_original) document.getElementById('id_prompt_original').value = d.prompt_original;
+                    if (d.palavras_chave) document.getElementById('id_palavras_chave').value = d.palavras_chave;
+                    if (d.dica_mascote) document.getElementById('id_dica_mascote').value = d.dica_mascote;
+
+                    // Atualiza a imagem automaticamente no frontend
+                    if (d.imagem_url) {
+                        document.getElementById('id_imagem_url').value = d.imagem_url;
+                        const img = document.getElementById('img_preview');
+                        if (img) {
+                            img.onload = function() {
+                                if (spinner) spinner.classList.add('hidden');
+                                if (badge) badge.classList.remove('hidden');
+                                if (previewInfo) previewInfo.textContent = '✓ Imagem gerada com IA em tempo real!';
+                            };
+                            img.onerror = function() {
+                                if (spinner) spinner.classList.add('hidden');
+                                if (previewInfo) previewInfo.textContent = 'Prévia da URL configurada';
+                            };
+                            img.src = d.imagem_url;
+                        }
+                    } else {
+                        if (spinner) spinner.classList.add('hidden');
+                    }
+                } else {
+                    alert('Não foi possível gerar ideia no momento. Tente novamente ou use os modelos prontos.');
+                    if (spinner) spinner.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Erro ao conectar ao Gemini. Verifique a conexão.');
+                if (spinner) spinner.classList.add('hidden');
+            } finally {
+                if (btn) btn.disabled = false;
+                if (icon) icon.textContent = '✨';
+                if (text) text.textContent = 'Gerar com IA';
+            }
+        }
+
+        async function gerarPreviaImagemIA() {
             const promptInput = document.getElementById('id_prompt_original');
             const prompt = promptInput ? promptInput.value.trim() : '';
             if (!prompt) {
@@ -573,31 +747,58 @@
                 return;
             }
 
-            const encoded = encodeURIComponent(prompt);
-            const seed = Date.now();
-            const aiUrl = `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024&nologo=true&seed=${seed}`;
+            const spinner = document.getElementById('img_loading_spinner');
+            const previewInfo = document.getElementById('preview_info_tag');
+            const badge = document.getElementById('badge_imagem_status');
+            if (spinner) spinner.classList.remove('hidden');
+            if (previewInfo) previewInfo.textContent = 'Otimizando e gerando imagem com IA...';
 
-            const urlInput = document.getElementById('id_imagem_url');
-            if (urlInput) urlInput.value = aiUrl;
+            const seed = Math.floor(Math.random() * 100000);
 
-            const previewBox = document.getElementById('preview_box');
-            const imgPreview = document.getElementById('img_preview');
-            if (imgPreview && previewBox) {
-                imgPreview.src = aiUrl;
-                previewBox.classList.remove('hidden');
-                previewBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            try {
+                const response = await fetch(`/api/otimizar-prompt-imagem/?prompt=${encodeURIComponent(prompt)}&seed=${seed}`);
+                const result = await response.json();
+
+                if (result.sucesso && result.imagem_url) {
+                    const urlInput = document.getElementById('id_imagem_url');
+                    if (urlInput) urlInput.value = result.imagem_url;
+
+                    const imgPreview = document.getElementById('img_preview');
+                    if (imgPreview) {
+                        imgPreview.onload = function() {
+                            if (spinner) spinner.classList.add('hidden');
+                            if (badge) badge.classList.remove('hidden');
+                            if (previewInfo) previewInfo.textContent = '✓ Nova variação de imagem gerada com IA!';
+                        };
+                        imgPreview.onerror = function() {
+                            if (spinner) spinner.classList.add('hidden');
+                        };
+                        imgPreview.src = result.imagem_url;
+                    }
+                } else {
+                    if (spinner) spinner.classList.add('hidden');
+                    alert('Falha ao gerar variação. Tente novamente.');
+                }
+            } catch (e) {
+                console.error(e);
+                if (spinner) spinner.classList.add('hidden');
             }
         }
 
         function previewLocalImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
+                const spinner = document.getElementById('img_loading_spinner');
+                const previewInfo = document.getElementById('preview_info_tag');
+                const badge = document.getElementById('badge_imagem_status');
+
                 reader.onload = function(e) {
-                    const previewBox = document.getElementById('preview_box');
                     const imgPreview = document.getElementById('img_preview');
-                    if (imgPreview && previewBox) {
+                    if (imgPreview) {
                         imgPreview.src = e.target.result;
-                        previewBox.classList.remove('hidden');
+                        if (previewInfo) previewInfo.textContent = `✓ Arquivo Local: ${input.files[0].name}`;
+                        if (badge) badge.classList.remove('hidden');
+                        if (spinner) spinner.classList.add('hidden');
                     }
                 }
                 reader.readAsDataURL(input.files[0]);
@@ -605,12 +806,12 @@
         }
 
         function previewUrlImage(url) {
-            if (url && url.startsWith('http')) {
-                const previewBox = document.getElementById('preview_box');
+            if (url) {
                 const imgPreview = document.getElementById('img_preview');
-                if (imgPreview && previewBox) {
+                const previewInfo = document.getElementById('preview_info_tag');
+                if (imgPreview) {
                     imgPreview.src = url;
-                    previewBox.classList.remove('hidden');
+                    if (previewInfo) previewInfo.textContent = '✓ URL da imagem configurada';
                 }
             }
         }

@@ -8,7 +8,7 @@ import csv
 
 from .models import Challenge, ParticipantAttempt
 from .utils import calculate_prompt_similarity, generate_ai_image_url, download_and_save_ai_image
-from .gemini_service import generate_mascot_live_tip, generate_challenge_data_with_gemini
+from .gemini_service import generate_mascot_live_tip, generate_challenge_data_with_gemini, optimize_prompt_for_image_model
 
 def check_equipe_permission(request):
     """Verifica se o operador está autenticado via PIN de 6 dígitos ou login."""
@@ -340,6 +340,53 @@ def api_rodada_ativa(request):
         'imagem_url': challenge.get_image_url,
     })
 
+def api_gerar_ideia_ia(request):
+    """
+    Endpoint AJAX: Gera com Google Gemini uma nova ideia de rodada, prompt de referência,
+    palavras-chave e dica da mascote, além da imagem correspondente, sem recarregar a página.
+    """
+    if not check_equipe_permission(request):
+        return JsonResponse({'sucesso': False, 'erro': 'Não autorizado.'}, status=403)
+
+    tema = request.GET.get('tema', '').strip()
+    dados = generate_challenge_data_with_gemini(tema)
+
+    if not dados or not dados.get('prompt_original'):
+        return JsonResponse({'sucesso': False, 'erro': 'Não foi possível gerar ideia no momento.'}, status=500)
+
+    # Identifica o melhor prompt visual em inglês para o gerador de imagem
+    visual_en = dados.get('prompt_visual_en')
+    if not visual_en:
+        visual_en = optimize_prompt_for_image_model(dados['prompt_original'])
+
+    dados['prompt_visual_en'] = visual_en
+    dados['imagem_url'] = generate_ai_image_url(visual_en)
+
+    return JsonResponse({'sucesso': True, 'dados': dados})
+
+def api_otimizar_prompt_imagem(request):
+    """
+    Endpoint AJAX: Traduz e refina o prompt em português para inglês com o Gemini
+    e retorna a URL de imagem gerada por IA correspondente.
+    """
+    if not check_equipe_permission(request):
+        return JsonResponse({'sucesso': False, 'erro': 'Não autorizado.'}, status=403)
+
+    prompt_pt = request.GET.get('prompt', '').strip()
+    if not prompt_pt:
+        return JsonResponse({'sucesso': False, 'erro': 'Prompt vazio.'}, status=400)
+
+    import time
+    seed = int(request.GET.get('seed', time.time()))
+    visual_en = optimize_prompt_for_image_model(prompt_pt)
+    img_url = generate_ai_image_url(visual_en, seed=seed)
+
+    return JsonResponse({
+        'sucesso': True,
+        'prompt_en': visual_en,
+        'imagem_url': img_url
+    })
+
 def trocar_modalidade_equipe(request):
     """
     Alterna para a modalidade 'Equipe' mediante conferência da Senha de 6 Dígitos.
@@ -448,14 +495,15 @@ def operator_desafios(request):
                     novo_desafio.imagem_url = imagem_url
                     novo_desafio.save()
                 else:
-                    # Se não informou arquivo nem URL, gera automaticamente a imagem com IA a partir do prompt!
+                    # Se não informou arquivo nem URL, gera automaticamente a imagem com IA a partir do prompt otimizado!
                     import time
                     rel_path = f"challenges/desafio_{novo_desafio.id}_{int(time.time())}.jpg"
-                    sucesso = download_and_save_ai_image(prompt_original, rel_path)
+                    prompt_otimizado = optimize_prompt_for_image_model(prompt_original)
+                    sucesso = download_and_save_ai_image(prompt_otimizado, rel_path)
                     if sucesso:
                         novo_desafio.imagem = rel_path
                     else:
-                        novo_desafio.imagem_url = generate_ai_image_url(prompt_original)
+                        novo_desafio.imagem_url = generate_ai_image_url(prompt_otimizado)
                     novo_desafio.save()
 
                 if ativar_imediatamente or Challenge.objects.filter(ativo=True).count() == 0:
@@ -480,14 +528,15 @@ def operator_desafios(request):
             desafio = get_object_or_404(Challenge, id=desafio_id)
             import time
             rel_path = f"challenges/desafio_{desafio.id}_{int(time.time())}.jpg"
-            sucesso = download_and_save_ai_image(desafio.prompt_original, rel_path)
+            prompt_otimizado = optimize_prompt_for_image_model(desafio.prompt_original)
+            sucesso = download_and_save_ai_image(prompt_otimizado, rel_path)
             if sucesso:
                 desafio.imagem = rel_path
                 desafio.imagem_url = ""
                 desafio.save()
                 messages.success(request, f"🎨 Nova imagem gerada por IA com sucesso a partir do prompt para a Rodada {desafio.numero_rodada}!")
             else:
-                desafio.imagem_url = generate_ai_image_url(desafio.prompt_original)
+                desafio.imagem_url = generate_ai_image_url(prompt_otimizado)
                 desafio.save()
                 messages.warning(request, f"Imagem da IA configurada via URL direta para a Rodada {desafio.numero_rodada}.")
             return redirect('game:operator_desafios')

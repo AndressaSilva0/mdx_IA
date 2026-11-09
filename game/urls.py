@@ -9,6 +9,8 @@ urlpatterns = [
     path('reset/', views.reset_session, name='reset'),
     path('ranking/', views.leaderboard, name='ranking'),
     path('api/rodada-ativa/', views.api_rodada_ativa, name='api_rodada_ativa'),
+    path('api/gerar-ideia-ia/', views.api_gerar_ideia_ia, name='api_gerar_ideia_ia'),
+    path('api/otimizar-prompt-imagem/', views.api_otimizar_prompt_imagem, name='api_otimizar_prompt_imagem'),
 
     # Alternância de Modalidade (Equipe / Participante via Senha de 6 Dígitos)
     path('equipe/entrar-pin/', views.trocar_modalidade_equipe, name='trocar_modalidade_equipe'),
