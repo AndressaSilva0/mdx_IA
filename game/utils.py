@@ -151,7 +151,9 @@ def generate_ai_image_url(prompt: str, seed: int = None) -> str:
 
 def download_and_save_ai_image(prompt: str, relative_dest_path: str) -> bool:
     """
-    Baixa e salva localmente no disco (ex: media/challenges/desafio_X.jpg) a imagem criada por IA.
+    Gera e salva localmente no disco (ex: media/challenges/desafio_X.jpg) a imagem criada por IA.
+    1. Tenta gerar nativamente com o Google Gemini (gemini-2.5-flash-image) usando a chave do Google AI Studio.
+    2. Caso a chave do Gemini não esteja configurada ou atinja limites, utiliza fallback seguro.
     Retorna True em caso de sucesso e False se houver falha de rede.
     """
     import urllib.request
@@ -162,6 +164,22 @@ def download_and_save_ai_image(prompt: str, relative_dest_path: str) -> bool:
 
     full_path = os.path.join(settings.MEDIA_ROOT, relative_dest_path)
     os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+    # 1. Tentativa nativa via Google Gemini (gemini-2.5-flash-image)
+    try:
+        from .gemini_service import generate_image_with_gemini
+        gem_res = generate_image_with_gemini(prompt)
+        if gem_res.get("success") and gem_res.get("raw_bytes"):
+            with open(full_path, 'wb') as f:
+                f.write(gem_res["raw_bytes"])
+            logger.info(f"✓ Imagem gerada nativamente via Google Gemini ({gem_res.get('model_used')}) e salva em {full_path}")
+            return True
+        else:
+            logger.info(f"Gemini image gen indisponível ({gem_res.get('error')}), acionando fallback de alta resolução.")
+    except Exception as e:
+        logger.warning(f"Exceção ao tentar gerar imagem via Gemini: {e}")
+
+    # 2. Fallback de alta resolução
     url = generate_ai_image_url(prompt)
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})

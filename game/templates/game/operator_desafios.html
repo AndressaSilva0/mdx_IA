@@ -415,7 +415,8 @@
                                     <div class="flex items-center justify-between text-[11px] font-black text-slate-700 px-1">
                                         <span>Provedor de Imagem IA:</span>
                                         <select id="seletor_provedor_ia" class="text-[11px] font-black bg-[#FAF5FF] border-2 border-[#1E0B36] rounded-lg px-2 py-1 text-[#6D28D9] focus:outline-none cursor-pointer">
-                                            <option value="flux" selected>🌟 FLUX.1 Ultra (Alta Qualidade)</option>
+                                            <option value="gemini" selected>✨ Google Gemini (gemini-2.5-flash-image)</option>
+                                            <option value="flux">🌟 FLUX.1 Ultra (via Puter.js)</option>
                                             <option value="pollinations">⚡ Motor Neural Rápido</option>
                                         </select>
                                     </div>
@@ -992,10 +993,37 @@
                 console.warn('Otimização online indisponível, usando prompt direto:', err);
             }
 
-            // 2. Geração via FLUX.1 (Puter.js) ou Fallback para Motor Neural
+            // 2. Geração via Google Gemini (gemini-2.5-flash-image) ou FLUX.1
             let gerouComSucesso = false;
 
-            if (provedor === 'flux' && window.puter && puter.ai && puter.ai.txt2img) {
+            if (provedor === 'gemini') {
+                if (spinnerTitle) spinnerTitle.textContent = 'Gerando com Google Gemini (gemini-2.5-flash-image)...';
+                if (spinnerSub) spinnerSub.textContent = 'Processamento nativo multimodelo do Google AI Studio';
+                if (previewInfo) previewInfo.textContent = 'Processando com Gemini API...';
+
+                try {
+                    const geminiResp = await fetch(`/api/gerar-imagem-gemini/?prompt=${encodeURIComponent(prompt)}`);
+                    const geminiData = await geminiResp.json();
+
+                    if (geminiData.sucesso && geminiData.local_url) {
+                        imgPreview.src = geminiData.local_url;
+                        if (urlInput) urlInput.value = geminiData.local_url;
+                        if (previewInfo) previewInfo.textContent = `✓ Imagem gerada com Google Gemini (${geminiData.provedor})!`;
+                        if (badge) badge.classList.remove('hidden');
+                        gerouComSucesso = true;
+                    } else {
+                        console.warn('Gemini não retornou imagem:', geminiData.erro);
+                        if (geminiData.chave_aq) {
+                            console.info('Chave atual começa com AQ.; ativando fallback automático para FLUX.1 Ultra');
+                        }
+                    }
+                } catch (gemErr) {
+                    console.warn('Erro ao chamar API Gemini local:', gemErr);
+                }
+            }
+
+            // Se o Gemini não estiver disponível ou provedor for FLUX, gera via FLUX.1 (Puter.js)
+            if (!gerouComSucesso && (provedor === 'flux' || provedor === 'gemini') && window.puter && puter.ai && puter.ai.txt2img) {
                 if (spinnerTitle) spinnerTitle.textContent = 'Gerando com FLUX.1 Ultra (Alta Qualidade)...';
                 if (spinnerSub) spinnerSub.textContent = 'Criando arte fotorrealista sem distorções plásticas';
                 if (previewInfo) previewInfo.textContent = 'Processando com FLUX.1 Ultra...';

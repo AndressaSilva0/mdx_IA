@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/gerar-ideia-ia/', views.api_gerar_ideia_ia, name='api_gerar_ideia_ia'),
     path('api/otimizar-prompt-imagem/', views.api_otimizar_prompt_imagem, name='api_otimizar_prompt_imagem'),
     path('api/salvar-imagem-gerada/', views.api_salvar_imagem_desafio, name='api_salvar_imagem_gerada'),
+    path('api/gerar-imagem-gemini/', views.api_gerar_imagem_gemini, name='api_gerar_imagem_gemini'),
 
     # Alternância de Modalidade (Equipe / Participante via Senha de 6 Dígitos)
     path('equipe/entrar-pin/', views.trocar_modalidade_equipe, name='trocar_modalidade_equipe'),

@@ -5,6 +5,8 @@ Evento: Mermãs Digitais | MDX 2026 • IFMA
 
 import os
 import logging
+import base64
+from io import BytesIO
 from google import genai
 from google.genai import errors
 
@@ -190,5 +192,100 @@ Output ONLY the refined English prompt string (max 45 words). No explanations, n
 
     # Fallback inteligente local
     return enhance_prompt_locally(prompt_pt)
+
+def generate_image_with_gemini(prompt: str, model_name: str = "gemini-2.5-flash-image") -> dict:
+    """
+    Gera uma imagem a partir de um prompt de texto utilizando a Gemini API nativa
+    através do método padrão generate_content e modelos multimodais de imagem
+    (como gemini-2.5-flash-image, gemini-3.1-flash-image ou gemini-3-pro-image).
+    
+    Retorna dicionário com:
+    - success: bool
+    - model_used: str
+    - mime_type: str
+    - data_uri: str (Base64 pronto para src de imagem HTML)
+    - raw_bytes: bytes (para gravação em arquivo ou Django ImageField)
+    - error: str (em caso de falha)
+    """
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return {
+            "success": False,
+            "error": "Chave GEMINI_API_KEY não configurada no .env. Configure uma chave do Google AI Studio (aistudio.google.com)."
+        }
+
+    client = get_gemini_client()
+    if not client:
+        return {"success": False, "error": "Não foi possível inicializar o cliente Google GenAI."}
+
+    # Modelos recomendados em ordem de preferência
+    models_to_try = [model_name, "gemini-2.5-flash-image", "gemini-3.1-flash-image", "gemini-3-pro-image"]
+    ultimo_erro = None
+
+    for m in models_to_try:
+        try:
+            response = client.models.generate_content(
+                model=m,
+                contents=prompt,
+            )
+
+            # 1. Verifica response.parts diretamente
+            if hasattr(response, 'parts') and response.parts:
+                for part in response.parts:
+                    inline = getattr(part, 'inline_data', None)
+                    if inline is not None and getattr(inline, 'data', None):
+                        raw_bytes = inline.data
+                        mime_type = getattr(inline, 'mime_type', None) or "image/png"
+                        b64_encoded = base64.b64encode(raw_bytes).decode("utf-8")
+                        return {
+                            "success": True,
+                            "model_used": m,
+                            "mime_type": mime_type,
+                            "data_uri": f"data:{mime_type};base64,{b64_encoded}",
+                            "raw_bytes": raw_bytes,
+                        }
+
+            # 2. Verifica candidates (compatibilidade de resposta)
+            if hasattr(response, 'candidates') and response.candidates:
+                for cand in response.candidates:
+                    content = getattr(cand, 'content', None)
+                    parts = getattr(content, 'parts', []) if content else []
+                    for part in parts:
+                        inline = getattr(part, 'inline_data', None)
+                        if inline is not None and getattr(inline, 'data', None):
+                            raw_bytes = inline.data
+                            mime_type = getattr(inline, 'mime_type', None) or "image/png"
+                            b64_encoded = base64.b64encode(raw_bytes).decode("utf-8")
+                            return {
+                                "success": True,
+                                "model_used": m,
+                                "mime_type": mime_type,
+                                "data_uri": f"data:{mime_type};base64,{b64_encoded}",
+                                "raw_bytes": raw_bytes,
+                            }
+
+        except errors.APIError as e:
+            logger.warning(f"Erro Gemini API no modelo {m} ({e.code}): {e.message}")
+            ultimo_erro = f"Gemini API Error ({e.code}): {e.message}"
+            if e.code == 401 or "UNAUTHENTICATED" in str(e):
+                return {
+                    "success": False,
+                    "error": (
+                        "Chave não autenticada (401). "
+                        "Para gerar imagens nativas com o Gemini, use uma chave do Google AI Studio "
+                        "(aistudio.google.com/app/apikey) que inicia com 'AIzaSy...'."
+                    )
+                }
+            continue
+        except Exception as e:
+            logger.warning(f"Erro ao tentar modelo {m}: {e}")
+            ultimo_erro = str(e)
+            continue
+
+    return {
+        "success": False,
+        "error": ultimo_erro or "Nenhuma imagem foi retornada pelo modelo Gemini para o prompt fornecido."
+    }
+
 
 

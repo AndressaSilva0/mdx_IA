@@ -448,6 +448,44 @@ def api_salvar_imagem_desafio(request):
     except Exception as e:
         return JsonResponse({'sucesso': False, 'erro': str(e)}, status=500)
 
+def api_gerar_imagem_gemini(request):
+    """
+    Endpoint AJAX: Gera imagem nativa utilizando os modelos multimodais de imagem da Gemini API
+    (ex: gemini-2.5-flash-image) com a chave do Google AI Studio e salva localmente no disco.
+    """
+    if not check_equipe_permission(request):
+        return JsonResponse({'sucesso': False, 'erro': 'Não autorizado.'}, status=403)
+
+    prompt = request.GET.get('prompt', '').strip()
+    if not prompt:
+        return JsonResponse({'sucesso': False, 'erro': 'Prompt vazio.'}, status=400)
+
+    import time
+    from .gemini_service import generate_image_with_gemini, optimize_prompt_for_image_model
+
+    prompt_refinado = optimize_prompt_for_image_model(prompt)
+    resultado = generate_image_with_gemini(prompt_refinado)
+
+    if resultado.get('success') and resultado.get('raw_bytes'):
+        rel_path = f"challenges/gemini_{int(time.time())}.png"
+        full_path = os.path.join(settings.MEDIA_ROOT, rel_path)
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        with open(full_path, 'wb') as f:
+            f.write(resultado['raw_bytes'])
+
+        return JsonResponse({
+            'sucesso': True,
+            'provedor': resultado.get('model_used', 'gemini-2.5-flash-image'),
+            'local_url': f"/media/{rel_path}",
+            'data_uri': resultado.get('data_uri'),
+        })
+    else:
+        return JsonResponse({
+            'sucesso': False,
+            'erro': resultado.get('error', 'Falha ao gerar imagem com Gemini.'),
+            'chave_aq': os.getenv('GEMINI_API_KEY', '').startswith('AQ.')
+        }, status=400)
+
 def trocar_modalidade_equipe(request):
     """
     Alterna para a modalidade 'Equipe' mediante conferência da Senha de 6 Dígitos.
