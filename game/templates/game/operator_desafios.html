@@ -242,6 +242,7 @@
                             <input 
                                 type="text" 
                                 name="titulo" 
+                                id="id_titulo"
                                 value="{{ sugestao_gemini.titulo|default:'' }}" 
                                 required 
                                 placeholder="Ex: Sonda Robótica Lunar em Vidro Cósmico"
@@ -249,40 +250,17 @@
                             >
                         </div>
 
-                        <!-- Imagem: Upload de Arquivo OU URL -->
-                        <div class="space-y-2 bg-[#FAF5FF] p-3.5 rounded-2xl border-2 border-[#1E0B36]">
-                            <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block">
-                                Imagem Gerada por IA *
-                            </label>
-                            
-                            <div>
-                                <span class="text-[10px] text-slate-500 font-bold block mb-1">1. Fazer Upload do Arquivo (JPG/PNG):</span>
-                                <input 
-                                    type="file" 
-                                    name="imagem" 
-                                    accept="image/*"
-                                    class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-[#1E0B36] file:text-xs file:font-black file:bg-[#FEBE01] file:text-[#1E0B36]"
-                                >
-                            </div>
-
-                            <div class="pt-2 border-t border-purple-200">
-                                <span class="text-[10px] text-slate-500 font-bold block mb-1">OU 2. Informar URL da imagem:</span>
-                                <input 
-                                    type="url" 
-                                    name="imagem_url" 
-                                    placeholder="https://exemplo.com/imagem_ia.jpg"
-                                    class="w-full px-3 py-2 rounded-xl border-2 border-slate-300 text-xs bg-white font-semibold focus:outline-none focus:border-[#7C3AED]"
-                                >
-                            </div>
-                        </div>
-
                         <!-- Prompt Original de Referência -->
                         <div>
-                            <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block mb-1">
-                                Prompt Original de Referência (Secreto) *
-                            </label>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block">
+                                    Prompt Original de Referência (Secreto) *
+                                </label>
+                                <span class="text-[10px] text-purple-700 font-black">Gabarito da Imagem</span>
+                            </div>
                             <textarea 
                                 name="prompt_original" 
+                                id="id_prompt_original"
                                 rows="3" 
                                 required 
                                 placeholder="Descreva o prompt exato que gerou a imagem na IA..."
@@ -299,6 +277,7 @@
                             <input 
                                 type="text" 
                                 name="palavras_chave" 
+                                id="id_palavras_chave"
                                 value="{{ sugestao_gemini.palavras_chave|default:'' }}" 
                                 required 
                                 placeholder="esfera de cristal, robô, luz neon, espaço"
@@ -314,10 +293,70 @@
                             <input 
                                 type="text" 
                                 name="dica_mascote" 
+                                id="id_dica_mascote"
                                 value="{{ sugestao_gemini.dica_mascote|default:'' }}" 
                                 placeholder="Oi, {nome}! Olhe com atenção os detalhes da imagem..."
                                 class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-slate-300 text-xs font-bold focus:outline-none focus:border-[#7C3AED]"
                             >
+                        </div>
+
+                        <!-- Imagem: Gerar com IA, Upload ou URL -->
+                        <div class="space-y-3 bg-[#FAF5FF] p-4 rounded-2xl border-2 border-[#1E0B36]">
+                            <div class="flex items-center justify-between">
+                                <label class="text-[11px] uppercase tracking-wider text-[#1E0B36] font-black block">
+                                    Imagem da Rodada
+                                </label>
+                                <span class="bg-[#FEBE01] text-[#1E0B36] text-[10px] font-black px-2 py-0.5 rounded border border-[#1E0B36]">
+                                    Gerador Automático
+                                </span>
+                            </div>
+
+                            <!-- Botão de Ação Rápida: Gerar Imagem com IA a partir do Prompt -->
+                            <div>
+                                <button 
+                                    type="button" 
+                                    onclick="gerarPreviaImagemIA()"
+                                    class="w-full bg-[#10B981] hover:bg-emerald-600 text-white font-black text-xs py-2.5 px-4 rounded-xl border-2 border-[#1E0B36] shadow-neo-pop-sm hover:translate-y-0.5 transition flex items-center justify-center gap-2 cursor-pointer"
+                                >
+                                    <span>🎨 Gerar Imagem com IA a partir do Prompt Acima</span>
+                                </button>
+                            </div>
+
+                            <!-- Prévia da Imagem Gerada ou Selecionada -->
+                            <div id="preview_box" class="hidden text-center p-2 bg-white rounded-xl border border-purple-200">
+                                <span class="text-[10px] text-slate-500 font-bold block mb-1">Prévia da Imagem Selecionada:</span>
+                                <div class="w-full h-44 rounded-lg overflow-hidden bg-slate-900 border border-[#1E0B36] relative">
+                                    <img id="img_preview" src="" alt="Prévia da Imagem" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <span class="text-[10px] text-slate-700 font-bold block mb-1">1. Fazer Upload de Arquivo do seu Computador (JPG/PNG):</span>
+                                <input 
+                                    type="file" 
+                                    name="imagem" 
+                                    id="id_imagem_file"
+                                    accept="image/*"
+                                    onchange="previewLocalImage(this)"
+                                    class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-2 file:border-[#1E0B36] file:text-xs file:font-black file:bg-[#FEBE01] file:text-[#1E0B36]"
+                                >
+                            </div>
+
+                            <div class="pt-2 border-t border-purple-200">
+                                <span class="text-[10px] text-slate-700 font-bold block mb-1">OU 2. URL da Imagem de IA (gerada automaticamente):</span>
+                                <input 
+                                    type="url" 
+                                    name="imagem_url" 
+                                    id="id_imagem_url"
+                                    placeholder="https://image.pollinations.ai/prompt/..."
+                                    onchange="previewUrlImage(this.value)"
+                                    class="w-full px-3 py-2 rounded-xl border-2 border-slate-300 text-xs bg-white font-semibold focus:outline-none focus:border-[#7C3AED]"
+                                >
+                            </div>
+
+                            <p class="text-[11px] text-purple-900 font-bold bg-purple-50 p-2.5 rounded-xl border border-purple-200">
+                                💡 <strong>Geração Automática:</strong> Se você não enviar arquivo nem URL, nosso sistema gera e salva automaticamente uma imagem de IA realista baseada no seu prompt!
+                            </p>
                         </div>
 
                         <!-- Ativar Imediatamente -->
@@ -366,12 +405,28 @@
                     {% for des in desafios %}
                         <div class="bg-white rounded-3xl p-5 border-2 {% if des.ativo %}border-[#6D28D9] shadow-neo-pop{% else %}border-[#1E0B36] shadow-neo-pop-sm{% endif %} transition">
                             <div class="flex flex-col sm:flex-row items-start gap-4">
-                                <!-- Imagem Thumbnail -->
-                                <div class="w-full sm:w-36 h-36 rounded-2xl overflow-hidden bg-slate-950 border-2 border-[#1E0B36] flex-shrink-0 relative group shadow-neo-pop-sm">
-                                    <img src="{{ des.get_image_url }}" alt="{{ des.titulo }}" class="w-full h-full object-cover">
-                                    <div class="absolute bottom-1.5 left-1.5 bg-[#1E0B36]/80 text-white text-[9px] font-black px-2 py-0.5 rounded-full border border-[#FEBE01]">
-                                        Rodada {{ des.numero_rodada }}
+                                <!-- Imagem Thumbnail e Botão de Gerar com IA -->
+                                <div class="w-full sm:w-36 flex-shrink-0 space-y-2">
+                                    <div class="w-full h-36 rounded-2xl overflow-hidden bg-slate-950 border-2 border-[#1E0B36] relative group shadow-neo-pop-sm">
+                                        <img src="{{ des.get_image_url }}" alt="{{ des.titulo }}" class="w-full h-full object-cover">
+                                        <div class="absolute bottom-1.5 left-1.5 bg-[#1E0B36]/80 text-white text-[9px] font-black px-2 py-0.5 rounded-full border border-[#FEBE01]">
+                                            Rodada {{ des.numero_rodada }}
+                                        </div>
                                     </div>
+
+                                    <!-- Botão para Gerar / Regenerar Imagem IA para este Desafio -->
+                                    <form method="POST" action="{% url 'game:operator_desafios' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="regenerate_image">
+                                        <input type="hidden" name="challenge_id" value="{{ des.id }}">
+                                        <button 
+                                            type="submit" 
+                                            class="w-full bg-[#10B981] hover:bg-emerald-600 text-white font-black text-[11px] py-1.5 px-2 rounded-xl border border-[#1E0B36] shadow-xs flex items-center justify-center gap-1 cursor-pointer transition hover:translate-y-0.5"
+                                            title="Gera uma imagem real com IA correspondente ao prompt cadastrado"
+                                        >
+                                            <span>🎨 Gerar Imagem IA</span>
+                                        </button>
+                                    </form>
                                 </div>
 
                                 <!-- Detalhes do Desafio -->
@@ -420,15 +475,75 @@
                                     </div>
 
                                     <!-- Rodapé do Card com Métricas e Ações -->
-                                    <div class="pt-2 border-t-2 border-slate-100 flex items-center justify-between text-xs">
+                                    <div class="pt-2 border-t-2 border-slate-100 flex items-center justify-between text-xs flex-wrap gap-2">
                                         <span class="text-slate-600 font-bold">
                                             <strong>{{ des.attempts.count }}</strong> tentativa{{ des.attempts.count|pluralize }} registrada{{ des.attempts.count|pluralize }}
                                         </span>
 
-                                        <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ des.id }}" class="text-[#6D28D9] hover:text-purple-900 font-black flex items-center gap-1">
-                                            <span>Ver Tentativas & Julgamento</span>
-                                            <span>→</span>
-                                        </a>
+                                        <div class="flex items-center gap-2">
+                                            <button 
+                                                type="button" 
+                                                onclick="toggleEdit('edit_desafio_{{ des.id }}')"
+                                                class="bg-purple-100 hover:bg-purple-200 text-[#6D28D9] font-black text-xs px-3 py-1.5 rounded-xl border border-[#1E0B36] transition flex items-center gap-1 cursor-pointer"
+                                            >
+                                                <span>✏️ Editar / Trocar Imagem</span>
+                                            </button>
+
+                                            <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ des.id }}" class="text-[#6D28D9] hover:text-purple-900 font-black flex items-center gap-1">
+                                                <span>Ver Julgamento →</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Painel Expansível de Edição Rápida do Desafio -->
+                                    <div id="edit_desafio_{{ des.id }}" class="hidden mt-3 p-4 bg-[#FAF5FF] rounded-2xl border-2 border-[#1E0B36] space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <h4 class="text-xs font-black text-[#1E0B36] uppercase">✏️ Editar Desafio da Rodada {{ des.numero_rodada }}</h4>
+                                            <button type="button" onclick="toggleEdit('edit_desafio_{{ des.id }}')" class="text-xs font-black text-slate-500 hover:text-slate-900">✕ Fechar</button>
+                                        </div>
+
+                                        <form method="POST" action="{% url 'game:operator_desafios' %}" enctype="multipart/form-data" class="space-y-3">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="update_challenge">
+                                            <input type="hidden" name="challenge_id" value="{{ des.id }}">
+
+                                            <div class="grid grid-cols-2 gap-2">
+                                                <div>
+                                                    <label class="text-[10px] font-black text-[#1E0B36] block">Título</label>
+                                                    <input type="text" name="titulo" value="{{ des.titulo }}" required class="w-full px-2.5 py-1.5 rounded-xl border text-xs font-bold bg-white">
+                                                </div>
+                                                <div>
+                                                    <label class="text-[10px] font-black text-[#1E0B36] block">Nº da Rodada</label>
+                                                    <input type="text" name="numero_rodada" value="{{ des.numero_rodada }}" required class="w-full px-2.5 py-1.5 rounded-xl border text-xs font-bold bg-white">
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label class="text-[10px] font-black text-[#1E0B36] block">Prompt Original</label>
+                                                <textarea name="prompt_original" rows="2" required class="w-full p-2 rounded-xl border text-xs font-semibold bg-white">{{ des.prompt_original }}</textarea>
+                                            </div>
+
+                                            <div>
+                                                <label class="text-[10px] font-black text-[#1E0B36] block">Palavras-Chave</label>
+                                                <input type="text" name="palavras_chave" value="{{ des.palavras_chave }}" required class="w-full px-2.5 py-1.5 rounded-xl border text-xs font-bold bg-white">
+                                            </div>
+
+                                            <div>
+                                                <label class="text-[10px] font-black text-[#1E0B36] block">Trocar Imagem (Upload Arquivo)</label>
+                                                <input type="file" name="imagem" accept="image/*" class="w-full text-xs text-slate-600">
+                                            </div>
+
+                                            <div class="flex items-center gap-2 pt-1">
+                                                <input type="checkbox" id="gerar_ia_{{ des.id }}" name="gerar_nova_imagem_ia" class="w-3.5 h-3.5">
+                                                <label for="gerar_ia_{{ des.id }}" class="text-xs font-bold text-[#1E0B36]">
+                                                    Gerar automaticamente nova imagem por IA para este prompt ao salvar
+                                                </label>
+                                            </div>
+
+                                            <button type="submit" class="w-full bg-[#6D28D9] text-white font-black text-xs py-2 rounded-xl border border-[#1E0B36] shadow-xs hover:bg-purple-700 transition">
+                                                Salvar Alterações do Desafio
+                                            </button>
+                                        </form>
                                     </div>
 
                                 </div>
@@ -447,5 +562,65 @@
 
     </div>
 
+    <!-- Scripts de Prévia e Geração Automática de Imagem IA -->
+    <script>
+        function gerarPreviaImagemIA() {
+            const promptInput = document.getElementById('id_prompt_original');
+            const prompt = promptInput ? promptInput.value.trim() : '';
+            if (!prompt) {
+                alert('⚠️ Digite primeiro o "Prompt Original de Referência" acima para que a IA possa gerar a imagem correspondente!');
+                if (promptInput) promptInput.focus();
+                return;
+            }
+
+            const encoded = encodeURIComponent(prompt);
+            const seed = Date.now();
+            const aiUrl = `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024&nologo=true&seed=${seed}`;
+
+            const urlInput = document.getElementById('id_imagem_url');
+            if (urlInput) urlInput.value = aiUrl;
+
+            const previewBox = document.getElementById('preview_box');
+            const imgPreview = document.getElementById('img_preview');
+            if (imgPreview && previewBox) {
+                imgPreview.src = aiUrl;
+                previewBox.classList.remove('hidden');
+                previewBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function previewLocalImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewBox = document.getElementById('preview_box');
+                    const imgPreview = document.getElementById('img_preview');
+                    if (imgPreview && previewBox) {
+                        imgPreview.src = e.target.result;
+                        previewBox.classList.remove('hidden');
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewUrlImage(url) {
+            if (url && url.startsWith('http')) {
+                const previewBox = document.getElementById('preview_box');
+                const imgPreview = document.getElementById('img_preview');
+                if (imgPreview && previewBox) {
+                    imgPreview.src = url;
+                    previewBox.classList.remove('hidden');
+                }
+            }
+        }
+
+        function toggleEdit(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle('hidden');
+            }
+        }
+    </script>
 </body>
 </html>

@@ -137,3 +137,38 @@ def calculate_prompt_similarity(submitted_prompt: str, original_prompt: str, key
 
     return score_pct, matched_kws
 
+def generate_ai_image_url(prompt: str, seed: int = None) -> str:
+    """
+    Gera a URL de uma imagem gerada por IA a partir do prompt descritivo.
+    Utiliza endpoint gratuito e de alta velocidade para gerar a imagem real do prompt.
+    """
+    import urllib.parse
+    import time
+    clean_prompt = prompt.strip()
+    encoded = urllib.parse.quote(clean_prompt)
+    seed_val = seed if seed is not None else int(time.time())
+    return f"https://image.pollinations.ai/prompt/{encoded}?width=1024&height=1024&nologo=true&seed={seed_val}"
+
+def download_and_save_ai_image(prompt: str, relative_dest_path: str) -> bool:
+    """
+    Baixa e salva localmente no disco (ex: media/challenges/desafio_X.jpg) a imagem criada por IA.
+    Retorna True em caso de sucesso e False se houver falha de rede.
+    """
+    import urllib.request
+    from django.conf import settings
+    import os
+    import logging
+    logger = logging.getLogger(__name__)
+
+    full_path = os.path.join(settings.MEDIA_ROOT, relative_dest_path)
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+    url = generate_ai_image_url(prompt)
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+        with urllib.request.urlopen(req, timeout=30) as resp, open(full_path, 'wb') as f:
+            f.write(resp.read())
+        return True
+    except Exception as e:
+        logger.error(f"Erro ao baixar imagem de IA da web: {e}")
+        return False
+

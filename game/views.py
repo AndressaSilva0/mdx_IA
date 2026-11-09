@@ -7,7 +7,7 @@ from django.utils import timezone
 import csv
 
 from .models import Challenge, ParticipantAttempt
-from .utils import calculate_prompt_similarity
+from .utils import calculate_prompt_similarity, generate_ai_image_url, download_and_save_ai_image
 from .gemini_service import generate_mascot_live_tip, generate_challenge_data_with_gemini
 
 def check_equipe_permission(request):
@@ -444,12 +444,25 @@ def operator_desafios(request):
                 if 'imagem' in request.FILES:
                     novo_desafio.imagem = request.FILES['imagem']
                     novo_desafio.save()
+                elif imagem_url:
+                    novo_desafio.imagem_url = imagem_url
+                    novo_desafio.save()
+                else:
+                    # Se não informou arquivo nem URL, gera automaticamente a imagem com IA a partir do prompt!
+                    import time
+                    rel_path = f"challenges/desafio_{novo_desafio.id}_{int(time.time())}.jpg"
+                    sucesso = download_and_save_ai_image(prompt_original, rel_path)
+                    if sucesso:
+                        novo_desafio.imagem = rel_path
+                    else:
+                        novo_desafio.imagem_url = generate_ai_image_url(prompt_original)
+                    novo_desafio.save()
 
                 if ativar_imediatamente or Challenge.objects.filter(ativo=True).count() == 0:
                     novo_desafio.ativar()
-                    messages.success(request, f"🎉 Desafio '{titulo}' cadastrado e ATIVADO como a rodada atual do estande!")
+                    messages.success(request, f"🎉 Desafio '{titulo}' cadastrado, com imagem gerada por IA e ATIVADO como a rodada atual do estande!")
                 else:
-                    messages.success(request, f"Desafio '{titulo}' salvo com sucesso! Você pode ativá-lo quando quiser.")
+                    messages.success(request, f"Desafio '{titulo}' salvo com imagem gerada por IA! Você pode ativá-lo quando quiser.")
 
                 return redirect('game:operator_desafios')
 
@@ -459,6 +472,57 @@ def operator_desafios(request):
             desafio = get_object_or_404(Challenge, id=desafio_id)
             desafio.ativar()
             messages.success(request, f"🚀 Rodada {desafio.numero_rodada} ('{desafio.titulo}') ATIVADA! A tela das alunas foi atualizada.")
+            return redirect('game:operator_desafios')
+
+        # 4. Gerar / Regenerar Imagem por IA a partir do Prompt Cadastrado
+        elif action == 'regenerate_image':
+            desafio_id = request.POST.get('challenge_id')
+            desafio = get_object_or_404(Challenge, id=desafio_id)
+            import time
+            rel_path = f"challenges/desafio_{desafio.id}_{int(time.time())}.jpg"
+            sucesso = download_and_save_ai_image(desafio.prompt_original, rel_path)
+            if sucesso:
+                desafio.imagem = rel_path
+                desafio.imagem_url = ""
+                desafio.save()
+                messages.success(request, f"🎨 Nova imagem gerada por IA com sucesso a partir do prompt para a Rodada {desafio.numero_rodada}!")
+            else:
+                desafio.imagem_url = generate_ai_image_url(desafio.prompt_original)
+                desafio.save()
+                messages.warning(request, f"Imagem da IA configurada via URL direta para a Rodada {desafio.numero_rodada}.")
+            return redirect('game:operator_desafios')
+
+        # 5. Atualizar Dados / Prompt / Imagem de Desafio Existente
+        elif action == 'update_challenge':
+            desafio_id = request.POST.get('challenge_id')
+            desafio = get_object_or_404(Challenge, id=desafio_id)
+            desafio.titulo = request.POST.get('titulo', desafio.titulo).strip()
+            desafio.numero_rodada = request.POST.get('numero_rodada', desafio.numero_rodada).strip()
+            desafio.estilo_tag = request.POST.get('estilo_tag', desafio.estilo_tag).strip()
+            
+            novo_prompt = request.POST.get('prompt_original', desafio.prompt_original).strip()
+            prompt_alterado = (novo_prompt != desafio.prompt_original)
+            desafio.prompt_original = novo_prompt
+            desafio.palavras_chave = request.POST.get('palavras_chave', desafio.palavras_chave).strip()
+            desafio.dica_mascote = request.POST.get('dica_mascote', desafio.dica_mascote).strip()
+
+            if 'imagem' in request.FILES:
+                desafio.imagem = request.FILES['imagem']
+                desafio.imagem_url = ""
+            elif request.POST.get('imagem_url'):
+                desafio.imagem_url = request.POST.get('imagem_url').strip()
+            elif prompt_alterado or request.POST.get('gerar_nova_imagem_ia') == 'on':
+                import time
+                rel_path = f"challenges/desafio_{desafio.id}_{int(time.time())}.jpg"
+                sucesso = download_and_save_ai_image(desafio.prompt_original, rel_path)
+                if sucesso:
+                    desafio.imagem = rel_path
+                    desafio.imagem_url = ""
+                else:
+                    desafio.imagem_url = generate_ai_image_url(desafio.prompt_original)
+
+            desafio.save()
+            messages.success(request, f"✓ Desafio da Rodada {desafio.numero_rodada} atualizado com sucesso!")
             return redirect('game:operator_desafios')
 
     desafios = Challenge.objects.all().order_by('-ativo', '-id')
