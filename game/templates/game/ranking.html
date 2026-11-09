@@ -280,6 +280,22 @@
             {% endif %}
         </main>
 
+        <!-- Indicador de Atualização ao Vivo para Telão / Projetor -->
+        <div class="text-center pb-6">
+            <span class="inline-flex items-center gap-2 bg-white border border-[#1E0B36]/20 shadow-xs px-4 py-1.5 rounded-full text-xs font-bold text-slate-600">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Telão ao Vivo: atualizando ranking automaticamente a cada 10 segundos</span>
+            </span>
+        </div>
+
     </div>
+
+    <!-- Script de Atualização Automática para Telão/Projetor -->
+    <script>
+        // Recarrega automaticamente a página do ranking a cada 10 segundos para refletir as novas jogadas no telão
+        setInterval(function() {
+            window.location.reload();
+        }, 10000);
+    </script>
 </body>
 </html>
