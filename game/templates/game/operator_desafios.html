@@ -409,13 +409,27 @@
                             </label>
                         </div>
 
-                        <!-- Botão Salvar -->
-                        <button 
-                            type="submit" 
-                            class="w-full bg-gradient-to-r from-[#6D28D9] via-[#C026D3] to-[#EC4899] text-white font-black py-4 px-6 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop hover:shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition text-sm cursor-pointer"
-                        >
-                            <span>Salvar e Cadastrar Desafio ✨</span>
-                        </button>
+                        <!-- Botões de Ação: Descartar vs Confirmar -->
+                        <div class="space-y-2 pt-2">
+                            <button 
+                                type="submit" 
+                                class="w-full bg-gradient-to-r from-[#10B981] via-[#059669] to-[#047857] text-white font-black py-4 px-6 rounded-2xl border-2 border-[#1E0B36] shadow-neo-pop hover:shadow-neo-pop-sm hover:translate-y-0.5 active:translate-y-1 transition text-sm cursor-pointer flex items-center justify-center gap-2"
+                            >
+                                <span>✓ Confirmar e Criar Card para o Estande 🚀</span>
+                            </button>
+
+                            <button 
+                                type="button" 
+                                onclick="limparFormulario()"
+                                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-300 text-xs transition flex items-center justify-center gap-1 cursor-pointer"
+                            >
+                                <span>✕ Limpar / Descartar Alterações</span>
+                            </button>
+
+                            <p class="text-[10px] text-slate-500 font-bold text-center">
+                                * O card só é criado para o estande quando você clica em confirmar após aprovar a imagem.
+                            </p>
+                        </div>
                     </form>
                 </section>
 
@@ -517,7 +531,7 @@
                                             <strong>{{ des.attempts.count }}</strong> tentativa{{ des.attempts.count|pluralize }} registrada{{ des.attempts.count|pluralize }}
                                         </span>
 
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-2 flex-wrap">
                                             <button 
                                                 type="button" 
                                                 onclick="toggleEdit('edit_desafio_{{ des.id }}')"
@@ -525,6 +539,20 @@
                                             >
                                                 <span>✏️ Editar / Trocar Imagem</span>
                                             </button>
+
+                                            <!-- Botão de Excluir Rodada -->
+                                            <form method="POST" action="{% url 'game:operator_desafios' %}" class="inline" onsubmit="return confirm('⚠️ Tem certeza que deseja EXCLUIR permanentemente a Rodada {{ des.numero_rodada }} ({{ des.titulo }})?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="delete_challenge">
+                                                <input type="hidden" name="challenge_id" value="{{ des.id }}">
+                                                <button 
+                                                    type="submit" 
+                                                    class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-black text-xs px-3 py-1.5 rounded-xl border border-rose-300 transition flex items-center gap-1 cursor-pointer"
+                                                    title="Excluir este desafio se a imagem não ficou boa"
+                                                >
+                                                    <span>🗑️ Excluir</span>
+                                                </button>
+                                            </form>
 
                                             <a href="{% url 'game:operator_julgamento' %}?rodada_id={{ des.id }}" class="text-[#6D28D9] hover:text-purple-900 font-black flex items-center gap-1">
                                                 <span>Ver Julgamento →</span>
@@ -820,6 +848,24 @@
             const el = document.getElementById(id);
             if (el) {
                 el.classList.toggle('hidden');
+            }
+        }
+
+        function limparFormulario() {
+            if (confirm('Deseja limpar todos os campos do formulário de cadastro?')) {
+                document.getElementById('id_titulo').value = '';
+                document.getElementById('id_numero_rodada').value = '03';
+                document.getElementById('id_estilo_tag').value = 'Estilo Mágico & Futurista';
+                document.getElementById('id_prompt_original').value = '';
+                document.getElementById('id_palavras_chave').value = '';
+                document.getElementById('id_dica_mascote').value = '';
+                document.getElementById('id_imagem_url').value = '';
+                const imgFile = document.getElementById('id_imagem_file');
+                if (imgFile) imgFile.value = '';
+                const previewInfo = document.getElementById('preview_info_tag');
+                if (previewInfo) previewInfo.textContent = 'Aguardando seleção...';
+                const badge = document.getElementById('badge_imagem_status');
+                if (badge) badge.classList.add('hidden');
             }
         }
     </script>

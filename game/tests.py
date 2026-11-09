@@ -295,4 +295,26 @@ class MDXGameTests(TestCase):
         self.assertContains(res_rank, '92.0%')
         self.assertContains(res_rank, '1º Lugar (Prêmio Ouro)')
 
+    def test_delete_challenge(self):
+        c = Challenge.objects.create(
+            titulo='Desafio para Excluir',
+            numero_rodada='99',
+            prompt_original='prompt teste',
+            palavras_chave='teste',
+            ativo=False
+        )
+        self.assertEqual(Challenge.objects.filter(id=c.id).count(), 1)
+
+        session = self.client.session
+        session['is_equipe'] = True
+        session.save()
+
+        url_desafios = reverse('game:operator_desafios')
+        res = self.client.post(url_desafios, {
+            'action': 'delete_challenge',
+            'challenge_id': c.id
+        }, follow=True)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(Challenge.objects.filter(id=c.id).count(), 0)
+
 

@@ -574,6 +574,25 @@ def operator_desafios(request):
             messages.success(request, f"✓ Desafio da Rodada {desafio.numero_rodada} atualizado com sucesso!")
             return redirect('game:operator_desafios')
 
+        # 6. Excluir Desafio / Rodada
+        elif action == 'delete_challenge':
+            desafio_id = request.POST.get('challenge_id')
+            desafio = get_object_or_404(Challenge, id=desafio_id)
+            era_ativo = desafio.ativo
+            titulo_deletado = desafio.titulo
+            num_rodada = desafio.numero_rodada
+            desafio.delete()
+
+            # Se era o desafio ativo no estande, ativa o próximo disponível
+            if era_ativo:
+                restante = Challenge.objects.first()
+                if restante:
+                    restante.ativar()
+                    messages.info(request, f"A Rodada {restante.numero_rodada} foi ativada automaticamente no estande.")
+
+            messages.success(request, f"🗑️ Rodada {num_rodada} ('{titulo_deletado}') foi excluída com sucesso!")
+            return redirect('game:operator_desafios')
+
     desafios = Challenge.objects.all().order_by('-ativo', '-id')
     desafio_ativo = Challenge.objects.filter(ativo=True).first()
 
