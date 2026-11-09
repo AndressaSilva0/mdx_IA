@@ -174,3 +174,125 @@ class MDXGameTests(TestCase):
         self.assertEqual(att.decisao_equipe, 'vencedora')
         self.assertEqual(att.observacao_equipe, 'Excelente prompt!')
 
+    def test_save_participant_action(self):
+        url = reverse('game:index')
+        nome = "Camila Ferreira"
+        email = "camila.ferreira@ifma.edu.br"
+
+        # Aluna salva o participante antes de enviar o prompt
+        response = self.client.post(url, {
+            'action': 'save_participant',
+            'nome_participante': nome,
+            'email_participante': email,
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.client.session.get('current_participant'), nome)
+        self.assertEqual(self.client.session.get('current_email'), email)
+
+    def test_ranking_best_score_and_top3_prizes(self):
+        from game.views import get_challenge_ranking
+
+        # Aluna A: 3 tentativas (scores: 50.0, 92.0, 70.0) -> melhor: 92.0
+        ParticipantAttempt.objects.create(
+            challenge=self.challenge,
+            nome_participante='Aluna A',
+            email_participante='aluna.a@ifma.edu.br',
+            numero_tentativa=1,
+            prompt_enviado='prompt 1',
+            similaridade=50.0
+        )
+        ParticipantAttempt.objects.create(
+            challenge=self.challenge,
+            nome_participante='Aluna A',
+            email_participante='aluna.a@ifma.edu.br',
+            numero_tentativa=2,
+            prompt_enviado='prompt 2',
+            similaridade=92.0
+        )
+        ParticipantAttempt.objects.create(
+            challenge=self.challenge,
+            nome_participante='Aluna A',
+            email_participante='aluna.a@ifma.edu.br',
+            numero_tentativa=3,
+            prompt_enviado='prompt 3',
+            similaridade=70.0
+        )
+
+        # Aluna B: 2 tentativas (scores: 85.0, 88.0) -> melhor: 88.0
+        ParticipantAttempt.objects.create(
+            challenge=self.challenge,
+            nome_participante='Aluna B',
+            email_participante='aluna.b@ifma.edu.br',
+            numero_tentativa=1,
+            prompt_enviado='prompt 1',
+            similaridade=85.0
+        )
+        ParticipantAttempt.objects.create(
+            challenge=self.challenge,
+            nome_participante='Aluna B',
+            email_participante='aluna.b@ifma.edu.br',
+            numero_tentativa=2,
+            prompt_enviado='prompt 2',
+            similaridade=88.0
+        )
+
+        # Aluna C: 1 tentativa (score: 75.0) -> melhor: 75.0
+        ParticipantAttempt.objects.create(
+            challenge=self.challenge,
+            nome_participante='Aluna C',
+            email_participante='aluna.c@ifma.edu.br',
+            numero_tentativa=1,
+            prompt_enviado='prompt 1',
+            similaridade=75.0
+        )
+
+        # Aluna D: 1 tentativa (score: 60.0) -> melhor: 60.0 (4º lugar, fora do Top 3)
+        ParticipantAttempt.objects.create(
+            challenge=self.challenge,
+            nome_participante='Aluna D',
+            email_participante='aluna.d@ifma.edu.br',
+            numero_tentativa=1,
+            prompt_enviado='prompt 1',
+            similaridade=60.0
+        )
+
+        ranking = get_challenge_ranking(self.challenge)
+        self.assertEqual(len(ranking), 4)
+
+        # 1º Lugar (Ouro)
+        self.assertEqual(ranking[0]['nome'], 'Aluna A')
+        self.assertEqual(ranking[0]['melhor_score'], 92.0)
+        self.assertEqual(ranking[0]['posicao'], 1)
+        self.assertTrue(ranking[0]['is_top3'])
+        self.assertIn('Ouro', ranking[0]['premio_label'])
+
+        # 2º Lugar (Prata)
+        self.assertEqual(ranking[1]['nome'], 'Aluna B')
+        self.assertEqual(ranking[1]['melhor_score'], 88.0)
+        self.assertEqual(ranking[1]['posicao'], 2)
+        self.assertTrue(ranking[1]['is_top3'])
+        self.assertIn('Prata', ranking[1]['premio_label'])
+
+        # 3º Lugar (Bronze)
+        self.assertEqual(ranking[2]['nome'], 'Aluna C')
+        self.assertEqual(ranking[2]['melhor_score'], 75.0)
+        self.assertEqual(ranking[2]['posicao'], 3)
+        self.assertTrue(ranking[2]['is_top3'])
+        self.assertIn('Bronze', ranking[2]['premio_label'])
+
+        # 4º Lugar (Fora do Top 3 de premiação)
+        self.assertEqual(ranking[3]['nome'], 'Aluna D')
+        self.assertEqual(ranking[3]['melhor_score'], 60.0)
+        self.assertEqual(ranking[3]['posicao'], 4)
+        self.assertFalse(ranking[3]['is_top3'])
+        self.assertEqual(ranking[3]['premio_label'], 'Classificada')
+
+        # Testa renderização do ranking no leaderboard
+        url_rank = reverse('game:ranking')
+        res_rank = self.client.get(url_rank)
+        self.assertEqual(res_rank.status_code, 200)
+        self.assertContains(res_rank, 'Aluna A')
+        self.assertContains(res_rank, '92.0%')
+        self.assertContains(res_rank, '1º Lugar (Prêmio Ouro)')
+
+

@@ -45,6 +45,62 @@ def get_feedback_badge(similarity: float) -> dict:
             'icon': '💡'
         }
 
+def get_challenge_ranking(challenge):
+    """
+    Retorna a lista de ranking das alunas para um desafio,
+    ordenada pela melhor pontuação de cada participante (com desempate por menos tentativas e data de envio).
+    Identifica as 3 primeiras colocadas que receberão o prêmio no fim da rodada.
+    """
+    if not challenge:
+        return []
+
+    attempts = ParticipantAttempt.objects.filter(challenge=challenge).order_by('email_participante', 'nome_participante', '-similaridade')
+
+    ranking_dict = {}
+    for att in attempts:
+        chave_unica = (att.email_participante or att.nome_participante).lower().strip()
+        if chave_unica not in ranking_dict:
+            ranking_dict[chave_unica] = {
+                'nome': att.nome_participante,
+                'email': att.email_participante,
+                'melhor_score': att.similaridade,
+                'melhor_tentativa': att,
+                'total_tentativas': 1,
+                'data': att.data_envio
+            }
+        else:
+            ranking_dict[chave_unica]['total_tentativas'] += 1
+
+    ranking = sorted(
+        ranking_dict.values(),
+        key=lambda x: (-x['melhor_score'], x['total_tentativas'], x['data'])
+    )
+
+    for idx, item in enumerate(ranking, 1):
+        item['posicao'] = idx
+        if idx == 1:
+            item['medalha'] = '🥇'
+            item['premio_label'] = '1º Lugar (Prêmio Ouro) 🏆'
+            item['badge_class'] = 'bg-[#FEBE01] text-[#1E0B36] border-2 border-[#1E0B36]'
+            item['is_top3'] = True
+        elif idx == 2:
+            item['medalha'] = '🥈'
+            item['premio_label'] = '2º Lugar (Prêmio Prata) 🥈'
+            item['badge_class'] = 'bg-slate-200 text-[#1E0B36] border-2 border-[#1E0B36]'
+            item['is_top3'] = True
+        elif idx == 3:
+            item['medalha'] = '🥉'
+            item['premio_label'] = '3º Lugar (Prêmio Bronze) 🥉'
+            item['badge_class'] = 'bg-amber-100 text-[#1E0B36] border-2 border-[#1E0B36]'
+            item['is_top3'] = True
+        else:
+            item['medalha'] = f'{idx}º'
+            item['premio_label'] = 'Classificada'
+            item['badge_class'] = 'bg-[#FAF5FF] text-[#6D28D9] border border-purple-200'
+            item['is_top3'] = False
+
+    return ranking
+
 def game_index(request):
     """
     View principal do jogo 'Mermãs Digitais | MDX 2026'.
@@ -69,6 +125,28 @@ def game_index(request):
         if action == 'new_participant':
             request.session.pop('current_participant', None)
             request.session.pop('current_email', None)
+            return redirect('game:index')
+
+        # Ação de salvar participante explicitamente
+        if action == 'save_participant':
+            nome_enviado = request.POST.get('nome_participante', '').strip()
+            email_enviado = request.POST.get('email_participante', '').strip().lower()
+
+            if not nome_enviado or not email_enviado:
+                messages.error(request, "Por favor, preencha seu Nome Completo e E-mail para salvar.")
+                return redirect('game:index')
+
+            request.session['current_participant'] = nome_enviado
+            request.session['current_email'] = email_enviado
+
+            qtd = ParticipantAttempt.objects.filter(challenge=challenge, email_participante=email_enviado).count()
+            if qtd >= 3:
+                messages.warning(request, f"Olá {nome_enviado}! Você já concluiu suas 3 tentativas nesta rodada. Sua melhor pontuação está salva no Ranking oficial!")
+            elif qtd > 0:
+                messages.success(request, f"Olá {nome_enviado}! Participante salva. Você já realizou {qtd} de 3 tentativas.")
+            else:
+                messages.success(request, f"🎉 Participante {nome_enviado} salva com sucesso! Você tem 3 tentativas para tentar acertar o prompt.")
+
             return redirect('game:index')
 
         # Envio de tentativa
@@ -178,6 +256,20 @@ def game_index(request):
             fallback_dica=dica_formatada
         )
 
+    # 4. Calcula o Ranking da Rodada e Top 3 que ganham prêmio no fim da rodada
+    ranking_geral = get_challenge_ranking(challenge)
+    ranking_top3 = ranking_geral[:3]
+    total_participantes_rodada = len(ranking_geral)
+
+    # Identifica a posição da aluna atual no ranking da rodada
+    minha_posicao_ranking = None
+    if email_participante or nome_participante:
+        chave_atual = (email_participante or nome_participante).lower().strip()
+        minha_posicao_ranking = next(
+            (r for r in ranking_geral if (r['email'].lower() == chave_atual or r['nome'].lower() == chave_atual)),
+            None
+        )
+
     context = {
         'challenge': challenge,
         'nome_participante': nome_participante,
@@ -192,6 +284,9 @@ def game_index(request):
         'feedback_info': feedback_info,
         'slots_historico': slots_historico,
         'dica_mascote': dica_formatada,
+        'ranking_top3': ranking_top3,
+        'minha_posicao_ranking': minha_posicao_ranking,
+        'total_participantes_rodada': total_participantes_rodada,
         'is_equipe': check_equipe_permission(request),
     }
 
@@ -202,56 +297,17 @@ def reset_session(request):
     request.session.pop('current_participant', None)
     request.session.pop('current_email', None)
     return redirect('game:index')
-    return redirect('game:index')
 
 def leaderboard(request):
     """
     Placar de Líderes / Ranking das Mermãs para projeção no telão/TV do estande.
-    Exibe as melhores pontuações das alunas na rodada ativa.
+    Exibe as melhores pontuações das alunas na rodada ativa e destaca o Top 3 que ganham prêmio.
     """
     challenge = Challenge.objects.filter(ativo=True).first()
     if not challenge:
         return render(request, 'game/no_challenge.html')
 
-    # Agrupa tentativas por participante (utilizando o e-mail como chave única)
-    attempts = ParticipantAttempt.objects.filter(challenge=challenge).order_by('email_participante', 'nome_participante', '-similaridade')
-
-    ranking_dict = {}
-    for att in attempts:
-        chave_unica = (att.email_participante or att.nome_participante).lower()
-        if chave_unica not in ranking_dict:
-            ranking_dict[chave_unica] = {
-                'nome': att.nome_participante,
-                'email': att.email_participante,
-                'melhor_score': att.similaridade,
-                'melhor_tentativa': att,
-                'total_tentativas': 1,
-                'data': att.data_envio
-            }
-        else:
-            ranking_dict[chave_unica]['total_tentativas'] += 1
-
-    # Ordena por melhor pontuação (decrescente) e desempate por menos tentativas
-    ranking = sorted(
-        ranking_dict.values(),
-        key=lambda x: (-x['melhor_score'], x['total_tentativas'], x['data'])
-    )
-
-    # Atribui posições e medalhas
-    for idx, item in enumerate(ranking, 1):
-        item['posicao'] = idx
-        if idx == 1:
-            item['medalha'] = '🥇'
-            item['badge_class'] = 'bg-amber-100 text-amber-800 border-amber-300'
-        elif idx == 2:
-            item['medalha'] = '🥈'
-            item['badge_class'] = 'bg-slate-200 text-slate-700 border-slate-300'
-        elif idx == 3:
-            item['medalha'] = '🥉'
-            item['badge_class'] = 'bg-amber-50 text-amber-900 border-amber-400'
-        else:
-            item['medalha'] = f'{idx}º'
-            item['badge_class'] = 'bg-purple-50 text-purple-700 border-purple-200'
+    ranking = get_challenge_ranking(challenge)
 
     # Identifica se a equipe já homologou uma vencedora oficial para esta rodada
     vencedora_oficial = ParticipantAttempt.objects.filter(
@@ -262,6 +318,8 @@ def leaderboard(request):
     return render(request, 'game/ranking.html', {
         'challenge': challenge,
         'ranking': ranking,
+        'ranking_top3': ranking[:3],
+        'ranking_restante': ranking[3:],
         'total_participantes': len(ranking),
         'vencedora_oficial': vencedora_oficial
     })
